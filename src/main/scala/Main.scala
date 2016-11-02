@@ -22,13 +22,7 @@ object Main {
     println("tokens size is " + tokens.size())
 
     for (i <- 0 until tokens.size()) {
-      println("yo")
       println("token " + i  + " is " + tokens.get(i).getText() + " of type " + mapToId(tokens.get(i).getType(), tokenIDs))
-    }
-
-    for (i <- 0 until tokens.size()) {
-      println("no")
-      println("token " + i  + " is " + tokens.get(i).getText() + " of type " + tokens.get(i).getType())
     }
 
   }
