@@ -32,5 +32,4 @@ PAIR : 'pair' ;
 
 
 ID : [a-zA-Z]+ ;
-INT  : [0-9]+ ;
 WS : [ \t\r\n]+ -> skip;
