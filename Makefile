@@ -22,9 +22,9 @@ all: rules
 
 rules:
 	cd $(ANTLR_DIR) && ./$(ANTLR)
-	sbt compile
+	bin/sbt compile
 
 clean:
-	sbt clean
+	bin/sbt clean
 
 .PHONY: all rules clean
