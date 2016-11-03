@@ -36,7 +36,7 @@ class LexerParsertemplate(val filename : String){
       return xs.map(mapToId(_, tokenIDs))
   }
 
-  public def getLexerResult : Array[String] = {
+  def getLexerResult : Array[String] = {
 
     val typeList = constructTypeNumberArrays(tokens)
 
