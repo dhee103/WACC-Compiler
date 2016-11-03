@@ -1,8 +1,6 @@
-import org.antlr.v4.runtime.ANTLRFileStream._
-import org.antlr.v4.runtime.CommonTokenStream._
-import org.antlr.v4.runtime.Token._
 
-class LexerParsertemplate(val filename : String){
+
+class LexerParserTemplate(val filename: String){
 
   var waccLex = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
 
@@ -19,32 +17,22 @@ class LexerParsertemplate(val filename : String){
 
   private def constructTypeNumberArrays(xs : org.antlr.v4.runtime.CommonTokenStream): Array[Int] = {
 
-    var types : Array[Int] = new Array[Int](xs.size())
-
-    for(i <- 0 to (types.length - 1)){
-
-      types(i) = tokens.get(i).getType()
-
+    val types: Array[Int] = new Array[Int](xs.size())
+    for(i <- types.indices){
+      types(i) = tokens.get(i).getType
     }
-
-    return types
+    types
 
   }
 
   private def ConstructTokenStringArray(xs : Array[Int]): Array[String] = {
-
-      return xs.map(mapToId(_, tokenIDs))
+      xs.map(mapToId(_, tokenIDs))
   }
 
   def getLexerResult : Array[String] = {
-
     val typeList = constructTypeNumberArrays(tokens)
-
     val tokenList = ConstructTokenStringArray(typeList)
-
-    return tokenList
-
+    tokenList
   }
-
 
 }
