@@ -1,11 +1,7 @@
 import org.scalatest._
+//TODO: be more selective with the imports
 
-class MainTest extends FlatSpec with BeforeAndAfter{
-
-  "factorial(0)" should "return 1" in {
-    val r = Main.factorial(0)
-    assert(r === 1)
-  }
+class MainTest extends FlatSpec with Matchers{
 
   "tokens" should "be correct" in {
 
@@ -18,7 +14,13 @@ class MainTest extends FlatSpec with BeforeAndAfter{
     assert(tokenList === excpectedList)
   }
 
+  "toks" should "work" in {
+    val files = Array("WaccTestFiles/basicSeq.wacc")
+    val expectedTokens = Array(Array("BEGIN", "SKIP", "SEMICOLON", "SKIP",
+      "END","EOF"))
 
+    (files zip expectedTokens).map{ case (file, tokens) => assert(new LexerParsertemplate(file).getLexerResult === tokens)}
 
+  }
 
 }
