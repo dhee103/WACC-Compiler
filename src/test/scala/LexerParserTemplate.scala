@@ -1,5 +1,3 @@
-
-
 class LexerParserTemplate(val filename: String){
 
   var waccLex = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
@@ -7,7 +5,7 @@ class LexerParserTemplate(val filename: String){
   // Get a list of matched tokens
   var tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLex)
 
-  val tokenIDs : Array[String] =  waccLex.getRuleNames()
+  val tokenIDs : Array[String] =  waccLex.getRuleNames
 
   tokens.fill()
 
