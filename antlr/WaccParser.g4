@@ -1,7 +1,7 @@
 parser grammar WaccParser;
 
 options {
-  tokenVocab=BasicLexer;
+  tokenVocab=WaccLexer;
 }
 
 // EOF indicates that the program must consume to the end of the input.
