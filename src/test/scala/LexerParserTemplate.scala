@@ -1,41 +1,35 @@
+
 class LexerParserTemplate(val filename: String){
 
   var waccLex = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
 
-  // Get a list of matched tokens
   var tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLex)
 
-  val tokenIDs : Array[String] =  waccLex.getRuleNames
+  val lexVocab = waccLex.getVocabulary()
 
   tokens.fill()
 
+  private def constructTokenStringArray(tokenStream : org.antlr.v4.runtime.CommonTokenStream): Array[String] = {
 
-  private def mapToId(typeNum: Int, tokenNames: Array[String]): String = {
-    if (typeNum > 0) tokenNames(typeNum - 1) else "EOF"
-  }
+    val tokensArr: Array[String] = new Array[String](tokenStream.size())
 
-  private def constructTypeNumberArrays(xs : org.antlr.v4.runtime.CommonTokenStream): Array[String] = {
+    for(i <- tokensArr.indices) {
 
-    val types: Array[String] = new Array[String](xs.size())
-    for(i <- types.indices){
-//      types(i) = tokens.get(i).getType
-//      types(i) = tokens.get(i).getTokenSource.getSourceName
-      types(i) = waccLex.get
+      tokensArr(i) = getTokenName(i)
+
     }
-    types
+    tokensArr
 
   }
 
-  private def ConstructTokenStringArray(xs : Array[Int]): Array[String] = {
-      xs.map(mapToId(_, tokenIDs))
-  }
+  private def getTokenName(index: Int): String
+    = lexVocab.getSymbolicName(tokens.get(index).getType)
 
   def getLexerResult : Array[String] = {
-    val typeList = constructTypeNumberArrays(tokens)
-//    val tokenList = ConstructTokenStringArray(typeList)
-//    tokenList
-    typeList
-  }
 
+    val typeList = constructTokenStringArray(tokens)
+    typeList
+
+  }
 
 }
