@@ -9,15 +9,18 @@ class LexerParserTemplate(val filename: String){
 
   tokens.fill()
 
+
   private def mapToId(typeNum: Int, tokenNames: Array[String]): String = {
     if (typeNum > 0) tokenNames(typeNum - 1) else "EOF"
   }
 
-  private def constructTypeNumberArrays(xs : org.antlr.v4.runtime.CommonTokenStream): Array[Int] = {
+  private def constructTypeNumberArrays(xs : org.antlr.v4.runtime.CommonTokenStream): Array[String] = {
 
-    val types: Array[Int] = new Array[Int](xs.size())
+    val types: Array[String] = new Array[String](xs.size())
     for(i <- types.indices){
-      types(i) = tokens.get(i).getType
+//      types(i) = tokens.get(i).getType
+//      types(i) = tokens.get(i).getTokenSource.getSourceName
+      types(i) = waccLex.get
     }
     types
 
@@ -29,8 +32,10 @@ class LexerParserTemplate(val filename: String){
 
   def getLexerResult : Array[String] = {
     val typeList = constructTypeNumberArrays(tokens)
-    val tokenList = ConstructTokenStringArray(typeList)
-    tokenList
+//    val tokenList = ConstructTokenStringArray(typeList)
+//    tokenList
+    typeList
   }
+
 
 }

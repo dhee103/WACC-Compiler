@@ -3,7 +3,7 @@ lexer grammar WaccLexer;
 BEGIN : 'begin' ;
 END : 'end' ;
 IS : 'is' ;
-SKIP : 'skip' ;
+SKIP_ : 'skip' ;
 EQUALS : '=' ;
 READ : 'read' ;
 FREE : 'free' ;
@@ -18,7 +18,17 @@ FI : 'fi' ;
 WHILE : 'while' ;
 DO : 'do' ;
 DONE : 'done' ;
+
 NULL : 'null' ;
+INT_LITERAL : ('+' | '-')? DIGIT+ ;
+fragment DIGIT : [0-9] ;
+
+CHAR_LITER : ('\'') CHARACTER ('\'') ;
+STR_LITER : ('"') CHARACTER* ('"') ;
+fragment CHARACTER : ('\\') ESCAPED_CHAR
+              | ~([\\\'"])
+              ;
+fragment ESCAPED_CHAR : '0' | 'b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\' ;
 
 LPAREN : '(' ;
 RPAREN : ')' ;
@@ -51,9 +61,8 @@ UNDERSCORE : '_' ;
 TRUE_LITERAL : 'true' ;
 FALSE_LITERAL : 'false' ;
 
-SINGLE_QUOTE : '\'' ;
-DOUBLE_QUOTE : '"' ;
-HASH : '#' ;
+//SINGLE_QUOTE : '\'' ;
+//DOUBLE_QUOTE : '"' ;
 
 NEWPAIR : 'newpair' ;
 CALL : 'call' ;
@@ -68,5 +77,6 @@ STRING_TYPE : 'string' ;
 PAIR_TYPE : 'pair' ;
 
 
-ID : [a-zA-Z]+ ;
+ID : ('_'|[a-zA-Z])([a-zA-Z0-9]*) ;
+COMMENT : '#' ~[\n]* '\n' -> skip;
 WS : [ \t\r\n]+ -> skip;
