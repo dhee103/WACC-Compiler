@@ -18,8 +18,6 @@ object Main {
 
     var waccParse = new WaccParser(tokens)
 
-    val parseVocab = waccParse.getVocabulary()
-
     var tree = waccParse.prog();
 
     for (i <- 0 until tokens.size()) {
@@ -38,7 +36,12 @@ object Main {
 
   def mad(ting: org.antlr.v4.runtime.tree.ParseTree): Unit = {
 
-    println(parseVocab.getSymbolicName(ting.getPayload().getType()))
+    println(ting)
+
+    for(i <- 0 to ting.getChildCount() - 1){
+      mad(ting.getChild(i))
+
+    }
 
   }
 
