@@ -1,0 +1,18 @@
+# +- & ++ & -- etc should be recognised as two separate symbols
+# prints correctly for -print
+
+# Output:
+# -1
+# 3
+# 3
+# 5
+
+# Program:
+
+begin
+  println 1+-2;
+  println 1++2;
+  println 1--2;
+  int x = -5;
+  println -x
+end
