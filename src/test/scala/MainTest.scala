@@ -1,7 +1,4 @@
-import org.scalatest._
-
-//TODO: be more selective with the imports
-//TODO: check if matchers works at home
+import org.scalatest.{FlatSpec, Matchers}
 
 class MainTest extends FlatSpec with Matchers {
 
@@ -78,6 +75,82 @@ class MainTest extends FlatSpec with Matchers {
     (files zip expectedTokens).map { case (file, tokens) =>
       assert(new LexerParserTemplate(file).getLexerResult === tokens)
     }
+
+  }
+
+  "program expressions" should "work as intended" in {
+    val files = Array(
+      valid + "expressions/charComparisonExpr.wacc",
+      valid + "expressions/mathsExpr.wacc",
+      valid + "expressions/ordAndchrExpr.wacc",
+      valid + "expressions/multipleMathsOps.wacc",
+      valid + "expressions/sequentialCount.wacc"
+      //      valid + "expressions/charAssignment.wacc",
+      //      valid + "expressions/stringAssignment.wacc"
+    )
+
+    val expectedTokens: Array[Array[String]] = Array(
+      Array("BEGIN", "CHAR_TYPE", "ID", "EQUALS", "CHAR_LITER", "SEMICOLON",
+        "CHAR_TYPE", "ID", "EQUALS", "CHAR_LITER", "SEMICOLON", "PRINTLN", "ID",
+        "DOUBLE_EQUAL", "ID", "SEMICOLON", "PRINTLN", "ID", "NOT_EQUAL", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "LESS_THAN", "ID", "SEMICOLON", "PRINTLN",
+        "ID", "LESS_EQUAL", "ID", "SEMICOLON", "PRINTLN", "ID", "GREATER_THAN",
+        "ID", "SEMICOLON", "PRINTLN", "ID", "GREATER_EQUAL", "ID", "END",
+        "EOF"),
+      Array("BEGIN", "INT_TYPE", "ID", "EQUALS", "LPAREN", "INT_LITERAL",
+        "MULTIPLY", "INT_LITERAL", "PLUS", "INT_LITERAL", "MULTIPLY",
+        "INT_LITERAL", "RPAREN", "SEMICOLON", "IF", "ID", "DOUBLE_EQUAL",
+        "INT_LITERAL", "THEN", "PRINTLN", "STR_LITER", "ELSE", "PRINTLN",
+        "STR_LITER", "FI", "SEMICOLON", "BOOL_TYPE", "ID", "EQUALS",
+        "EXCLAMATION", "LPAREN", "LPAREN", "TRUE_LITERAL", "LOGICAL_AND",
+        "FALSE_LITERAL", "RPAREN", "LOGICAL_OR", "LPAREN", "TRUE_LITERAL",
+        "LOGICAL_AND", "FALSE_LITERAL", "RPAREN", "RPAREN", "SEMICOLON", "IF",
+        "ID", "DOUBLE_EQUAL", "TRUE_LITERAL", "THEN", "PRINTLN", "STR_LITER",
+        "ELSE", "PRINTLN", "STR_LITER", "FI", "SEMICOLON", "INT_TYPE", "ID",
+        "EQUALS", "INT_LITERAL", "SEMICOLON", "INT_TYPE", "ID", "EQUALS",
+        "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "DIVIDE", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "MULTIPLY", "ID", "SEMICOLON", "PRINTLN",
+        "ID", "PLUS", "ID", "SEMICOLON", "PRINTLN", "ID", "MINUS", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "MOD", "ID", "SEMICOLON", "INT_TYPE",
+        "ID", "EQUALS", "INT_LITERAL", "SEMICOLON", "INT_TYPE", "ID", "EQUALS",
+        "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "DIVIDE", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "MULTIPLY", "ID", "SEMICOLON", "PRINTLN",
+        "ID", "PLUS", "ID", "SEMICOLON", "PRINTLN", "ID", "MINUS", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "MOD", "ID", "END", "EOF"),
+      Array("BEGIN", "CHAR_TYPE", "ID", "EQUALS", "CHAR_LITER", "SEMICOLON",
+        "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON", "PRINT", "ID",
+        "SEMICOLON", "PRINT", "STR_LITER", "SEMICOLON", "PRINTLN", "ORD", "ID",
+        "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "STR_LITER",
+        "SEMICOLON", "PRINTLN", "CHR", "ID", "END", "EOF"),
+      Array("BEGIN", "PRINTLN", "INT_LITERAL", "PLUS", "INT_LITERAL",
+        "SEMICOLON", "PRINTLN", "INT_LITERAL", "PLUS", "INT_LITERAL",
+        "SEMICOLON", "PRINTLN", "INT_LITERAL", "MINUS", "INT_LITERAL",
+        "SEMICOLON", "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON",
+        "PRINTLN", "MINUS", "ID", "END", "EOF"),
+      Array("BEGIN", "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON",
+        "PRINTLN", "STR_LITER", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON",
+        "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN",
+        "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITEL",
+        "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS",
+        "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID",
+        "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON",
+        "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS",
+        "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID",
+        "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON",
+        "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS",
+        "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "END", "EOF")
+
+//    "PRINTLN", "STR_LITER", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "END", "EOF"
+
+
+    )
+
+    (files zip expectedTokens).map { case (file, tokens) =>
+      assert(new LexerParserTemplate(file).getLexerResult === tokens)
+    }
+
 
   }
 
@@ -158,7 +231,8 @@ class MainTest extends FlatSpec with Matchers {
   //
   ////
   //////  failing test
-  //  "lexing 'Begin' with an uppercase" should "give the token ID not BEGIN" in {
+  //  "lexing 'Begin' with an uppercase" should "give the token ID not BEGIN"
+  // in {
   //    val file = synatxErr + "basic/Begin.wacc"
   //    val expectedTokens: Array[String] = Array("ID", "SKIP_", "END","EOF")
   //
@@ -168,7 +242,8 @@ class MainTest extends FlatSpec with Matchers {
   //////  failing test
   //  "lexing multiple begins" should "give us an error (exit 100)" in {
   //    val file = synatxErr + "basic/multipleBegins(noComms).wacc"
-  //    val expectedTokens: Array[String] = Array("BEGIN", "SKIP_", "END", "BEGIN",
+  //    val expectedTokens: Array[String] = Array("BEGIN", "SKIP_", "END",
+  // "BEGIN",
   //      "SKIP_", "END", "EOF")
   //
   //    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
@@ -187,7 +262,8 @@ class MainTest extends FlatSpec with Matchers {
   ////  }
   //
   ////  "this" should "work" in {
-  ////    val waccLex = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(valid + "sequence/basicSeq(noComms).wacc"))
+  ////    val waccLex = new WaccLexer(new org.antlr.v4.runtime
+  // .ANTLRFileStream(valid + "sequence/basicSeq(noComms).wacc"))
   ////
   ////    // Get a list of matched tokens
   ////    val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLex)
