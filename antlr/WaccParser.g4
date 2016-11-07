@@ -71,7 +71,11 @@ expr: int_liter
     | ident
     | array_elem
     | unary_oper expr
-    | expr binary_oper expr
+    | expr (MULIPLY | DIVIDE | MOD) expr
+    | expr (PLUS) expr
+    | expr (GREATER_THAN | GREATER_EQUAL | LESS_THAN | LESS_EQUAL) expr
+    | expr (DOUBLE_EQUAL | NOT_EQUAL) expr
+    | expr (LOGICAL_AND | LOGICAL_OR) expr
     | LPAREN expr RPAREN
     ;
 
@@ -81,20 +85,6 @@ unary_oper: EXCLAMATION
           | ORD
           | CHR
           ;
-
-binary_oper: MULTIPLY
-           | DIVIDE
-           | MOD
-           | PLUS
-           | GREATER_THAN
-           | GREATER_EQUAL
-           | LESS_THAN
-           | LESS_EQUAL
-           | DOUBLE_EQUAL
-           | NOT_EQUAL
-           | LOGICAL_AND
-           | LOGICAL_OR
-           ;
 
 ident: ID ;
 
