@@ -30,16 +30,18 @@ object Main {
 
     println("==================================================")
 
-    mad(tree)
+    buildTree(tree)
 
   }
 
-  def mad(ting: org.antlr.v4.runtime.tree.ParseTree): Unit = {
+  def buildTree(currentTree: org.antlr.v4.runtime.tree.ParseTree): Unit = {
 
-    println(ting)
+    println(currentTree)
 
-    for(i <- 0 to ting.getChildCount() - 1){
-      mad(ting.getChild(i))
+    for(i <- 0 to currentTree.getChildCount() - 1){
+      print("child " + (i + 1) + " is ")
+      buildTree(currentTree.getChild(i))
+
 
     }
 
