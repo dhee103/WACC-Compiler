@@ -1,5 +1,6 @@
-project/*
-src/main/*
+.idea/*
 target/*
-bin/*
+src/main/java/*
 src/antlr/*
+*.tokens
+project/*

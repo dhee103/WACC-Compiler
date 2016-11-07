@@ -1,7 +1,7 @@
-parser grammar BasicParser;
+parser grammar WaccParser;
 
 options {
-  tokenVocab=BasicLexer;
+  tokenVocab=WaccLexer;
 }
 
 // EOF indicates that the program must consume to the end of the input.
@@ -113,5 +113,3 @@ str_liter: STR_LITER ;
 array_liter: LBRACKET ((expr) (COMMA expr)*)? RBRACKET ;
 
 pair_liter: NULL ;
-
-
