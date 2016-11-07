@@ -14,8 +14,8 @@ param_list: param (COMMA param)* ;
 param: type ident ;
 
 stat: SKIP_
-    | type ident EQUALS assign_rhs
-    | assign_lhs EQUALS assign_rhs
+    | type ident EQUAL assign_rhs
+    | assign_lhs EQUAL assign_rhs
     | FREE expr
     | RETURN expr
     | EXIT expr
@@ -106,9 +106,9 @@ bool_liter: TRUE_LITERAL
           | FALSE_LITERAL
           ;
 
-char_liter: CHAR_LITER ;
+char_liter: CHAR_LITERAL ;
 
-str_liter: STR_LITER ;
+str_liter: STR_LITERAL ;
 
 array_liter: LBRACKET ((expr) (COMMA expr)*)? RBRACKET ;
 

@@ -4,7 +4,7 @@ BEGIN : 'begin' ;
 END : 'end' ;
 IS : 'is' ;
 SKIP_ : 'skip' ;
-EQUALS : '=' ;
+EQUAL : '=' ;
 READ : 'read' ;
 FREE : 'free' ;
 RETURN : 'return' ;
@@ -23,8 +23,8 @@ NULL : 'null' ;
 INT_LITERAL : ('+' | '-')? DIGIT+ ;
 fragment DIGIT : [0-9] ;
 
-CHAR_LITER : ('\'') CHARACTER ('\'') ;
-STR_LITER : ('"') CHARACTER* ('"') ;
+CHAR_LITERAL : ('\'') CHARACTER ('\'') ;
+STR_LITERAL : ('"') CHARACTER* ('"') ;
 fragment CHARACTER : ('\\') ESCAPED_CHAR
               | ~([\\\'"])
               ;
@@ -60,9 +60,6 @@ UNDERSCORE : '_' ;
 
 TRUE_LITERAL : 'true' ;
 FALSE_LITERAL : 'false' ;
-
-//SINGLE_QUOTE : '\'' ;
-//DOUBLE_QUOTE : '"' ;
 
 NEWPAIR : 'newpair' ;
 CALL : 'call' ;
