@@ -10,6 +10,7 @@ class MainTest extends FlatSpec with Matchers {
   //    str = prep + str
   //  }
 
+
   //  valid tests
 
   "lexing exit statements" should "work" in {
@@ -85,8 +86,6 @@ class MainTest extends FlatSpec with Matchers {
       valid + "expressions/ordAndchrExpr.wacc",
       valid + "expressions/multipleMathsOps.wacc",
       valid + "expressions/sequentialCount.wacc"
-      //      valid + "expressions/charAssignment.wacc",
-      //      valid + "expressions/stringAssignment.wacc"
     )
 
     val expectedTokens: Array[Array[String]] = Array(
@@ -130,7 +129,7 @@ class MainTest extends FlatSpec with Matchers {
       Array("BEGIN", "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON",
         "PRINTLN", "STR_LITER", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON",
         "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN",
-        "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITEL",
+        "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL",
         "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS",
         "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID",
         "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID",
@@ -141,16 +140,28 @@ class MainTest extends FlatSpec with Matchers {
         "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON",
         "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS",
         "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "END", "EOF")
-
-//    "PRINTLN", "STR_LITER", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "ID", "EQUALS", "ID", "PLUS", "INT_LITERAL", "SEMICOLON", "PRINTLN", "ID", "END", "EOF"
-
-
     )
 
     (files zip expectedTokens).map { case (file, tokens) =>
       assert(new LexerParserTemplate(file).getLexerResult === tokens)
     }
 
+  }
+
+  //  TODO: change equals to equal OR change rest of equal -> equals
+  "if programs" should "work as intended" in {
+    val file = valid + "if/ifTest.wacc"
+
+    val expectedTokens: Array[String] = Array(
+      "BEGIN", "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON",
+      "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON", "BOOL_TYPE", "ID",
+      "EQUALS", "TRUE_LITERAL", "SEMICOLON", "BOOL_TYPE", "ID", "EQUALS",
+      "FALSE_LITERAL", "SEMICOLON", "IF", "ID", "LOGICAL_AND", "ID",
+      "LOGICAL_OR", "ID", "GREATER_EQUAL", "ID", "LOGICAL_OR", "ID",
+      "DOUBLE_EQUAL", "INT_LITERAL", "THEN", "PRINTLN", "ID", "ELSE", "PRINTLN",
+      "ID", "FI", "END", "EOF")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
 
   }
 
