@@ -165,6 +165,121 @@ class MainTest extends FlatSpec with Matchers {
 
   }
 
+  "scope" should "work as intended" in {
+    val files = Array(
+      valid + "scope/scopeTest.wacc",
+      valid + "scope/scopeRedefine.wacc",
+      valid + "scope/printAllTypes.wacc"
+    )
+
+    val expectedTokens: Array[Array[String]] = Array(
+      Array("BEGIN", "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON",
+        "IF", "ID", "DOUBLE_EQUAL", "INT_LITERAL", "THEN", "IF", "ID",
+        "GREATER_THAN", "INT_LITERAL", "THEN", "IF", "ID", "LESS_THAN",
+        "INT_LITERAL", "THEN", "PRINTLN", "STR_LITER", "ELSE", "IF", "ID",
+        "GREATER_THAN", "INT_LITERAL", "THEN", "IF", "ID", "GREATER_THAN",
+        "INT_LITERAL", "THEN", "PRINTLN", "STR_LITER", "ELSE", "PRINTLN",
+        "STR_LITER", "FI", "ELSE", "PRINTLN", "STR_LITER", "FI", "FI",
+        "ELSE", "PRINTLN", "STR_LITER", "FI", "ELSE", "PRINTLN", "STR_LITER",
+        "FI", "END", "EOF"),
+
+      Array("BEGIN", "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON",
+        "BEGIN", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON", "BOOL_TYPE",
+        "ID", "EQUALS", "TRUE_LITERAL", "SEMICOLON", "PRINTLN", "ID", "END",
+        "SEMICOLON", "PRINTLN", "ID", "END", "EOF"),
+
+
+      Array("BEGIN", "STRING_TYPE", "ID", "EQUALS", "STR_LITER", "SEMICOLON",
+        "INT_TYPE", "ID", "EQUALS", "INT_LITERAL", "SEMICOLON", "BEGIN",
+        "CHAR_TYPE", "ID", "EQUALS", "CHAR_LITER", "SEMICOLON", "BEGIN",
+        "BOOL_TYPE", "ID", "EQUALS", "TRUE_LITERAL", "SEMICOLON", "BEGIN",
+        "STRING_TYPE", "ID", "EQUALS", "STR_LITER", "SEMICOLON", "BEGIN",
+        "INT_TYPE", "LBRACKET", "RBRACKET", "ID", "EQUALS", "LBRACKET",
+        "INT_LITERAL", "COMMA", "INT_LITERAL", "COMMA", "INT_LITERAL",
+        "RBRACKET", "SEMICOLON", "BEGIN", "CHAR_TYPE", "LBRACKET",
+        "RBRACKET", "ID", "EQUALS", "LBRACKET", "CHAR_LITER", "COMMA",
+        "CHAR_LITER", "COMMA", "CHAR_LITER", "RBRACKET", "SEMICOLON",
+        "BEGIN", "BOOL_TYPE", "LBRACKET", "RBRACKET", "ID", "EQUALS",
+        "LBRACKET", "TRUE_LITERAL", "COMMA", "FALSE_LITERAL", "COMMA",
+        "TRUE_LITERAL", "RBRACKET", "SEMICOLON", "BEGIN", "STRING_TYPE",
+        "LBRACKET", "RBRACKET", "ID", "EQUALS", "LBRACKET", "STR_LITER",
+        "COMMA", "STR_LITER", "COMMA", "STR_LITER", "RBRACKET", "SEMICOLON",
+        "BEGIN", "PAIR_TYPE", "LPAREN", "INT_TYPE", "COMMA", "INT_TYPE",
+        "RPAREN", "ID", "EQUALS", "NEWPAIR", "LPAREN", "INT_LITERAL",
+        "COMMA", "INT_LITERAL", "RPAREN", "SEMICOLON", "BEGIN", "PAIR_TYPE",
+        "LPAREN", "CHAR_TYPE", "COMMA", "BOOL_TYPE", "RPAREN", "ID",
+        "EQUALS", "NEWPAIR", "LPAREN", "CHAR_LITER", "COMMA", "TRUE_LITERAL",
+        "RPAREN", "SEMICOLON", "PAIR_TYPE", "LPAREN", "CHAR_TYPE", "COMMA",
+        "BOOL_TYPE", "RPAREN", "ID", "EQUALS", "NEWPAIR", "LPAREN",
+        "CHAR_LITER", "COMMA", "FALSE_LITERAL", "RPAREN", "SEMICOLON",
+        "PAIR_TYPE", "LPAREN", "CHAR_TYPE", "COMMA", "BOOL_TYPE", "RPAREN",
+        "LBRACKET", "RBRACKET", "ID", "EQUALS", "LBRACKET", "ID", "COMMA",
+        "ID", "RBRACKET", "SEMICOLON", "BEGIN", "INT_TYPE", "LBRACKET",
+        "RBRACKET", "ID", "EQUALS", "LBRACKET", "INT_LITERAL", "COMMA",
+        "INT_LITERAL", "COMMA", "INT_LITERAL", "RBRACKET", "SEMICOLON",
+        "CHAR_TYPE", "LBRACKET", "RBRACKET", "ID", "EQUALS", "LBRACKET",
+        "CHAR_LITER", "COMMA", "CHAR_LITER", "COMMA", "CHAR_LITER",
+        "RBRACKET", "SEMICOLON", "PAIR_TYPE", "LPAREN", "INT_TYPE",
+        "LBRACKET", "RBRACKET", "COMMA", "CHAR_TYPE", "LBRACKET", "RBRACKET",
+        "RPAREN", "ID", "EQUALS", "NEWPAIR", "LPAREN", "ID", "COMMA", "ID",
+        "RPAREN", "SEMICOLON", "BEGIN", "SKIP_", "END", "SEMICOLON",
+        "INT_TYPE", "LBRACKET", "RBRACKET", "ID", "EQUALS", "FIRST", "ID",
+        "SEMICOLON", "CHAR_TYPE", "LBRACKET", "RBRACKET", "ID", "EQUALS",
+        "SECOND", "ID", "SEMICOLON", "PRINT", "STR_LITER", "SEMICOLON",
+        "PRINT", "ID", "LBRACKET", "INT_LITERAL", "RBRACKET", "SEMICOLON",
+        "PRINT", "ID", "SEMICOLON", "PRINT", "ID", "LBRACKET", "INT_LITERAL",
+        "RBRACKET", "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "ID",
+        "LBRACKET", "INT_LITERAL", "RBRACKET", "SEMICOLON", "PRINT",
+        "STR_LITER", "SEMICOLON", "PRINT", "ID", "LBRACKET", "INT_LITERAL",
+        "RBRACKET", "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "ID",
+        "LBRACKET", "INT_LITERAL", "RBRACKET", "SEMICOLON", "PRINT", "ID",
+        "SEMICOLON", "PRINT", "ID", "LBRACKET", "INT_LITERAL", "RBRACKET",
+        "SEMICOLON", "PRINTLN", "STR_LITER", "END", "SEMICOLON", "PAIR_TYPE",
+        "LPAREN", "CHAR_TYPE", "COMMA", "BOOL_TYPE", "RPAREN", "ID",
+        "EQUALS", "ID", "LBRACKET", "INT_LITERAL", "RBRACKET", "SEMICOLON",
+        "CHAR_TYPE", "ID", "EQUALS", "FIRST", "ID", "SEMICOLON", "BOOL_TYPE",
+        "ID", "EQUALS", "SECOND", "ID", "SEMICOLON", "PAIR_TYPE", "LPAREN",
+        "CHAR_TYPE", "COMMA", "BOOL_TYPE", "RPAREN", "ID", "EQUALS", "ID",
+        "LBRACKET", "INT_LITERAL", "RBRACKET", "SEMICOLON", "CHAR_TYPE",
+        "ID", "EQUALS", "FIRST", "ID", "SEMICOLON", "BOOL_TYPE", "ID",
+        "EQUALS", "SECOND", "ID", "SEMICOLON", "PRINT", "STR_LITER",
+        "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "STR_LITER",
+        "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "ID", "SEMICOLON",
+        "PRINT", "ID", "SEMICOLON", "PRINT", "STR_LITER", "SEMICOLON",
+        "PRINT", "ID", "SEMICOLON", "PRINT", "STR_LITER", "SEMICOLON",
+        "PRINT", "ID", "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT",
+        "ID", "SEMICOLON", "PRINTLN", "STR_LITER", "END", "SEMICOLON",
+        "INT_TYPE", "ID", "EQUALS", "FIRST", "ID", "SEMICOLON", "INT_TYPE",
+        "ID", "EQUALS", "SECOND", "ID", "SEMICOLON", "PRINT", "ID",
+        "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINTLN", "ID", "END",
+        "SEMICOLON", "STRING_TYPE", "ID", "EQUALS", "ID", "LBRACKET",
+        "INT_LITERAL", "RBRACKET", "SEMICOLON", "STRING_TYPE", "ID",
+        "EQUALS", "ID", "LBRACKET", "INT_LITERAL", "RBRACKET", "SEMICOLON",
+        "STRING_TYPE", "ID", "EQUALS", "ID", "LBRACKET", "INT_LITERAL",
+        "RBRACKET", "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "ID",
+        "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "ID", "SEMICOLON",
+        "PRINTLN", "ID", "END", "SEMICOLON", "PRINT", "ID", "LBRACKET",
+        "INT_LITERAL", "RBRACKET", "SEMICOLON", "PRINT", "ID", "SEMICOLON",
+        "PRINT", "ID", "LBRACKET", "INT_LITERAL", "RBRACKET", "SEMICOLON",
+        "PRINT", "ID", "SEMICOLON", "PRINTLN", "ID", "LBRACKET",
+        "INT_LITERAL", "RBRACKET", "END", "SEMICOLON", "PRINTLN", "ID",
+        "END", "SEMICOLON", "INT_TYPE", "ID", "EQUALS", "ID", "LBRACKET",
+        "INT_LITERAL", "RBRACKET", "SEMICOLON", "INT_TYPE", "ID", "EQUALS",
+        "ID", "LBRACKET", "INT_LITERAL", "RBRACKET", "SEMICOLON", "INT_TYPE",
+        "ID", "EQUALS", "ID", "LBRACKET", "INT_LITERAL", "RBRACKET",
+        "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "ID", "SEMICOLON",
+        "PRINT", "ID", "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINTLN",
+        "ID", "END", "SEMICOLON", "PRINTLN", "ID", "END", "SEMICOLON",
+        "PRINTLN", "ID", "END", "SEMICOLON", "PRINTLN", "ID", "END",
+        "SEMICOLON", "PRINTLN", "ID", "END", "EOF")
+    )
+
+    (files zip expectedTokens).map { case (file, tokens) =>
+      assert(new LexerParserTemplate(file).getLexerResult === tokens)
+    }
+
+  }
+
 
 
 
