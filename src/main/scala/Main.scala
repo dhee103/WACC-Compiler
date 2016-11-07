@@ -7,7 +7,7 @@ object Main {
 
   def main(args : Array[String]): Unit = {
 
-    var filename = "wacc_examples/valid/expressions/boolCalc.wacc"
+    var filename = "wacc_examples/valid/if/if1.wacc"
 
     var waccLex = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
 
@@ -30,17 +30,18 @@ object Main {
 
     println("==================================================")
 
-    buildTree(tree)
+    buildTree(tree, 0)
 
   }
 
-  def buildTree(currentTree: org.antlr.v4.runtime.tree.ParseTree): Unit = {
+  def buildTree(currentTree: org.antlr.v4.runtime.tree.ParseTree, count: Int): Unit = {
 
     println(currentTree)
 
     for(i <- 0 to currentTree.getChildCount() - 1){
+      print("\t" * count)
       print("child " + (i + 1) + " is ")
-      buildTree(currentTree.getChild(i))
+      buildTree(currentTree.getChild(i), count + 1)
 
 
     }
