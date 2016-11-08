@@ -71,7 +71,7 @@ expr: int_liter
     | ident
     | array_elem
     | unary_oper expr
-    | expr (MULIPLY | DIVIDE | MOD) expr
+    | expr (MULTIPLY | DIVIDE | MOD) expr
     | expr (PLUS) expr
     | expr (GREATER_THAN | GREATER_EQUAL | LESS_THAN | LESS_EQUAL) expr
     | expr (DOUBLE_EQUAL | NOT_EQUAL) expr
