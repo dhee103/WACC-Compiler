@@ -817,103 +817,43 @@ class MainTest extends FlatSpec with Matchers {
 
     assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
   }
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  ////  The below tests are all failing tests and are more specialised
-  ////  failing test
-  //  "lexing 'beginning'" should "give us the token ID not BEGIN" in {
-  //    val file = synatxErr + "basic/beginning.wacc"
-  //    val expectedTokens: Array[String] = Array("ID", "SKIP_", "SEMICOLON",
-  //      "SKIP_", "END","EOF")
-  //    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
-  //  }
-  //
-  //  //failing test
-  //  //TODO: find out why this isn't throwing an error
-  //  "lexing '1begin'" should "throw error" in {
-  //    val file = synatxErr + "statements/startWithNumberTest.wacc"
-  //    val expectedTokens: Array[String] = Array("BEGIN", "SKIP_", "END","EOF")
-  //    println(new LexerParserTemplate(file).getLexerResult.mkString(" "))
-  //    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
-  //    try {
-  //      new LexerParserTemplate(file).getLexerResult === expectedTokens
-  //      fail("This test should fail")
-  //    } catch {
-  //      case _: Throwable => succeed
-  //    }
-  //  }
-  //
-  //
-  ////
-  //////  failing test
-  //  "lexing 'Begin' with an uppercase" should "give the token ID not BEGIN"
-  // in {
-  //    val file = synatxErr + "basic/Begin.wacc"
-  //    val expectedTokens: Array[String] = Array("ID", "SKIP_", "END","EOF")
-  //
-  //    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
-  //  }
-  ////
-  //////  failing test
-  //  "lexing multiple begins" should "give us an error (exit 100)" in {
-  //    val file = synatxErr + "basic/multipleBegins(noComms).wacc"
-  //    val expectedTokens: Array[String] = Array("BEGIN", "SKIP_", "END",
-  // "BEGIN",
-  //      "SKIP_", "END", "EOF")
-  //
-  //    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
-  //  }
-  //
-  //
-  //////  failing test
-  ////  "lexing a bad comment" should "give us an error (exit 100)" in {
-  ////// TODO: add function to prepend syntaxErr to all files
-  ////    val files = Array(synatxErr + "basic/badComment.wacc", synatxErr +
-  ////      "basic/badComment2")
-  ////    val expectedTokens: Array[Array[String]] = Array(Array(""), Array() )
-  ////
-  ////    (files zip expectedTokens).map{ case (file, tokens) =>
-  ////      assert(new LexerParserTemplate(file).getLexerResult === tokens)}
-  ////  }
-  //
-  ////  "this" should "work" in {
-  ////    val waccLex = new WaccLexer(new org.antlr.v4.runtime
-  // .ANTLRFileStream(valid + "sequence/basicSeq(noComms).wacc"))
-  ////
-  ////    // Get a list of matched tokens
-  ////    val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLex)
-  ////
-  ////    val tokenIDs : Array[String] =  waccLex.getRuleNames
-  ////
-  ////    tokens.fill()
-  ////
-  ////    println(tokens.getTokens)
-  ////
-  ////    var count = 1
-  ////    for (i <- tokenIDs) {
-  ////      println(i, count)
-  ////      count += 1
-  ////    }
-  ////  }
+
+
+//    failing tests
+  "lexing 'beginning'" should "give us the token ID not BEGIN" in {
+    val file = synatxErr + "basic/beginning.wacc"
+    val expectedTokens: Array[String] = Array("ID", "SKIP_", "SEMICOLON",
+      "SKIP_", "END", "EOF")
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+
+  "lexing '1begin'" should "give us the token INT_LITERAL as well as BEGIN" in {
+    val file = synatxErr + "statements/startWithNumberTest.wacc"
+    val expectedTokens: Array[String] = Array("INT_LITERAL", "BEGIN", "SKIP_",
+      "END", "EOF")
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+
+  "lexing 'Begin' with an uppercase" should "give the token ID not BEGIN" in {
+    val file = synatxErr + "basic/Begin.wacc"
+    val expectedTokens: Array[String] = Array("ID", "SKIP_", "END", "EOF")
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+//    "lexing a bad comment" should "give us an error (exit 100)" in {
+//  // TODO: add function to prepend syntaxErr to all files
+//      val files = Array(
+//        synatxErr + "basic/badComment.wacc",
+//        synatxErr + "basic/badComment2")
+//
+//      val expectedTokens: Array[Array[String]] = Array(Array(""), Array() )
+//
+//      (files zip expectedTokens).map{ case (file, tokens) =>
+//        assert(new LexerParserTemplate(file).getLexerResult === tokens)}
+//    }
+
+
 
 }
