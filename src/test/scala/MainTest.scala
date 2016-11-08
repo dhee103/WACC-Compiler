@@ -559,6 +559,61 @@ class MainTest extends FlatSpec with Matchers {
 
   }
 
+  "pairs" should "work as intended" in {
+    val files = Array(
+      valid + "pairs/checkRefPair.wacc",
+      valid + "pairs/linkedList.wacc"
+    )
+
+    val expectedTokens: Array[Array[String]] = Array(
+      Array("BEGIN", "PAIR_TYPE", "LPAREN", "INT_TYPE", "COMMA", "CHAR_TYPE",
+        "RPAREN", "ID", "EQUAL", "NEWPAIR", "LPAREN", "INT_LITERAL", "COMMA",
+        "CHAR_LITERAL", "RPAREN", "SEMICOLON", "PAIR_TYPE", "LPAREN",
+        "INT_TYPE", "COMMA", "CHAR_TYPE", "RPAREN", "ID", "EQUAL", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "DOUBLE_EQUAL", "ID", "SEMICOLON",
+        "INT_TYPE", "ID", "EQUAL", "FIRST", "ID", "SEMICOLON", "INT_TYPE",
+        "ID", "EQUAL", "FIRST", "ID", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "PRINTLN", "ID",
+        "DOUBLE_EQUAL", "ID", "SEMICOLON", "CHAR_TYPE", "ID", "EQUAL",
+        "SECOND", "ID", "SEMICOLON", "CHAR_TYPE", "ID", "EQUAL", "SECOND",
+        "ID", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "PRINTLN", "ID", "DOUBLE_EQUAL", "ID", "SEMICOLON",
+        "FIRST", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "SECOND", "ID",
+        "EQUAL", "CHAR_LITERAL", "SEMICOLON", "INT_TYPE", "ID", "EQUAL",
+        "FIRST", "ID", "SEMICOLON", "CHAR_TYPE", "ID", "EQUAL", "SECOND",
+        "ID", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "ID", "EQUAL", "NULL", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "PRINTLN", "NULL", "SEMICOLON", "FREE", "ID",
+        "SEMICOLON", "FREE", "ID", "END", "EOF"),
+
+      Array("BEGIN", "PAIR_TYPE", "LPAREN", "INT_TYPE", "COMMA", "PAIR_TYPE",
+        "RPAREN", "ID", "EQUAL", "NEWPAIR", "LPAREN", "INT_LITERAL", "COMMA",
+        "NULL", "RPAREN", "SEMICOLON", "PAIR_TYPE", "LPAREN", "INT_TYPE",
+        "COMMA", "PAIR_TYPE", "RPAREN", "ID", "EQUAL", "NEWPAIR", "LPAREN",
+        "INT_LITERAL", "COMMA", "ID", "RPAREN", "SEMICOLON", "PAIR_TYPE",
+        "LPAREN", "INT_TYPE", "COMMA", "PAIR_TYPE", "RPAREN", "ID", "EQUAL",
+        "NEWPAIR", "LPAREN", "INT_LITERAL", "COMMA", "ID", "RPAREN",
+        "SEMICOLON", "PAIR_TYPE", "LPAREN", "INT_TYPE", "COMMA", "PAIR_TYPE",
+        "RPAREN", "ID", "EQUAL", "NEWPAIR", "LPAREN", "INT_LITERAL", "COMMA",
+        "ID", "RPAREN", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+        "PAIR_TYPE", "LPAREN", "INT_TYPE", "COMMA", "PAIR_TYPE", "RPAREN",
+        "ID", "EQUAL", "ID", "SEMICOLON", "PAIR_TYPE", "LPAREN", "INT_TYPE",
+        "COMMA", "PAIR_TYPE", "RPAREN", "ID", "EQUAL", "SECOND", "ID",
+        "SEMICOLON", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
+        "WHILE", "ID", "NOT_EQUAL", "NULL", "DO", "ID", "EQUAL", "FIRST",
+        "ID", "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT",
+        "STR_LITERAL", "SEMICOLON", "ID", "EQUAL", "ID", "SEMICOLON", "ID",
+        "EQUAL", "SECOND", "ID", "DONE", "SEMICOLON", "ID", "EQUAL", "FIRST",
+        "ID", "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINTLN",
+        "STR_LITERAL", "END", "EOF")
+    )
+
+    (files zip expectedTokens).map { case (file, tokens) =>
+      assert(new LexerParserTemplate(file).getLexerResult === tokens)
+    }
+
+  }
 
 
 
