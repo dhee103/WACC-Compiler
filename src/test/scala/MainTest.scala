@@ -10,6 +10,7 @@ class MainTest extends FlatSpec with Matchers {
   //    str = prep + str
   //  }
 
+  //  TODO: Add better test names
 
   //  valid tests
 
@@ -615,7 +616,97 @@ class MainTest extends FlatSpec with Matchers {
 
   }
 
+  "IO" should "work as intended" in {
+    val files = Array(
+      valid + "IO/IOLoop.wacc",
+      valid + "IO/print/multiplePrints.wacc",
+      valid + "IO/read/echoBigNegInt.wacc"
+    )
 
+    val expectedTokens: Array[Array[String]] = Array(
+      Array("BEGIN", "CHAR_TYPE", "ID", "EQUAL", "CHAR_LITERAL", "SEMICOLON",
+        "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "WHILE", "ID",
+        "NOT_EQUAL", "CHAR_LITERAL", "DO", "PRINT", "STR_LITERAL", "SEMICOLON",
+        "READ", "ID", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+        "PRINTLN", "ID", "SEMICOLON", "PRINTLN", "STR_LITERAL", "SEMICOLON",
+        "PRINTLN", "STR_LITERAL", "SEMICOLON", "READ", "ID", "DONE", "END",
+        "EOF"),
+
+      Array("BEGIN", "PRINTLN", "STR_LITERAL", "SEMICOLON", "PRINT",
+        "STR_LITERAL", "SEMICOLON", "PRINTLN", "TRUE_LITERAL", "SEMICOLON",
+        "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "CHAR_LITERAL",
+        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN",
+        "CHAR_LITERAL", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+        "PRINTLN", "INT_LITERAL", "SEMICOLON", "STRING_TYPE", "ID", "EQUAL",
+        "STR_LITERAL", "SEMICOLON", "STRING_TYPE", "ID", "EQUAL",
+        "STR_LITERAL", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+        "PRINTLN", "ID", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+        "PRINTLN", "ID", "SEMICOLON", "IF", "ID", "DOUBLE_EQUAL", "ID",
+        "THEN", "PRINTLN", "STR_LITERAL", "ELSE", "PRINTLN", "STR_LITERAL",
+        "FI", "SEMICOLON", "PRINTLN", "STR_LITERAL", "SEMICOLON", "ID",
+        "LBRACKET", "INT_LITERAL", "RBRACKET", "EQUAL", "CHAR_LITERAL",
+        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "ID",
+        "SEMICOLON", "IF", "ID", "DOUBLE_EQUAL", "ID", "THEN", "PRINTLN",
+        "STR_LITERAL", "ELSE", "PRINTLN", "STR_LITERAL", "FI", "END", "EOF"),
+
+      Array("BEGIN", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
+        "PRINTLN", "STR_LITERAL", "SEMICOLON",
+        "READ", "ID", "SEMICOLON",
+        "PRINTLN", "ID", "END", "EOF")
+    )
+
+    (files zip expectedTokens).map { case (file, tokens) =>
+      assert(new LexerParserTemplate(file).getLexerResult === tokens)
+    }
+
+  }
+
+//  "IO" should "work as intended" in {
+//    val files = Array(
+//      valid + "IO/IOLoop.wacc",
+//      valid + "IO/print/multiplePrints.wacc",
+//      valid + "IO/read/echoBigNegInt.wacc"
+//    )
+//
+//    val expectedTokens: Array[Array[String]] = Array(
+//      Array("BEGIN", "CHAR_TYPE", "ID", "EQUAL", "CHAR_LITERAL", "SEMICOLON",
+//        "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "WHILE", "ID",
+//        "NOT_EQUAL", "CHAR_LITERAL", "DO", "PRINT", "STR_LITERAL", "SEMICOLON",
+//        "READ", "ID", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+//        "PRINTLN", "ID", "SEMICOLON", "PRINTLN", "STR_LITERAL", "SEMICOLON",
+//        "PRINTLN", "STR_LITERAL", "SEMICOLON", "READ", "ID", "DONE", "END",
+//        "EOF"),
+//
+//      Array("BEGIN", "PRINTLN", "STR_LITERAL", "SEMICOLON", "PRINT",
+//        "STR_LITERAL", "SEMICOLON", "PRINTLN", "TRUE_LITERAL", "SEMICOLON",
+//        "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "CHAR_LITERAL",
+//        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN",
+//        "CHAR_LITERAL", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+//        "PRINTLN", "INT_LITERAL", "SEMICOLON", "STRING_TYPE", "ID", "EQUAL",
+//        "STR_LITERAL", "SEMICOLON", "STRING_TYPE", "ID", "EQUAL",
+//        "STR_LITERAL", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+//        "PRINTLN", "ID", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
+//        "PRINTLN", "ID", "SEMICOLON", "IF", "ID", "DOUBLE_EQUAL", "ID",
+//        "THEN", "PRINTLN", "STR_LITERAL", "ELSE", "PRINTLN", "STR_LITERAL",
+//        "FI", "SEMICOLON", "PRINTLN", "STR_LITERAL", "SEMICOLON", "ID",
+//        "LBRACKET", "INT_LITERAL", "RBRACKET", "EQUAL", "CHAR_LITERAL",
+//        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "ID",
+//        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "ID",
+//        "SEMICOLON", "IF", "ID", "DOUBLE_EQUAL", "ID", "THEN", "PRINTLN",
+//        "STR_LITERAL", "ELSE", "PRINTLN", "STR_LITERAL", "FI", "END", "EOF"),
+//
+//      Array("BEGIN", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
+//        "PRINTLN", "STR_LITERAL", "SEMICOLON",
+//        "READ", "ID", "SEMICOLON",
+//        "PRINTLN", "ID", "END", "EOF")
+//    )
+//
+//    (files zip expectedTokens).map { case (file, tokens) =>
+//      assert(new LexerParserTemplate(file).getLexerResult === tokens)
+//    }
+//
+//  }
 
   //  ////  passing test
   //  "lexing with no semicolons" should "work" in {
