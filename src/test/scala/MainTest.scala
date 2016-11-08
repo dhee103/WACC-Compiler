@@ -148,7 +148,6 @@ class MainTest extends FlatSpec with Matchers {
 
   }
 
-  //  TODO: change equals to equal OR change rest of equal -> equals
   "if programs" should "work as intended" in {
     val file = valid + "if/ifTest.wacc"
 
@@ -279,6 +278,22 @@ class MainTest extends FlatSpec with Matchers {
     }
 
   }
+
+//  "if programs" should "work as intended" in {
+//    val file = valid + "if/ifTest.wacc"
+//
+//    val expectedTokens: Array[String] = Array(
+//      "BEGIN", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
+//      "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "BOOL_TYPE", "ID",
+//      "EQUAL", "TRUE_LITERAL", "SEMICOLON", "BOOL_TYPE", "ID", "EQUAL",
+//      "FALSE_LITERAL", "SEMICOLON", "IF", "ID", "LOGICAL_AND", "ID",
+//      "LOGICAL_OR", "ID", "GREATER_EQUAL", "ID", "LOGICAL_OR", "ID",
+//      "DOUBLE_EQUAL", "INT_LITERAL", "THEN", "PRINTLN", "ID", "ELSE", "PRINTLN",
+//      "ID", "FI", "END", "EOF")
+//
+//    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+//
+//  }
 
 
 
