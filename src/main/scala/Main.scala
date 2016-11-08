@@ -7,18 +7,18 @@ object Main {
 
   def main(args : Array[String]): Unit = {
 
-    var filename = "wacc_examples/valid/if/if1.wacc"
+    val filename = "wacc_examples/valid/if/if1.wacc"
 
-    var waccLex = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
+    val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
 
     // Get a list of matched tokens
-    var tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLex)
+    val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLexer)
 
-    val tokenIDs : Array[String] =  waccLex.getRuleNames()
+    val tokenIDs : Array[String] =  waccLexer.getRuleNames()
 
-    var waccParse = new WaccParser(tokens)
+    val waccParser = new WaccParser(tokens)
 
-    var tree = waccParse.prog();
+    val tree = waccParser.prog();
 
     for (i <- 0 until tokens.size()) {
       println("token " + i  + " is " + tokens.get(i).getText() + " of type " + mapToId(tokens.get(i).getType(), tokenIDs))
@@ -26,11 +26,17 @@ object Main {
 
     println("==================================================")
 
-    println(tree.toStringTree(waccParse));
+    println(tree.toStringTree(waccParser));
 
     println("==================================================")
 
-    buildTree(tree, 0)
+    val visitor = new WaccParserDummyVisitor()
+
+    visitor.visit(tree)
+
+
+
+
 
   }
 
