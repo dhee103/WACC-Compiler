@@ -651,8 +651,7 @@ class MainTest extends FlatSpec with Matchers {
         "STR_LITERAL", "ELSE", "PRINTLN", "STR_LITERAL", "FI", "END", "EOF"),
 
       Array("BEGIN", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
-        "PRINTLN", "STR_LITERAL", "SEMICOLON",
-        "READ", "ID", "SEMICOLON",
+        "PRINTLN", "STR_LITERAL", "SEMICOLON", "READ", "ID", "SEMICOLON",
         "PRINTLN", "ID", "END", "EOF")
     )
 
@@ -662,51 +661,95 @@ class MainTest extends FlatSpec with Matchers {
 
   }
 
-//  "IO" should "work as intended" in {
-//    val files = Array(
-//      valid + "IO/IOLoop.wacc",
-//      valid + "IO/print/multiplePrints.wacc",
-//      valid + "IO/read/echoBigNegInt.wacc"
-//    )
-//
-//    val expectedTokens: Array[Array[String]] = Array(
-//      Array("BEGIN", "CHAR_TYPE", "ID", "EQUAL", "CHAR_LITERAL", "SEMICOLON",
-//        "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "WHILE", "ID",
-//        "NOT_EQUAL", "CHAR_LITERAL", "DO", "PRINT", "STR_LITERAL", "SEMICOLON",
-//        "READ", "ID", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
-//        "PRINTLN", "ID", "SEMICOLON", "PRINTLN", "STR_LITERAL", "SEMICOLON",
-//        "PRINTLN", "STR_LITERAL", "SEMICOLON", "READ", "ID", "DONE", "END",
-//        "EOF"),
-//
-//      Array("BEGIN", "PRINTLN", "STR_LITERAL", "SEMICOLON", "PRINT",
-//        "STR_LITERAL", "SEMICOLON", "PRINTLN", "TRUE_LITERAL", "SEMICOLON",
-//        "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "CHAR_LITERAL",
-//        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN",
-//        "CHAR_LITERAL", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
-//        "PRINTLN", "INT_LITERAL", "SEMICOLON", "STRING_TYPE", "ID", "EQUAL",
-//        "STR_LITERAL", "SEMICOLON", "STRING_TYPE", "ID", "EQUAL",
-//        "STR_LITERAL", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
-//        "PRINTLN", "ID", "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON",
-//        "PRINTLN", "ID", "SEMICOLON", "IF", "ID", "DOUBLE_EQUAL", "ID",
-//        "THEN", "PRINTLN", "STR_LITERAL", "ELSE", "PRINTLN", "STR_LITERAL",
-//        "FI", "SEMICOLON", "PRINTLN", "STR_LITERAL", "SEMICOLON", "ID",
-//        "LBRACKET", "INT_LITERAL", "RBRACKET", "EQUAL", "CHAR_LITERAL",
-//        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "ID",
-//        "SEMICOLON", "PRINT", "STR_LITERAL", "SEMICOLON", "PRINTLN", "ID",
-//        "SEMICOLON", "IF", "ID", "DOUBLE_EQUAL", "ID", "THEN", "PRINTLN",
-//        "STR_LITERAL", "ELSE", "PRINTLN", "STR_LITERAL", "FI", "END", "EOF"),
-//
-//      Array("BEGIN", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
-//        "PRINTLN", "STR_LITERAL", "SEMICOLON",
-//        "READ", "ID", "SEMICOLON",
-//        "PRINTLN", "ID", "END", "EOF")
-//    )
-//
-//    (files zip expectedTokens).map { case (file, tokens) =>
-//      assert(new LexerParserTemplate(file).getLexerResult === tokens)
-//    }
-//
-//  }
+  "whiles" should "work as intended" in {
+    val files = Array(
+      valid + "while/fibonacciFullIt.wacc",
+      valid + "while/rmStyleAddIO.wacc"
+    )
+
+    val expectedTokens: Array[Array[String]] = Array(
+      Array("BEGIN", "PRINTLN", "STR_LITERAL", "SEMICOLON", "PRINT",
+        "STR_LITERAL", "SEMICOLON", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL",
+        "SEMICOLON", "READ", "ID", "SEMICOLON", "PRINT", "STR_LITERAL",
+        "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "PRINT", "STR_LITERAL",
+        "SEMICOLON", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
+        "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "INT_TYPE",
+        "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "WHILE", "ID",
+        "GREATER_THAN", "INT_LITERAL", "DO", "ID", "EQUAL", "ID",
+        "SEMICOLON", "ID", "EQUAL", "ID", "SEMICOLON", "ID", "EQUAL", "ID",
+        "PLUS", "ID", "SEMICOLON", "ID", "EQUAL", "ID", "MINUS",
+        "INT_LITERAL", "DONE", "SEMICOLON", "PRINTLN", "ID", "END", "EOF"),
+
+      Array("BEGIN", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
+        "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "PRINT",
+        "STR_LITERAL", "SEMICOLON", "READ", "ID", "SEMICOLON", "PRINT",
+        "STR_LITERAL", "SEMICOLON", "READ", "ID", "SEMICOLON", "PRINT",
+        "STR_LITERAL", "SEMICOLON", "PRINTLN", "ID", "SEMICOLON", "WHILE",
+        "ID", "GREATER_THAN", "INT_LITERAL", "DO", "PRINT", "STR_LITERAL",
+        "SEMICOLON", "ID", "EQUAL", "ID", "PLUS", "INT_LITERAL", "SEMICOLON",
+        "ID", "EQUAL", "ID", "MINUS", "INT_LITERAL", "DONE", "SEMICOLON",
+        "PRINTLN", "STR_LITERAL", "SEMICOLON", "PRINT", "STR_LITERAL",
+        "SEMICOLON", "PRINTLN", "ID", "END", "EOF")
+    )
+
+    (files zip expectedTokens).map { case (file, tokens) =>
+      assert(new LexerParserTemplate(file).getLexerResult === tokens)
+    }
+
+  }
+
+  "functions" should "work as intended" in {
+    val files = Array(
+      valid + "function/simple_functions/asciiTable.wacc",
+      valid + "function/nested_functions/fibonacciRecursive.wacc"
+    )
+
+    val expectedTokens: Array[Array[String]] = Array(
+      Array("BEGIN", "BOOL_TYPE", "ID", "LPAREN", "INT_TYPE", "ID", "RPAREN",
+        "IS", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "WHILE",
+        "ID", "LESS_THAN", "ID", "DO", "PRINT", "STR_LITERAL", "SEMICOLON",
+        "ID", "EQUAL", "ID", "PLUS", "INT_LITERAL", "DONE", "SEMICOLON",
+        "PRINTLN", "STR_LITERAL", "SEMICOLON", "RETURN", "TRUE_LITERAL",
+        "END", "BOOL_TYPE", "ID", "LPAREN", "INT_TYPE", "ID", "RPAREN", "IS",
+        "PRINT", "STR_LITERAL", "SEMICOLON", "IF", "ID", "LESS_THAN",
+        "INT_LITERAL", "THEN", "PRINT", "STR_LITERAL", "ELSE", "SKIP_", "FI",
+        "SEMICOLON", "PRINT", "ID", "SEMICOLON", "PRINT", "STR_LITERAL",
+        "SEMICOLON", "PRINT", "CHR", "ID", "SEMICOLON", "PRINTLN",
+        "STR_LITERAL", "SEMICOLON", "RETURN", "TRUE_LITERAL", "END",
+        "PRINTLN", "STR_LITERAL", "SEMICOLON", "BOOL_TYPE", "ID", "EQUAL",
+        "CALL", "ID", "LPAREN", "INT_LITERAL", "RPAREN", "SEMICOLON",
+        "INT_TYPE", "ID", "EQUAL", "ORD", "CHAR_LITERAL", "SEMICOLON",
+        "WHILE", "ID", "LESS_THAN", "INT_LITERAL", "DO", "ID", "EQUAL",
+        "CALL", "ID", "LPAREN", "ID", "RPAREN", "SEMICOLON", "ID", "EQUAL",
+        "ID", "PLUS", "INT_LITERAL", "DONE", "SEMICOLON", "ID", "EQUAL",
+        "CALL", "ID", "LPAREN", "INT_LITERAL", "RPAREN", "END", "EOF"),
+
+      Array("BEGIN", "INT_TYPE", "ID", "LPAREN", "INT_TYPE", "ID", "COMMA",
+        "BOOL_TYPE", "ID", "RPAREN", "IS", "IF", "ID", "LESS_EQUAL",
+        "INT_LITERAL", "THEN", "RETURN", "ID", "ELSE", "SKIP_", "FI",
+        "SEMICOLON", "INT_TYPE", "ID", "EQUAL", "CALL", "ID", "LPAREN", "ID",
+        "MINUS", "INT_LITERAL", "COMMA", "ID", "RPAREN", "SEMICOLON", "IF",
+        "ID", "THEN", "PRINT", "ID", "SEMICOLON", "PRINT", "STR_LITERAL",
+        "ELSE", "SKIP_", "FI", "SEMICOLON", "INT_TYPE", "ID", "EQUAL",
+        "CALL", "ID", "LPAREN", "ID", "MINUS", "INT_LITERAL", "COMMA",
+        "FALSE_LITERAL", "RPAREN", "SEMICOLON", "RETURN", "ID", "PLUS", "ID",
+        "END", "PRINTLN", "STR_LITERAL", "SEMICOLON", "PRINT", "STR_LITERAL",
+        "SEMICOLON", "INT_TYPE", "ID", "EQUAL", "CALL", "ID", "LPAREN",
+        "INT_LITERAL", "COMMA", "TRUE_LITERAL", "RPAREN", "SEMICOLON",
+        "PRINT", "ID", "SEMICOLON", "PRINTLN", "STR_LITERAL", "END", "EOF")
+    )
+
+    (files zip expectedTokens).map { case (file, tokens) =>
+      assert(new LexerParserTemplate(file).getLexerResult === tokens)
+    }
+
+  }
+
+  "advanced functions" should "work as intended" in {
+    val files = Array
+  }
+
+
 
   //  ////  passing test
   //  "lexing with no semicolons" should "work" in {
