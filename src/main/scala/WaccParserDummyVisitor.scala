@@ -1,3 +1,4 @@
+
 class WaccParserDummyVisitor extends WaccParserBaseVisitor[Unit] {
 
   override def visitProg(ctx: WaccParser.ProgContext): Unit = {
@@ -10,18 +11,34 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[Unit] {
 
     println("Visited stat")
     println(ctx.getText())
-    println()
-
+    println("Visiting children of a stat")
     visitChildren(ctx)
 
   }
 
-  override def visitProg(ctx: WaccParser.ProgContext): Unit = {
+  override def visitParam(ctx: WaccParser.ParamContext): Unit = {
 
-    println("beans")
+    println("Visited param")
+    println(ctx.getText())
+    println("Visiting children of a param")
     visitChildren(ctx)
-    println("on toast")
+
+
 
   }
+
+  override def visitExpr(ctx: WaccParser.ExprContext): Unit = {
+
+    println("Visited Expr")
+    println(ctx.getText())
+    visitChildren(ctx)
+
+
+
+  }
+
+
+
+
 
 }
