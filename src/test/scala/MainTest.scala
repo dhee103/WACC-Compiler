@@ -12,6 +12,7 @@ class MainTest extends FlatSpec with Matchers {
 
   //  TODO: Add better test names
 
+
   //  valid tests
 
   "lexing exit statements" should "work" in {
@@ -804,7 +805,7 @@ class MainTest extends FlatSpec with Matchers {
   "lexing with no semicolons" should "work" in {
     val file = synatxErr + "statements/noSemicolons.wacc"
     val expectedTokens: Array[String]
-      = Array("BEGIN", "SKIP_", "SKIP_", "END", "EOF")
+    = Array("BEGIN", "SKIP_", "SKIP_", "END", "EOF")
 
     assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
   }
@@ -812,48 +813,74 @@ class MainTest extends FlatSpec with Matchers {
   "lexing with all semicolons" should "work" in {
     val file = synatxErr + "statements/allSemicolons.wacc"
     val expectedTokens: Array[String]
-      = Array("BEGIN", "SEMICOLON", "SKIP_", "SEMICOLON", "SKIP_", "SEMICOLON",
-        "END", "SEMICOLON", "EOF")
+    = Array("BEGIN", "SEMICOLON", "SKIP_", "SEMICOLON", "SKIP_", "SEMICOLON",
+      "END", "SEMICOLON", "EOF")
 
     assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
   }
 
 
-//    failing tests
+  //    failing tests
   "lexing 'beginning'" should "give us the token ID not BEGIN" in {
     val file = synatxErr + "basic/beginning.wacc"
+
     val expectedTokens: Array[String] = Array("ID", "SKIP_", "SEMICOLON",
       "SKIP_", "END", "EOF")
-    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
-  }
 
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+
+  }
 
   "lexing '1begin'" should "give us the token INT_LITERAL as well as BEGIN" in {
     val file = synatxErr + "statements/startWithNumberTest.wacc"
+
     val expectedTokens: Array[String] = Array("INT_LITERAL", "BEGIN", "SKIP_",
       "END", "EOF")
+
     assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+
   }
 
+  "lexing 'beg1n'" should "give us the token ID" in {
+    val file = synatxErr + "statements/beg1n.wacc"
+
+    val expectedTokens: Array[String] = Array("ID", "SKIP_",
+      "END", "EOF")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+
+  }
 
   "lexing 'Begin' with an uppercase" should "give the token ID not BEGIN" in {
     val file = synatxErr + "basic/Begin.wacc"
+
     val expectedTokens: Array[String] = Array("ID", "SKIP_", "END", "EOF")
+
     assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+
   }
 
-//    "lexing a bad comment" should "give us an error (exit 100)" in {
-//  // TODO: add function to prepend syntaxErr to all files
-//      val files = Array(
-//        synatxErr + "basic/badComment.wacc",
-//        synatxErr + "basic/badComment2")
-//
-//      val expectedTokens: Array[Array[String]] = Array(Array(""), Array() )
-//
-//      (files zip expectedTokens).map{ case (file, tokens) =>
-//        assert(new LexerParserTemplate(file).getLexerResult === tokens)}
-//    }
+  "lexing a bad comments" should "match several ID tokens" in {
+    val files = Array(
+      synatxErr + "basic/badComment.wacc",
+      synatxErr + "basic/badComment2.wacc")
 
+    val expectedTokens: Array[Array[String]] = Array(
+      Array("BEGIN", "ID", "COMMA", "ID", "IS", "ID", "ID", "ID", "ID", "ID",
+        "PRINT", "STR_LITERAL", "END", "EOF"),
+
+      Array("BEGIN", "INT_TYPE", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON",
+        "ID", "ID", "ID", "ID", "MINUS", "ID", "ID", "ID", "ID",
+        "CHAR_LITERAL", "ID", "EQUAL", "INT_LITERAL", "SEMICOLON", "EXIT",
+        "ID", "END", "EOF"))
+
+    (files zip expectedTokens).map { case (file, tokens) =>
+      assert(new LexerParserTemplate(file).getLexerResult === tokens)
+    }
+
+  }
+
+  
 
 
 }
