@@ -1,0 +1,40 @@
+# evaluating moderately complex integer  expression
+
+# Output:
+# Correct
+
+# Program:
+
+begin
+  int a = ( 10 * 1 + 2 * 15 );
+  if a == 40 then
+    println "Correct"
+  else
+    println "Wrong"
+  fi;
+
+  bool b = ! ( ( true && false) || (true && false) );
+  if b == true then
+    println "Correct"
+  else
+    println "Wrong"
+  fi;
+
+  int x = 5 ;
+  int y = 3 ;
+  println x / y;
+  println x * y;
+  println x + y;
+  println x - y;
+  println x % y;
+
+  int n = -5;
+  int m = -3;
+
+  println x / y;
+  println x * y;
+  println x + y;
+  println x - y;
+  println x % y
+
+end

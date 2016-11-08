@@ -20,4 +20,3 @@ begin
   println c1 > c2 ;
   println c1 >= c2
 end
-

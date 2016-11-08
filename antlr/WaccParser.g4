@@ -14,8 +14,8 @@ param_list: param (COMMA param)* ;
 param: type ident ;
 
 stat: SKIP_
-    | type ident EQUALS assign_rhs
-    | assign_lhs EQUALS assign_rhs
+    | type ident EQUAL assign_rhs
+    | assign_lhs EQUAL assign_rhs
     | FREE expr
     | RETURN expr
     | EXIT expr
@@ -71,7 +71,11 @@ expr: int_liter
     | ident
     | array_elem
     | unary_oper expr
-    | expr binary_oper expr
+    | expr (MULTIPLY | DIVIDE | MOD) expr
+    | expr (PLUS) expr
+    | expr (GREATER_THAN | GREATER_EQUAL | LESS_THAN | LESS_EQUAL) expr
+    | expr (DOUBLE_EQUAL | NOT_EQUAL) expr
+    | expr (LOGICAL_AND | LOGICAL_OR) expr
     | LPAREN expr RPAREN
     ;
 
@@ -81,20 +85,6 @@ unary_oper: EXCLAMATION
           | ORD
           | CHR
           ;
-
-binary_oper: MULTIPLY
-           | DIVIDE
-           | MOD
-           | PLUS
-           | GREATER_THAN
-           | GREATER_EQUAL
-           | LESS_THAN
-           | LESS_EQUAL
-           | DOUBLE_EQUAL
-           | NOT_EQUAL
-           | LOGICAL_AND
-           | LOGICAL_OR
-           ;
 
 ident: ID ;
 
@@ -106,9 +96,9 @@ bool_liter: TRUE_LITERAL
           | FALSE_LITERAL
           ;
 
-char_liter: CHAR_LITER ;
+char_liter: CHAR_LITERAL ;
 
-str_liter: STR_LITER ;
+str_liter: STR_LITERAL ;
 
 array_liter: LBRACKET ((expr) (COMMA expr)*)? RBRACKET ;
 

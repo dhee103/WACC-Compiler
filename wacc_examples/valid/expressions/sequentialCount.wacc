@@ -36,5 +36,5 @@ begin
   i = i + 1 ;
   println i ;
   i = i + 1 ;
-  println i 
+  println i
 end

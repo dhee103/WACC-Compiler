@@ -1,0 +1,14 @@
+# Combines functionality of all the 'if' programs to test in one place
+
+# Output:
+# 13
+
+# Program:
+
+begin
+  int a = 13;
+  int b = 27;
+  bool c = true;
+  bool d = false;
+  if c&&d||a>=b||a==13then println a else println b fi
+end

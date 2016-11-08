@@ -1,14 +1,18 @@
 # moderate complexity array manipulations
+# incorporated arrayEmpty, arrayLength, arrayLookup, printRef
+# also includes arrayPrint, arraySimple
 
 # Output:
 # #addrs# = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+# 0
+# #addrs#
 
 # Program:
 
 begin
   int[] a = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ;
   int i = 0 ;
-  while i < 10 
+  while i < len a
   do
     a[i] = i ;
     i = i + 1
@@ -16,8 +20,8 @@ begin
   print a ;
   print " = {" ;
   i = 0 ;
-  while i < 10 
-  do 
+  while i < 10
+  do
     print a[i] ;
     if i < 9
     then
@@ -27,5 +31,8 @@ begin
     fi ;
     i = i + 1
   done ;
-  println "}"
+  println "}";
+  println a[0];
+  int[] b = [];
+  println b
 end
