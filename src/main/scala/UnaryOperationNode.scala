@@ -1,23 +1,25 @@
 trait UnaryOperationNode extends ExprNode {
 
-}
-
-class LogicalNotNode extends UnaryOperationNode {
+  val argument: ExprNode 
 
 }
 
-class NegativeNode extends UnaryOperationNode {
+class LogicalNotNode(val argument: ExprNode) extends UnaryOperationNode {
 
 }
 
-class LenNode extends UnaryOperationNode {
+class NegativeNode(val argument: ExprNode) extends UnaryOperationNode {
 
 }
 
-class OrdNode extends UnaryOperationNode {
+class LenNode(val argument: ExprNode) extends UnaryOperationNode {
 
 }
 
-class ChrNode extends UnaryOperationNode {
+class OrdNode(val argument: ExprNode) extends UnaryOperationNode {
+
+}
+
+class ChrNode(val argument: ExprNode) extends UnaryOperationNode {
 
 }

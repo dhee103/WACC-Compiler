@@ -6,54 +6,81 @@ class SkipStatNode extends StatNode {
 
 }
 
-class DeclarationNode extends StatNode {
+class DeclarationNode(val _variableType: TypeNode, val _identifier: IdentNode, val _rhs: AssignmentRightNode) extends StatNode {
+
+  val variableType: TypeNode = _variableType
+  val identifier: IdentNode = _identifier
+  val rhs: AssignmentRightNode = _rhs
 
 }
 
-class AssignmentNode extends StatNode {
+class AssignmentNode(val _lhs: AssignmentLeftNode, val _rhs: AssignmentRightNode) extends StatNode {
+
+  val lhs: AssignmentLeftNode = _lhs
+  val rhs: AssignmentRightNode = _rhs
 
 }
 
-class ReadNode extends StatNode {
+class ReadNode(val _writeTarget: AssignmentLeftNode) extends StatNode {
 
-
-}
-
-class FreeNode extends StatNode {
-
+  val writeTarget: AssignmentLeftNode = _writeTarget
 
 }
 
-class ReturnNode extends StatNode {
+class FreeNode(val _variable: ExprNode) extends StatNode {
 
-  private val
-
-}
-
-class ExitNode extends StatNode {
+  val variable: ExprNode = _variable
 
 }
 
-class PrintNode extends StatNode {
+class ReturnNode(val _returnValue: ExprNode) extends StatNode {
+
+  val returnValue: ExprNode = _returnValue
 
 }
 
-class PrintlnNode extends StatNode {
+class ExitNode(val _exitCode: ExprNode) extends StatNode {
+
+  val exitCode: ExprNode = _exitCode
 
 }
 
-class IfNode extends StatNode {
+class PrintNode(val _text: ExprNode) extends StatNode {
+
+  val text: ExprNode = _text
 
 }
 
-class WhileNode extends StatNode {
+class PrintlnNode(val _text: ExprNode) extends StatNode {
+
+  val text: ExprNode = _text
 
 }
 
-class NewBeginNode extends StatNode {
+class IfNode (val _condition: ExprNode, val _thenStat: StatNode, val _elseStat: StatNode) extends StatNode {
+
+  val condition: ExprNode = _condition
+  val thenStat: StatNode = _thenStat
+  val elseStat: StatNode = _elseStat
 
 }
 
-class SequenceNode extends StatNode {
+class WhileNode(val _condition: ExprNode, val _loopBody: StatNode) extends StatNode {
+
+  val condition: ExprNode = _condition
+  val loopBody: StatNode = _loopBody
+
+}
+
+class NewBeginNode(val _body: StatNode) extends StatNode {
+
+  val body: StatNode = _body
+
+}
+
+class SequenceNode(val _fstStat: StatNode, val _sndStat: StatNode) extends StatNode {
+
+  val fstStat: StatNode = _fstStat
+  val sndStat: StatNode = _sndStat
 
 }

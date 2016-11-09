@@ -2,22 +2,31 @@ trait ExprNode extends AssignmentRightNode {
 
 }
 
-class IntLiteralNode extends ExprNode {
+class IntLiteralNode(val _value: Int) extends ExprNode {
+
+  val value: Int = _value
 
 }
 
-class BoolLiteralNode extends ExprNode {
+class BoolLiteralNode(val _value: Boolean) extends ExprNode {
+
+  val value: Boolean = _value
 
 }
 
-class CharLiteralNode extends ExprNode {
+class CharLiteralNode(val _value: Char) extends ExprNode {
+
+  val value: Char = _value
 
 }
 
-class StringLiteralNode extends ExprNode {
+class StringLiteralNode(val _value: String) extends ExprNode {
+
+  val value: String = _value
 
 }
 
 class PairLiteralNode extends ExprNode {
+
 
 }
