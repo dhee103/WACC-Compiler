@@ -75,11 +75,20 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new WhileNode(condition, loopBody)
   }
 
-  override def visitNewBegin(ctx: WaccParser.NewBeginContext): AstNode = super.visitNewBegin(ctx)
+  override def visitNewBegin(ctx: WaccParser.NewBeginContext): NewBeginNode = {
+    val body: StatNode = visit(ctx.getChild(1)).asInstanceOf[StatNode]
+
+    new NewBeginNode(body)
+  }
+
+  override def visitSequence(ctx: WaccParser.SequenceContext): SequenceNode = {
+    val fstStat: StatNode = visit(ctx.getChild(0)).asInstanceOf[StatNode]
+    val sndStat: StatNode = visit(ctx.getChild(2)).asInstanceOf[StatNode]
+
+    new SequenceNode(fstStat, sndStat)
+  }
 
   override def visitDeclaration(ctx: WaccParser.DeclarationContext): AstNode = super.visitDeclaration(ctx)
-
-  override def visitSequence(ctx: WaccParser.SequenceContext): AstNode = super.visitSequence(ctx)
 
   override def visitIdentLHS(ctx: WaccParser.IdentLHSContext): AstNode = super.visitIdentLHS(ctx)
 
