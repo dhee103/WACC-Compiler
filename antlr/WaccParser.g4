@@ -13,77 +13,93 @@ param_list: param (COMMA param)* ;
 
 param: type ident ;
 
-stat: SKIP_
-    | type ident EQUAL assign_rhs
-    | assign_lhs EQUAL assign_rhs
-    | FREE expr
-    | RETURN expr
-    | EXIT expr
-    | PRINT expr
-    | PRINTLN expr
-    | IF expr THEN stat ELSE stat FI
-    | WHILE expr DO stat DONE
-    | BEGIN stat END
-    | stat SEMICOLON stat
+stat: SKIP_                                                 #SkipStat
+    | type ident EQUAL assign_rhs                           #Declaration
+    | assign_lhs EQUAL assign_rhs                           #Assignment
+    | FREE expr                                             #Free
+    | RETURN expr                                           #Return
+    | EXIT expr                                             #Exit
+    | PRINT expr                                            #Print
+    | PRINTLN expr                                          #Println
+    | IF expr THEN stat ELSE stat FI                        #If
+    | WHILE expr DO stat DONE                               #While
+    | BEGIN stat END                                        #NewBegin
+    | stat SEMICOLON stat                                   #Sequence
     ;
 
-assign_lhs: ident
-          | array_elem
-          | pair_elem
+assign_lhs: ident                                           #IdentLHS
+          | array_elem                                      #ArrayElemLHS
+          | pair_elem                                       #PairElemLHS
           ;
 
-assign_rhs: expr
-          | array_liter
-          | NEWPAIR LPAREN expr COMMA expr RPAREN
-          | pair_elem
-          | CALL ident LPAREN (arg_list)? RPAREN
+assign_rhs: expr                                            #ExprL
+          | array_liter                                     #ArrayLiteral
+          | NEWPAIR LPAREN expr COMMA expr RPAREN           #NewPair
+          | pair_elem                                       #PairElem
+          | CALL ident LPAREN (arg_list)? RPAREN            #Call
           ;
 
 arg_list: expr (COMMA expr)* ;
 
-pair_elem: FIRST expr
-         | SECOND expr
+pair_elem: FIRST expr                                       #Fst
+         | SECOND expr                                      #Snd
          ;
 
-type: base_type
-    | type LBRACKET RBRACKET
-    | pair_type
+type: base_type                                             #BaseType
+    | type LBRACKET RBRACKET                                #TypeL
+    | pair_type                                             #PairType
     ;
 
-base_type: INT_TYPE
-         | BOOL_TYPE
-         | CHAR_TYPE
-         | STRING_TYPE
+base_type: INT_TYPE                                         #Int
+         | BOOL_TYPE                                        #Bool
+         | CHAR_TYPE                                        #Char
+         | STRING_TYPE                                      #String
          ;
 
 pair_type: PAIR_TYPE LPAREN pair_elem_type COMMA pair_elem_type RPAREN ;
 
-pair_elem_type: base_type
+pair_elem_type: base_type                                   
               | type LBRACKET RBRACKET
               | PAIR_TYPE
               ;
 
-expr: int_liter
-    | bool_liter
-    | char_liter
-    | str_liter
-    | pair_liter
-    | ident
-    | array_elem
-    | unary_oper expr
-    | expr (MULTIPLY | DIVIDE | MOD) expr
-    | expr (PLUS) expr
-    | expr (GREATER_THAN | GREATER_EQUAL | LESS_THAN | LESS_EQUAL) expr
-    | expr (DOUBLE_EQUAL | NOT_EQUAL) expr
-    | expr (LOGICAL_AND | LOGICAL_OR) expr
-    | LPAREN expr RPAREN
+expr: int_liter                                             #IntLiteral
+    | bool_liter                                            #BoolLiteral
+    | char_liter                                            #CharLiteral
+    | str_liter                                             #StringLiteral
+    | pair_liter                                            #PairLiteral
+    | ident                                                 #IdentL
+    | array_elem                                            #ArrayElem
+    | unary_oper expr                                       #UnaryOperation
+    | expr binary_op1 expr                                  #BinaryOp1
+    | expr (PLUS) expr                                      #Plus
+    | expr binary_op3 expr                                  #BinaryOp3
+    | expr binary_op4 expr                                  #BinaryOp4
+    | expr (LOGICAL_AND) expr                               #LogicalAnd
+    | expr (LOGICAL_OR) expr                                #LogicalOr
+    | LPAREN expr RPAREN                                    #Parens
     ;
 
-unary_oper: EXCLAMATION
-          | MINUS
-          | LENGTH
-          | ORD
-          | CHR
+unary_oper: EXCLAMATION                                     #LogicalNot
+          | MINUS                                           #Negative
+          | LENGTH                                          #Len
+          | ORD                                             #Ord
+          | CHR                                             #Chr
+          ;
+
+binary_op1: MULTIPLY                                        #MulOperation
+          | DIVIDE                                          #DivOperation
+          | MOD                                             #Mod
+          ;
+
+binary_op3: GREATER_THAN                                    #GreaterThan
+          | GREATER_EQUAL                                   #GreaterEqual
+          | LESS_THAN                                       #LessThan
+          | LESS_EQUAL                                      #LessEqual
+          ;
+
+binary_op4: DOUBLE_EQUAL                                    #DoubleEqual
+          | NOT_EQUAL                                       #NotEqual
           ;
 
 ident: ID ;
