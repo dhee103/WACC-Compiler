@@ -60,6 +60,14 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new PrintlnNode(text)
   }
 
+  override def visitIf(ctx: WaccParser.IfContext): IfNode = {
+    val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+    val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
+    val elseStat: StatNode = visit(ctx.getChild(5)).asInstanceOf[StatNode]
+
+    new IfNode(condition, thenStat, elseStat)
+  }
+
   override def visitNewBegin(ctx: WaccParser.NewBeginContext): AstNode = super.visitNewBegin(ctx)
 
   override def visitDeclaration(ctx: WaccParser.DeclarationContext): AstNode = super.visitDeclaration(ctx)
@@ -67,8 +75,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitWhile(ctx: WaccParser.WhileContext): AstNode = super.visitWhile(ctx)
 
   override def visitSequence(ctx: WaccParser.SequenceContext): AstNode = super.visitSequence(ctx)
-
-  override def visitIf(ctx: WaccParser.IfContext): AstNode = super.visitIf(ctx)
 
   override def visitIdentLHS(ctx: WaccParser.IdentLHSContext): AstNode = super.visitIdentLHS(ctx)
 
