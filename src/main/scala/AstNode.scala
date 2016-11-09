@@ -2,7 +2,7 @@ trait AstNode extends AstNode {
 
 }
 
-class ProgNode() extends AstNode {
+class ProgNode extends AstNode {
 
   val funcChildren: Array[FuncNode]
   val statChild: StatNode
@@ -18,7 +18,7 @@ trait AssignmentLeftNode extends AstNode {
 }
 
 class ArgListNode extends AstNode {
-
+  val exprChildren: Array[ExprNode]
 }
 
 class PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
@@ -26,11 +26,11 @@ class PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
 }
 
 class FstNode extends PairElemNode {
-
+  val exprChild: ExprNode
 }
 
 class SndNode extends PairElemNode {
-
+  val exprChild: ExprNode
 }
 
 
