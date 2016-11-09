@@ -880,7 +880,79 @@ class MainTest extends FlatSpec with Matchers {
 
   }
 
-  
+  //  TODO: Is this working correctly?
+  "lexing an unescaped character" should "match the character token rather " +
+    "than a CHAR_LITERAL" in {
+    val file = synatxErr + "basic/unescapedChar.wacc"
 
+    val expectedTokens: Array[String] = Array("")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+  "lexing an operator with a missing operand" should "match INT_LITERAL, " +
+    "MINUS tokens" in {
+    val file = synatxErr + "expressions/missingOperand2.wacc"
+
+    val expectedTokens: Array[String] = Array("BEGIN", "INT_TYPE", "ID",
+      "EQUAL", "INT_LITERAL", "MINUS", "END", "EOF")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+  "lexing intf()" should "match ID" in {
+    val file = synatxErr + "function/badlyNamed.wacc"
+
+    val expectedTokens: Array[String] = Array("BEGIN", "ID", "LPAREN", "RPAREN",
+      "IS", "RETURN", "INT_LITERAL", "END", "INT_TYPE", "ID", "EQUAL", "CALL",
+      "ID", "LPAREN", "RPAREN", "END", "EOF")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+  "lexing c-style pointers" should "match MULTIPLY's" in {
+    val file = synatxErr + "function/thisIsNotC.wacc"
+
+    val expectedTokens: Array[String] = Array("BEGIN", "INT_TYPE", "ID",
+      "LPAREN", "INT_TYPE", "MULTIPLY", "ID", "RPAREN", "IS", "MULTIPLY",
+      "ID", "EQUAL", "MULTIPLY", "ID", "PLUS", "INT_LITERAL", "SEMICOLON",
+      "RETURN", "INT_LITERAL", "END", "INT_TYPE", "MULTIPLY", "ID", "EQUAL",
+      "ID", "LPAREN", "INT_LITERAL", "RPAREN", "SEMICOLON", "ID", "LBRACKET",
+      "INT_LITERAL", "RBRACKET", "EQUAL", "INT_LITERAL", "SEMICOLON",
+      "INT_TYPE", "ID", "EQUAL", "CALL", "ID", "LPAREN", "ID", "RPAREN",
+      "SEMICOLON", "PRINTLN", "MULTIPLY", "LPAREN", "ID", "RPAREN",
+      "SEMICOLON", "FREE", "ID", "END", "EOF")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+  "lexing ifi" should "match ID rather than IF" in {
+    val file = synatxErr + "if/ifiErr.wacc"
+
+    val expectedTokens: Array[String] = Array("BEGIN", "ID", "TRUE_LITERAL",
+      "THEN", "SKIP_", "ELSE", "SKIP_", "FI", "END", "EOF")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+  "lexing bad int assignments" should "1)match two INT_LITERAL's" +
+    " 2) match INT_LITERAL + ID" in {
+    val file = synatxErr + "variables/badintAssignments.wacc"
+
+    val expectedTokens: Array[String] = Array("BEGIN", "INT_TYPE", "ID",
+      "EQUAL", "INT_LITERAL", "INT_LITERAL", "SEMICOLON", "INT_TYPE", "ID",
+      "EQUAL", "INT_LITERAL", "ID", "END", "EOF")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
+
+  "lexing doo and dono" should "both match ID" in {
+    val file = synatxErr + "while/dooErr.wacc"
+
+    val expectedTokens: Array[String] = Array("BEGIN", "WHILE",
+      "FALSE_LITERAL", "ID", "SKIP_", "ID", "END", "EOF")
+
+    assert(new LexerParserTemplate(file).getLexerResult === expectedTokens)
+  }
 
 }
