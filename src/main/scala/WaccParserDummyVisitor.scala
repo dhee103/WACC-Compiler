@@ -42,6 +42,12 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new ReturnNode(returnValue)
   }
 
+  override def visitExit(ctx: WaccParser.ExitContext): ExitNode = {
+    val exitCode: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+
+    new ExitNode(exitCode)
+  }
+
   override def visitPrint(ctx: WaccParser.PrintContext): PrintNode = {
     val text: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
@@ -63,8 +69,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitSequence(ctx: WaccParser.SequenceContext): AstNode = super.visitSequence(ctx)
 
   override def visitIf(ctx: WaccParser.IfContext): AstNode = super.visitIf(ctx)
-
-  override def visitExit(ctx: WaccParser.ExitContext): AstNode = super.visitExit(ctx)
 
   override def visitIdentLHS(ctx: WaccParser.IdentLHSContext): AstNode = super.visitIdentLHS(ctx)
 
