@@ -5,11 +5,6 @@ class MainTest extends FlatSpec with Matchers {
   val valid: String = "wacc_examples/valid/"
   val synatxErr: String = "wacc_examples/invalid/syntaxErr/"
 
-  //  add function to prepend strings to save space
-  //  private def prepend(str: String, prep: String): Unit = {
-  //    str = prep + str
-  //  }
-
   //  TODO: Add better test names
 
 

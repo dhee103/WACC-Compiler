@@ -1,4 +1,4 @@
-lexer grammar WaccLexer;
+    lexer grammar WaccLexer;
 
 BEGIN : 'begin' ;
 END : 'end' ;
