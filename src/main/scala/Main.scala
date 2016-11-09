@@ -35,9 +35,6 @@ object Main {
     visitor.visit(tree)
 
 
-
-
-
   }
 
   def buildTree(currentTree: org.antlr.v4.runtime.tree.ParseTree, count: Int): Unit = {
