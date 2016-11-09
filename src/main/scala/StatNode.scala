@@ -21,9 +21,9 @@ class AssignmentNode(val _lhs: AssignmentLeftNode, val _rhs: AssignmentRightNode
 
 }
 
-class ReadNode(val _writeTarget: AssignmentLeftNode) extends StatNode {
+class ReadNode(val _variable: AssignmentLeftNode) extends StatNode {
 
-  val writeTarget: AssignmentLeftNode = _writeTarget
+  val variable: AssignmentLeftNode = _variable
 
 }
 
