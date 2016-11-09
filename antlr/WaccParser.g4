@@ -16,6 +16,7 @@ param: type ident ;
 stat: SKIP_                                                 #SkipStat
     | type ident EQUAL assign_rhs                           #Declaration
     | assign_lhs EQUAL assign_rhs                           #Assignment
+    | READ assign_lhs                                       #Read
     | FREE expr                                             #Free
     | RETURN expr                                           #Return
     | EXIT expr                                             #Exit
