@@ -58,8 +58,8 @@ class StringTypeNode extends BaseTypeNode {
 
 }
 
-class ArrayTypeNode extends TypeNode with PairElemTypeNode {
-
+class ArrayTypeNode extends PairElemTypeNode with TypeNode {
+  val typeChild: TypeNode //TO DO: Review this
 }
 
 class PairTypeNode extends TypeNode {

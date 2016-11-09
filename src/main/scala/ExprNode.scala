@@ -21,7 +21,3 @@ class StringLiteralNode extends ExprNode {
 class PairLiteralNode extends ExprNode {
 
 }
-
-class ParenExprNode extends ExprNode {
-
-}
