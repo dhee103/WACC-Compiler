@@ -22,9 +22,13 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitAssignment(ctx: WaccParser.AssignmentContext): AstNode = super.visitAssignment(ctx)
 
-  override def visitReturn(ctx: WaccParser.ReturnContext): AstNode = super.visitReturn(ctx)
-
   override def visitSkipStat(ctx: WaccParser.SkipStatContext): AstNode = super.visitSkipStat(ctx)
+
+  override def visitRead(ctx: WaccParser.ReadContext): ReadNode = {
+    val variable: AssignmentLeftNode = visit(ctx.getChild(1)).asInstanceOf[AssignmentLeftNode]
+
+    new ReadNode(variable)
+  }
 
   override def visitFree(ctx: WaccParser.FreeContext): FreeNode = {
     val variable: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
@@ -32,16 +36,22 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new FreeNode(variable)
   }
 
-  override def visitPrint(ctx: WaccParser.PrintContext): StatNode = {
-    val text: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+  override def visitReturn(ctx: WaccParser.ReturnContext): ReturnNode = {
+    val returnValue: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new FreeNode(text)
+    new ReturnNode(returnValue)
   }
 
-  override def visitPrintln(ctx: WaccParser.PrintlnContext): StatNode = {
+  override def visitPrint(ctx: WaccParser.PrintContext): PrintNode = {
     val text: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new FreeNode(text)
+    new PrintNode(text)
+  }
+
+  override def visitPrintln(ctx: WaccParser.PrintlnContext): PrintlnNode = {
+    val text: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+
+    new PrintlnNode(text)
   }
 
   override def visitNewBegin(ctx: WaccParser.NewBeginContext): AstNode = super.visitNewBegin(ctx)
