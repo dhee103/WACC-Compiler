@@ -172,13 +172,21 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     visit(ctx.getChild(0)).asInstanceOf[PairTypeNode]
   }
 
-  override def visitInt(ctx: WaccParser.IntContext): AstNode = super.visitInt(ctx)
+  override def visitIntType(ctx: IntTypeContext): BaseTypeNode = {
+    new IntTypeNode
+  }
 
-  override def visitBool(ctx: WaccParser.BoolContext): AstNode = super.visitBool(ctx)
+  override def visitBoolType(ctx: BoolTypeContext): BaseTypeNode = {
+    new BoolTypeNode
+  }
 
-  override def visitChar(ctx: WaccParser.CharContext): AstNode = super.visitChar(ctx)
+  override def visitCharType(ctx: CharTypeContext): BaseTypeNode = {
+    new CharTypeNode
+  }
 
-  override def visitString(ctx: WaccParser.StringContext): AstNode = super.visitString(ctx)
+  override def visitStringType(ctx: StringTypeContext): BaseTypeNode = {
+    new StringTypeNode
+  }
 
   override def visitPair_type(ctx: WaccParser.Pair_typeContext): AstNode = super.visitPair_type(ctx)
 
@@ -245,4 +253,5 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitIdentExpr(ctx: IdentExprContext): AstNode = super.visitIdentExpr(ctx)
 
   override def visitArg_list(ctx: Arg_listContext): AstNode = super.visitArg_list(ctx)
+
 }
