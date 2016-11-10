@@ -196,7 +196,20 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new PairTypeNode(firstElemType, secondElemType)
   }
 
-  override def visitPair_elem_type(ctx: WaccParser.Pair_elem_typeContext): AstNode = super.visitPair_elem_type(ctx)
+  override def visitBaseTypePairElem(ctx: BaseTypePairElemContext): PairElemTypeNode = {
+    visit(ctx.getChild(0)).asInstanceOf[BaseTypeNode]
+  }
+
+  override def visitArrayTypePairElem(ctx: ArrayTypePairElemContext): PairElemTypeNode = {
+    val elemType: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
+    new ArrayTypeNode(elemType)
+  }
+
+  override def visitPairTypePairElem(ctx: PairTypePairElemContext): PairElemTypeNode = {
+    new InnerPairTypeNode()
+  }
+
+  override def visitIntLiteral(ctx: WaccParser.IntLiteralContext): AstNode = super.visitIntLiteral(ctx)
 
   override def visitBinaryOp4(ctx: WaccParser.BinaryOp4Context): AstNode = super.visitBinaryOp4(ctx)
 
@@ -221,8 +234,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitStringLiteral(ctx: WaccParser.StringLiteralContext): AstNode = super.visitStringLiteral(ctx)
 
   override def visitArrayElem(ctx: WaccParser.ArrayElemContext): AstNode = super.visitArrayElem(ctx)
-
-  override def visitIntLiteral(ctx: WaccParser.IntLiteralContext): AstNode = super.visitIntLiteral(ctx)
 
   override def visitBinaryOp1(ctx: WaccParser.BinaryOp1Context): AstNode = super.visitBinaryOp1(ctx)
 
@@ -259,5 +270,4 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitIdentExpr(ctx: IdentExprContext): AstNode = super.visitIdentExpr(ctx)
 
   override def visitArg_list(ctx: Arg_listContext): AstNode = super.visitArg_list(ctx)
-
 }
