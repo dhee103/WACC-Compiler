@@ -165,7 +165,8 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   override def visitArrayType(ctx: ArrayTypeContext): TypeNode = {
-    visit(ctx.getChild(0)).asInstanceOf[ArrayTypeNode]
+    val elemType: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
+    new ArrayTypeNode(elemType)
   }
 
   override def visitPairType(ctx: WaccParser.PairTypeContext): TypeNode = {
