@@ -9,153 +9,187 @@ class Annotate(val _AST: ProgNode) {
 
   //def getAnnotatedAST
 
-  def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable): Unit = {
+  def annotateStatNode(statement: StatNode, currentScopeSymbolTable:
+  SymbolTable): Unit = {
 
     var statementType: String = getType(statement)
     statementType match {
 
-      case "DeclarationNode" => annotateDeclarationNode(statement.asInstanceOf[DeclarationNode], STable)
-      case "AssignmentNode"  => annotateAssignmentNode(statement.asInstanceOf[AssignmentNode], STable)
-      case "ReadNode"        => annotateReadNode(statement.asInstanceOf[ReadNode], STable)
-      case "FreeNode"        => annotateFreeNode(statement.asInstanceOf[FreeNode], STable)
-      case "ReturnNode"      => annotateReturnNode(statement.asInstanceOf[ReturnNode], STable)
-      case "ExitNode"        => annotateExitNode(statement.asInstanceOf[ExitNode], STable)
-      case "PrintNode"       => annotatePrintNode(statement.asInstanceOf[PrintNode], STable)
-      case "PrintlnNode"     => annotatePrintlnNode(statement.asInstanceOf[PrintlnNode], STable)
-      case "IfNode"          => annotateIfNode(statement.asInstanceOf[IfNode], new SymbolTable(STable))
-      case "WhileNode"       => annotateWhileNode(statement.asInstanceOf[WhileNode], new SymbolTable(STable))
-      case "NewBeginNode"    => annotateNewBeginNode(statement.asInstanceOf[NewBeginNode], new SymbolTable(STable))
-      case "SequenceNode"    => annotateSequenceNode(statement.asInstanceOf[SequenceNode], STable)
+      case "DeclarationNode" => annotateDeclarationNode(statement
+        .asInstanceOf[DeclarationNode], STable)
+      case "AssignmentNode" => annotateAssignmentNode(statement
+        .asInstanceOf[AssignmentNode], STable)
+      case "ReadNode" => annotateReadNode(statement.asInstanceOf[ReadNode],
+        STable)
+      case "FreeNode" => annotateFreeNode(statement.asInstanceOf[FreeNode],
+        STable)
+      case "ReturnNode" => annotateReturnNode(statement
+        .asInstanceOf[ReturnNode], STable)
+      case "ExitNode" => annotateExitNode(statement.asInstanceOf[ExitNode],
+        STable)
+      case "PrintNode" => annotatePrintNode(statement
+        .asInstanceOf[PrintNode], STable)
+      case "PrintlnNode" => annotatePrintlnNode(statement
+        .asInstanceOf[PrintlnNode], STable)
+      case "IfNode" => annotateIfNode(statement.asInstanceOf[IfNode], new
+          SymbolTable(STable))
+      case "WhileNode" => annotateWhileNode(statement
+        .asInstanceOf[WhileNode], new SymbolTable(STable))
+      case "NewBeginNode" => annotateNewBeginNode(statement
+        .asInstanceOf[NewBeginNode], new SymbolTable(STable))
+      case "SequenceNode" => annotateSequenceNode(statement
+        .asInstanceOf[SequenceNode], STable)
 
 
     }
   }
 
-  def AnnotateExprNode(expression: ExprNode, currentScopeSymbolTable: SymbolTable): Unit = {
+  def annotateExprNode(expression: ExprNode, currentScopeSymbolTable:
+  SymbolTable): Unit = {
 
     var exprType: String = getType(expression)
 
     exprType match {
 
-      case "IdentNode" => annotateIdentNode(expression.asInstanceOf[IdentNode], currentScopeSymbolTable)
-      case "LogicalNotNode" => annotateUnaryOperationNode(expression.asInstanceOf[LogicalNotNode], currentScopeSymbolTable)
-      case "OrdNode" => annotateUnaryOperationNode(expression.asInstanceOf[OrdNode], currentScopeSymbolTable)
-      case "ChrNode" => annotateUnaryOperationNode(expression.asInstanceOf[ChrNode], currentScopeSymbolTable)
-      case "LenNode"  => annotateUnaryOperationNode(expression.asInstanceOf[LenNode], currentScopeSymbolTable)
-      case "NegativeNode" => annotateUnaryOperationNode(expression.asInstanceOf[NegativeNode], currentScopeSymbolTable)
+      case "IdentNode" => annotateIdentNode(expression
+        .asInstanceOf[IdentNode], currentScopeSymbolTable)
+      case "LogicalNotNode" => annotateUnaryOperationNode(expression
+        .asInstanceOf[LogicalNotNode], currentScopeSymbolTable)
+      case "OrdNode" => annotateUnaryOperationNode(expression
+        .asInstanceOf[OrdNode], currentScopeSymbolTable)
+      case "ChrNode" => annotateUnaryOperationNode(expression
+        .asInstanceOf[ChrNode], currentScopeSymbolTable)
+      case "LenNode" => annotateUnaryOperationNode(expression
+        .asInstanceOf[LenNode], currentScopeSymbolTable)
+      case "NegativeNode" => annotateUnaryOperationNode(expression
+        .asInstanceOf[NegativeNode], currentScopeSymbolTable)
 
     }
 
-    def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
+  }
 
-      identifier.nodeType = currentST.lookupAll(identifier)
-      //may throw exceptions here
+  def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
 
-    }
+    identifier.nodeType = currentST.lookupAll(identifier)
+    //may throw exceptions here
 
-    def annotateUnaryOperationNode(unOPNode: UnaryOperationNode, currentST: SymbolTable) = {
+  }
 
-
-
-    }
+  def annotateUnaryOperationNode(unOPNode: UnaryOperationNode, currentST:
+  SymbolTable) = {
 
 
   }
 
-    def annotateDeclarationNode(statement: DeclarationNode, currentST: SymbolTable): Unit = {
+  def annotateDeclarationNode(statement: DeclarationNode, currentST:
+  SymbolTable): Unit = {
 
-     var ident: IdentNode = statement.identifier
+    var ident: IdentNode = statement.identifier
 
-     ident.nodeType = statement.variableType
+    ident.nodeType = statement.variableType
 
-     currentST.add(ident, ident.nodeType)
+    currentST.add(ident, ident.nodeType)
 
-     statement.identifier = ident
+    statement.identifier = ident
 
-    }
+  }
 
-    def annotateAssignmentNode(statement: AssignmentNode, currentST: SymbolTable): Unit = {
+  def annotateAssignmentNode(statement: AssignmentNode, currentST:
+  SymbolTable): Unit = {
 
-      var lhsNode: IdentNode = null
+    var lhsNode: IdentNode = null
 
-      var rhsNode: IdentNode = null
+    //    var rhsNode: AstNode = null
 
-      if(getType(statement.lhs) == "IdentNode"){
+    if (getType(statement.lhs) == "IdentNode") {
 
-        lhsNode = statement.lhs.asInstanceOf[IdentNode]
+      lhsNode = statement.lhs.asInstanceOf[IdentNode]
 
-        lhsNode.nodeType = currentST.lookupAll(lhsNode)
-
-      }
-
-      if(getType(statement.rhs) == "IdentNode"){
-
-        rhsNode = statement.rhs.asInstanceOf[IdentNode]
-
-        rhsNode.nodeType = currentST.lookupAll(rhsNode)
-
-      }
-
-      statement.rhs = rhsNode
-
-      statement.lhs = lhsNode
+      lhsNode.nodeType = currentST.lookupAll(lhsNode)
 
     }
 
-    def annotateReadNode(statement: ReadNode, currentST: SymbolTable): Unit = {
+    //    if (getType(statement.rhs) == "IdentNode") {
+    //
+    //      rhsNode = statement.rhs.asInstanceOf[IdentNode]
+    //
+    //      rhsNode.nodeType = currentST.lookupAll(rhsNode)
+    //
+    //    }
 
-      var readTarget: IdentNode =  null
+    getType(statement.rhs) match {
+      case "ExprNode" => annotateExprNode(statement.asInstanceOf[ExprNode],
+        currentST)
+      case "ArrayLiteralNode" =>
+      case "NewPairNode" => annotateExprNode(statement
+        .asInstanceOf[NewPairNode].fstElem, currentST);
+        annotateExprNode(statement.asInstanceOf[NewPairNode].sndElem, currentST)
+      case "PairElemNode" =>
+      case "CallNode" => annotateIdentNode(statement.asInstanceOf[IdentNode],
+        currentST); //arglist
+      case _: Any => println("error")
+    }
 
-      if(getType(statement.variable) == "IdentNode"){
+//    statement.rhs = rhsNode
 
-        readTarget = statement.variable.asInstanceOf[IdentNode]
+    statement.lhs = lhsNode
 
-        readTarget.nodeType = currentST.lookupAll(readTarget)
+  }
 
+  def annotateReadNode(statement: ReadNode, currentST: SymbolTable): Unit = {
 
+    var readTarget: IdentNode = null
 
-      }
+    if (getType(statement.variable) == "IdentNode") {
+
+      readTarget = statement.variable.asInstanceOf[IdentNode]
+
+      readTarget.nodeType = currentST.lookupAll(readTarget)
+
 
     }
 
-    def annotateFreeNode(statement: FreeNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotateFreeNode(statement: FreeNode, currentST: SymbolTable): Unit = {
 
-    def annotateReturnNode(statement: ReturnNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotateReturnNode(statement: ReturnNode, currentST: SymbolTable): Unit
+  = {
 
-    def annotateExitNode(statement: ExitNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotateExitNode(statement: ExitNode, currentST: SymbolTable): Unit = {
 
-    def annotatePrintNode(statement: PrintNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotatePrintNode(statement: PrintNode, currentST: SymbolTable): Unit = {
 
-    def annotatePrintlnNode(statement: PrintlnNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotatePrintlnNode(statement: PrintlnNode, currentST: SymbolTable):
+  Unit = {
 
-    def annotateIfNode(statement: IfNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotateIfNode(statement: IfNode, currentST: SymbolTable): Unit = {
 
-    def annotateWhileNode(statement: WhileNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotateWhileNode(statement: WhileNode, currentST: SymbolTable): Unit = {
 
-    def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable):
+  Unit = {
 
-    def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable): Unit = {
+  }
 
-    }
+  def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable):
+  Unit = {
 
-
-
+  }
 
 
   def getType[T](obj: T): String = {
@@ -163,14 +197,14 @@ class Annotate(val _AST: ProgNode) {
     str.substring(6, str.length)
   }
 
-  def checkNodesHaveSameType(typeNode1: TypeNode, typeNode2: TypeNode): Boolean = {
+  def checkNodesHaveSameType(typeNode1: TypeNode, typeNode2: TypeNode):
+  Boolean = {
     def f[A, B: ClassTag](a: A, b: B) = a match {
       case _: B => true
-      case _    => false
+      case _ => false
     }
     f(typeNode1, typeNode2)
   }
-
 
 
 }
