@@ -47,7 +47,7 @@ pair_elem: FIRST expr                                       #FstElem
          ;
 
 type: base_type                                             #BaseType
-    | type LBRACKET RBRACKET                                #TypeL
+    | type LBRACKET RBRACKET                                #ArrayType
     | pair_type                                             #PairType
     ;
 
