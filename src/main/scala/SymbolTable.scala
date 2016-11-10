@@ -13,7 +13,6 @@ class SymbolTable(val _encTable: SymbolTable) {
 
   def lookupAll(identifier: IdentNode): TypeNode = {
 
-
     var result: TypeNode = null
 
     if(dict.isEmpty){

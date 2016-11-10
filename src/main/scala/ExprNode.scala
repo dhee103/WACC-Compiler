@@ -4,6 +4,7 @@ var nodeType: TypeNode = null
 
 }
 
+
 class IntLiteralNode(val _value: Int) extends ExprNode {
 
   val value: Int = _value

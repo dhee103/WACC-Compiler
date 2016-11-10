@@ -88,6 +88,25 @@ class IdentNode(val _name: String, val _type: TypeNode) extends ExprNode with As
   val name: String = _name
   val typeVal: TypeNode = _type
 
+  override def equals(that: Any): Boolean = that match {
+
+    case that: IdentNode => that.name == this.name && that.hashCode == this.hashCode
+    case _ => false
+  }
+
+  override def hashCode: Int = {
+
+    var prime = 67
+
+    var result: Int = 1
+
+     result = prime * (result + (name.length))
+
+     result = result * prime + (if (name == null) 0 else name.hashCode)
+
+     result
+  }
+
 }
 
 
