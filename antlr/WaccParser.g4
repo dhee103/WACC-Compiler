@@ -33,17 +33,17 @@ assign_lhs: ident                                           #IdentLHS
           | pair_elem                                       #PairElemLHS
           ;
 
-assign_rhs: expr                                            #ExprL
-          | array_liter                                     #ArrayLiteral
-          | NEWPAIR LPAREN expr COMMA expr RPAREN           #NewPair
-          | pair_elem                                       #PairElem
-          | CALL ident LPAREN (arg_list)? RPAREN            #Call
+assign_rhs: expr                                            #ExprRHS
+          | array_liter                                     #ArrayLiteralRHS
+          | NEWPAIR LPAREN expr COMMA expr RPAREN           #NewPairRHS
+          | pair_elem                                       #PairElemRHS
+          | CALL ident LPAREN (arg_list)? RPAREN            #CallRHS
           ;
 
 arg_list: expr (COMMA expr)* ;
 
-pair_elem: FIRST expr                                       #Fst
-         | SECOND expr                                      #Snd
+pair_elem: FIRST expr                                       #FstElem
+         | SECOND expr                                      #SndElem
          ;
 
 type: base_type                                             #BaseType
@@ -69,8 +69,8 @@ expr: int_liter                                             #IntLiteral
     | char_liter                                            #CharLiteral
     | str_liter                                             #StringLiteral
     | pair_liter                                            #PairLiteral
-    | ident                                                 #IdentL
-    | array_elem                                            #ArrayElem
+    | ident                                                 #IdentExpr
+    | array_elem                                            #ArrayElemExpr
     | unary_oper expr                                       #UnaryOperation
     | expr binary_op1 expr                                  #BinaryOp1
     | expr binary_op2 expr                                  #BinaryOp2
@@ -111,9 +111,11 @@ binary_op5: LOGICAL_AND ;
 
 binary_op6: LOGICAL_OR ;
 
-ident: ID ;
+ident: ID  #Identifier
+     ;
 
-array_elem: ident (LBRACKET expr RBRACKET)+ ;
+array_elem: ident (LBRACKET expr RBRACKET)+  #ArrayElem
+          ;
 
 int_liter: INT_LITERAL ;
 
