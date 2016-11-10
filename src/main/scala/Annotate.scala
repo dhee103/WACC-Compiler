@@ -31,6 +31,35 @@ class Annotate(val _AST: ProgNode) {
     }
   }
 
+  def AnnotateExprNode(expression: ExprNode, currentScopeSymbolTable: SymbolTable): Unit = {
+
+    var exprType: String = getType(expression)
+
+    exprType match {
+
+      case "IdentNode" => annotateIdentNode(expression.asInstanceOf[IdentNode], currentScopeSymbolTable)
+      case "LogicalNotNode" => annotateUnaryOperationNode(expression.asInstanceOf[LogicalNotNode], currentScopeSymbolTable)
+      case "OrdNode" => annotateUnaryOperationNode(expression.asInstanceOf[OrdNode], currentScopeSymbolTable)
+      case "ChrNode" => annotateUnaryOperationNode(expression.asInstanceOf[ChrNode], currentScopeSymbolTable)
+      case "LenNode"  => annotateUnaryOperationNode(expression.asInstanceOf[LenNode], currentScopeSymbolTable)
+      case "NegativeNode" => annotateUnaryOperationNode(expression.asInstanceOf[NegativeNode], currentScopeSymbolTable)
+
+    }
+
+    def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
+
+      identifier.nodeType = currentST.lookupAll(identifier)
+      //may throw exceptions here
+
+    }
+
+    def annotateUnaryOperationNode(unOPNode: UnaryOperationNode, currentST: SymbolTable) = {
+
+    }
+
+
+  }
+
     def annotateDeclarationNode(statement: DeclarationNode, currentST: SymbolTable): Unit = {
 
      var ident: IdentNode = statement.identifier
@@ -53,7 +82,7 @@ class Annotate(val _AST: ProgNode) {
 
         lhsNode = lhsNode.asInstanceOf[IdentNode]
 
-        lhsNode.typeVal = currentST.lookupAll(lhsNode)
+        lhsNode.nodeType = currentST.lookupAll(lhsNode)
 
       }
 
@@ -61,7 +90,7 @@ class Annotate(val _AST: ProgNode) {
 
         rhsNode = rhsNode.asInstanceOf[IdentNode]
 
-        rhsNode.typeVal = currentST.lookupAll(rhsNode)
+        rhsNode.nodeType = currentST.lookupAll(rhsNode)
 
       }
 
@@ -79,7 +108,7 @@ class Annotate(val _AST: ProgNode) {
 
         readTarget = statement.variable.asInstanceOf[IdentNode]
 
-        readTarget.typeVal = currentST.lookupAll(readTarget)
+        readTarget.nodeType = currentST.lookupAll(readTarget)
 
 
 
