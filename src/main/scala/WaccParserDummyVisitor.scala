@@ -131,7 +131,9 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new NewPairNode(fstElem, sndElem)
   }
 
-  override def visitPairElemRHS(ctx: PairElemRHSContext): AstNode = super.visitPairElemRHS(ctx)
+  override def visitPairElemRHS(ctx: PairElemRHSContext): AssignmentRightNode = {
+    visit(ctx.getChild(0)).asInstanceOf[PairElemNode]
+  }
 
   override def visitCallRHS(ctx: CallRHSContext): AstNode = super.visitCallRHS(ctx)
 
