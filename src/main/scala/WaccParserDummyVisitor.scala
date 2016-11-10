@@ -32,7 +32,12 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new DeclarationNode(variableType, identifier, rhs)
   }
 
-  override def visitAssignment(ctx: WaccParser.AssignmentContext): AstNode = super.visitAssignment(ctx)
+  override def visitAssignment(ctx: WaccParser.AssignmentContext): AssignmentNode = {
+    val lhs: AssignmentLeftNode = visit(ctx.getChild(0)).asInstanceOf[AssignmentLeftNode]
+    val rhs: AssignmentRightNode = visit(ctx.getChild(2)).asInstanceOf[AssignmentRightNode]
+
+    new AssignmentNode(lhs, rhs)
+  }
 
   override def visitRead(ctx: WaccParser.ReadContext): ReadNode = {
     val variable: AssignmentLeftNode = visit(ctx.getChild(1)).asInstanceOf[AssignmentLeftNode]
