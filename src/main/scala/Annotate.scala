@@ -55,6 +55,8 @@ class Annotate(val _AST: ProgNode) {
 
     def annotateUnaryOperationNode(unOPNode: UnaryOperationNode, currentST: SymbolTable) = {
 
+
+
     }
 
 
@@ -80,7 +82,7 @@ class Annotate(val _AST: ProgNode) {
 
       if(getType(statement.lhs) == "IdentNode"){
 
-        lhsNode = lhsNode.asInstanceOf[IdentNode]
+        lhsNode = statement.lhs.asInstanceOf[IdentNode]
 
         lhsNode.nodeType = currentST.lookupAll(lhsNode)
 
@@ -88,7 +90,7 @@ class Annotate(val _AST: ProgNode) {
 
       if(getType(statement.rhs) == "IdentNode"){
 
-        rhsNode = rhsNode.asInstanceOf[IdentNode]
+        rhsNode = statement.rhs.asInstanceOf[IdentNode]
 
         rhsNode.nodeType = currentST.lookupAll(rhsNode)
 
