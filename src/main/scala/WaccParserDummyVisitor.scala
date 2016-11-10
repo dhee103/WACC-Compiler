@@ -103,7 +103,9 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new SequenceNode(fstStat, sndStat)
   }
 
-  override def visitIdentLHS(ctx: WaccParser.IdentLHSContext): AstNode = super.visitIdentLHS(ctx)
+  override def visitIdentLHS(ctx: WaccParser.IdentLHSContext): IdentNode = {
+    visit(ctx.getChild(0)).asInstanceOf[IdentNode]
+  }
 
   override def visitArrayElemLHS(ctx: WaccParser.ArrayElemLHSContext): AstNode = super.visitArrayElemLHS(ctx)
 
@@ -170,8 +172,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitIntLiteral(ctx: WaccParser.IntLiteralContext): AstNode = super.visitIntLiteral(ctx)
 
   override def visitBinaryOp1(ctx: WaccParser.BinaryOp1Context): AstNode = super.visitBinaryOp1(ctx)
-
-  override def visitIdentL(ctx: WaccParser.IdentLContext): AstNode = super.visitIdentL(ctx)
 
   override def visitUnary_oper(ctx: WaccParser.Unary_operContext): AstNode = super.visitUnary_oper(ctx)
 
