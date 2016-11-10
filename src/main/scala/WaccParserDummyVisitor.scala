@@ -116,7 +116,13 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     visit(ctx.getChild(0)).asInstanceOf[PairElemNode]
   }
 
-  override def visitArrayLiteralRHS(ctx: ArrayLiteralRHSContext): AstNode = super.visitArrayLiteralRHS(ctx)
+  override def visitExprRHS(ctx: ExprRHSContext): AssignmentRightNode = {
+    visit(ctx.getChild(0)).asInstanceOf[ExprNode]
+  }
+
+  override def visitArrayLiteralRHS(ctx: ArrayLiteralRHSContext): AssignmentRightNode = {
+    visit(ctx.getChild(0)).asInstanceOf[ArrayLiteralNode]
+  }
 
   override def visitNewPairRHS(ctx: NewPairRHSContext): AstNode = super.visitNewPairRHS(ctx)
 
@@ -201,8 +207,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitPair_liter(ctx: WaccParser.Pair_literContext): AstNode = super.visitPair_liter(ctx)
 
   override def visitIdentExpr(ctx: IdentExprContext): AstNode = super.visitIdentExpr(ctx)
-
-  override def visitExprRHS(ctx: ExprRHSContext): AstNode = super.visitExprRHS(ctx)
 
   override def visitArg_list(ctx: Arg_listContext): AstNode = super.visitArg_list(ctx)
 
