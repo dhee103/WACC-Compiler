@@ -1,0 +1,35 @@
+begin
+  println "we can print # within a string";
+  print "true is ";
+  println true;
+  print "A simple character example is " ;
+  println 'd';
+  print "An escaped character example is " ;
+  println '\"';
+  print "An example integer is " ;
+  println 189;
+  string s1 = "Hi" ;
+  string s2 = "Hi" ;
+  print "s1 is " ;
+  println s1 ;
+  print "s2 is " ;
+  println s2 ;
+  if s1 == s2 then
+    println "They are the same."
+  else
+    println "They are not the same."
+  fi ;
+
+  println "Now modify s1[0] = \'h\'" ;
+  s1[0] = 'h' ;
+
+  print "s1 is " ;
+  println s1 ;
+  print "s2 is " ;
+  println s2 ;
+  if s1 == s2 then
+    println "They are the same."
+  else
+    println "They are not the same."
+  fi
+end

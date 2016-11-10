@@ -1,23 +1,23 @@
 
-class LexerParserTemplate(val filename: String){
+class LexerParserTemplate(val filename: String) {
 
-  var waccLex = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
+  val waccLex = new WaccLexer(
+    new org.antlr.v4.runtime.ANTLRFileStream (filename))
 
-  var tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLex)
+  val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLex)
 
-  val lexVocab = waccLex.getVocabulary()
+  val lexVocab = waccLex.getVocabulary
 
   tokens.fill()
 
-  private def constructTokenStringArray(tokenStream : org.antlr.v4.runtime.CommonTokenStream): Array[String] = {
-
+  private def constructTokenStringArray(tokenStream: org.antlr.v4.runtime
+    .CommonTokenStream): Array[String] = {
     val tokensArr: Array[String] = new Array[String](tokenStream.size())
 
-    for(i <- tokensArr.indices) {
-
+    for (i <- tokensArr.indices) {
       tokensArr(i) = getTokenName(i)
-
     }
+
     tokensArr
 
   }
@@ -25,8 +25,7 @@ class LexerParserTemplate(val filename: String){
   private def getTokenName(index: Int): String
     = lexVocab.getSymbolicName(tokens.get(index).getType)
 
-  def getLexerResult : Array[String] = {
-
+  def getLexerResult: Array[String] = {
     val typeList = constructTokenStringArray(tokens)
     typeList
 

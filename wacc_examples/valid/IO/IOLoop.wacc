@@ -1,6 +1,7 @@
 # simple input/output loop
 
 # Output:
+# we can print # within a string
 # Please input an integer: #input#
 # echo input: #output#
 # Do you want to continue entering input?
@@ -18,7 +19,7 @@ begin
     read buff ;
     print "echo input: " ;
     println buff ;
-    println "Do you want to continue entering input?" ; 
+    println "Do you want to continue entering input?" ;
     println "(enter Y for \'yes\' and N for \'no\')" ;
     read continue
   done
