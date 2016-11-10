@@ -450,7 +450,7 @@ class WACCVisTest extends FlatSpec with Matchers {
 
   "testreadTypeErr()" should "work" in {
     val str: String =
-      "wacc_examples/invalid/semanticErr/IOreadTypeErr.wacc"
+      "wacc_examples/invalid/semanticErr/IO/readTypeErr.wacc"
     assert(Main.compile(str) === 200)
 
   }
@@ -535,298 +535,298 @@ class WACCVisTest extends FlatSpec with Matchers {
 
   }
 
-  //
-  //      "testbasicTypeErr10()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr10.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr11()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr11.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr12()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr12.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testcaseMatters()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/caseMatters.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testdoubleDeclare()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/doubleDeclare.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testundeclaredScopeVar()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/undeclaredScopeVar.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testundeclaredVar()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/undeclaredVar.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testundeclaredVarAccess()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/undeclaredVarAccess.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr01()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr01.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr02()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr02.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr03()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr03.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr04()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr04.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr05()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr05.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr06()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr06.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr07()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr07.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr08()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr08.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testbasicTypeErr09()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/variables" +
-  //      "/basicTypeErr09.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfalsErr()" should "work" in {
-  //      val str: String =
-  //      "wacc_examples/invalid/semanticErr/whle/falsErr.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testtruErr()" should "work" in {
-  //      val str: String =
-  //      "wacc_examples/invalid/semanticErr/whle/truErr.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testwhileIntCondition()" should "work" in {
-  //      val str: String =
-  //      "wacc_examples/invalid/semanticErr/whle/whileIntCondition.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfuncVarAccess()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/funcVarAccess" +
-  //      ".wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionAssign()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/functionAssign.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionBadArgUse()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/functionBadArgUse.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionBadCall()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/functionBadCall.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionBadParam()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/functionBadParam.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionBadReturn()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/functionBadReturn.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionOverArgs()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/functionOverArgs.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionRedefine()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/functionRedefine.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionSwapArgs()" should "work" in {
-  //      val str: String =
-  //      "wacc_examples/invalid/semanticErr/function/functionSwapArgs.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfunctionUnderArgs()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/function" +
-  //      "/functionUnderArgs.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testifIntCondition()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/if" +
-  //      "/ifIntCondition" +
-  //      ".wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testfuncMess()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/multiple" +
-  //      "/funcMess" +
-  //      ".wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testifAndWhileErrs()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/multiple" +
-  //      "/ifAndWhileErrs.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testmessyExpr()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/multiple" +
-  //      "/messyExpr" +
-  //      ".wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testmultiCaseSensitivity()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/multiple" +
-  //      "/multiCaseSensitivity.wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
-  //
-  //
-  //      "testmultiTypeErrs()" should "work" in {
-  //      val str: String = "wacc_examples/invalid/semanticErr/multiple" +
-  //      "/multiTypeErrs" +
-  //      ".wacc"
-  //      assert (Main.compile (str) === 200)
-  //
-  //      }
+
+  "testbasicTypeErr10()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr10.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr11()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr11.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr12()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr12.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testcaseMatters()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/caseMatters.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testdoubleDeclare()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/doubleDeclare.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testundeclaredScopeVar()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/undeclaredScopeVar.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testundeclaredVar()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/undeclaredVar.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testundeclaredVarAccess()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/undeclaredVarAccess.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr01()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr01.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr02()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr02.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr03()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr03.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr04()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr04.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr05()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr05.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr06()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr06.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr07()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr07.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr08()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr08.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testbasicTypeErr09()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/variables" +
+      "/basicTypeErr09.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfalsErr()" should "work" in {
+    val str: String =
+      "wacc_examples/invalid/semanticErr/while/falsErr.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testtruErr()" should "work" in {
+    val str: String =
+      "wacc_examples/invalid/semanticErr/while/truErr.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testwhileIntCondition()" should "work" in {
+    val str: String =
+      "wacc_examples/invalid/semanticErr/while/whileIntCondition.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfuncVarAccess()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/funcVarAccess" +
+      ".wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionAssign()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/functionAssign.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionBadArgUse()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/functionBadArgUse.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionBadCall()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/functionBadCall.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionBadParam()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/functionBadParam.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionBadReturn()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/functionBadReturn.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionOverArgs()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/functionOverArgs.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionRedefine()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/functionRedefine.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionSwapArgs()" should "work" in {
+    val str: String =
+      "wacc_examples/invalid/semanticErr/function/functionSwapArgs.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfunctionUnderArgs()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/function" +
+      "/functionUnderArgs.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testifIntCondition()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/if" +
+      "/ifIntCondition" +
+      ".wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testfuncMess()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/multiple" +
+      "/funcMess" +
+      ".wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testifAndWhileErrs()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/multiple" +
+      "/ifAndWhileErrs.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testmessyExpr()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/multiple" +
+      "/messyExpr" +
+      ".wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testmultiCaseSensitivity()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/multiple" +
+      "/multiCaseSensitivity.wacc"
+    assert(Main.compile(str) === 200)
+
+  }
+
+
+  "testmultiTypeErrs()" should "work" in {
+    val str: String = "wacc_examples/invalid/semanticErr/multiple" +
+      "/multiTypeErrs" +
+      ".wacc"
+    assert(Main.compile(str) === 200)
+
+  }
 }
 
 

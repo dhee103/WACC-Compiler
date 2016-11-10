@@ -5,13 +5,13 @@ class Annotate(val _AST: ProgNode) {
 
   private var AST = _AST
 
-  private var STable: SymbolTable = new SymbolTable(null)
+  private val STable: SymbolTable = new SymbolTable(null)
 
   //def getAnnotatedAST
 
   def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable): Unit = {
 
-    var statementType: String = getType(statement)
+    val statementType: String = getType(statement)
     statementType match {
 
       case "DeclarationNode" => annotateDeclarationNode(statement.asInstanceOf[DeclarationNode], STable)
@@ -33,7 +33,7 @@ class Annotate(val _AST: ProgNode) {
 
   def AnnotateExprNode(expression: ExprNode, currentScopeSymbolTable: SymbolTable): Unit = {
 
-    var exprType: String = getType(expression)
+    val exprType: String = getType(expression)
 
     exprType match {
 
@@ -62,7 +62,8 @@ class Annotate(val _AST: ProgNode) {
 
     def annotateDeclarationNode(statement: DeclarationNode, currentST: SymbolTable): Unit = {
 
-     var ident: IdentNode = statement.identifier
+
+      val ident: IdentNode = statement.identifier
 
      ident.nodeType = statement.variableType
 
