@@ -135,7 +135,18 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     visit(ctx.getChild(0)).asInstanceOf[PairElemNode]
   }
 
-  override def visitCallRHS(ctx: CallRHSContext): AstNode = super.visitCallRHS(ctx)
+  override def visitCallRHS(ctx: CallRHSContext): AssignmentRightNode = {
+    val noOfChildren = ctx.getChildCount
+    val hasArgList = noOfChildren == 5
+
+    val id: IdentNode = visit(ctx.getChild(1)).asInstanceOf[IdentNode]
+    val argList: Option[ArgListNode] =
+      if (hasArgList) {
+        Some(visit(ctx.getChild(3)).asInstanceOf[PairElemNode])
+      } else None
+
+    new CallNode(id, argList)
+  }
 
   override def visitPairType(ctx: WaccParser.PairTypeContext): AstNode = super.visitPairType(ctx)
 
