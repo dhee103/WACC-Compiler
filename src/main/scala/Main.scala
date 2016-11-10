@@ -1,13 +1,10 @@
-import org.antlr.v4.runtime.ANTLRFileStream._
-import org.antlr.v4.runtime.CommonTokenStream._
-import org.antlr.v4.runtime.Token._
-import org.antlr.v4.runtime.tree.ParseTree._
+
 
 object Main {
 
   def main(args : Array[String]): Unit = {
 
-    val filename = "wacc_examples/valid/if/if1.wacc"
+    val filename = "wacc_examples/invalid/syntaxErr/basic/Begin.wacc"
 
     val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
 
@@ -18,11 +15,17 @@ object Main {
 
     val waccParser = new WaccParser(tokens)
 
-    val tree = waccParser.prog();
 
-    for (i <- 0 until tokens.size()) {
-      println("token " + i  + " is " + tokens.get(i).getText() + " of type " + mapToId(tokens.get(i).getType(), tokenIDs))
-    }
+    waccLexer.removeErrorListeners();
+    waccLexer.addErrorListener(DescriptiveErrorListener.INSTANCE);
+    waccParser.removeErrorListeners();
+    waccParser.addErrorListener(DescriptiveErrorListener.INSTANCE);
+
+    val tree = waccParser.prog()
+
+//    for (i <- 0 until tokens.size()) {
+//      println("token " + i  + " is " + tokens.get(i).getText() + " of type " + mapToId(tokens.get(i).getType(), tokenIDs))
+//    }
 
     println("==================================================")
 
