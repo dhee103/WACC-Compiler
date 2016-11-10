@@ -38,6 +38,58 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new FreeNode(variable)
   }
 
+  override def visitReturn(ctx: WaccParser.ReturnContext): ReturnNode = {
+    val returnValue: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+
+    new ReturnNode(returnValue)
+  }
+
+  override def visitExit(ctx: WaccParser.ExitContext): ExitNode = {
+    val exitCode: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+
+    new ExitNode(exitCode)
+  }
+
+  override def visitPrint(ctx: WaccParser.PrintContext): PrintNode = {
+    val text: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+
+    new PrintNode(text)
+  }
+
+  override def visitPrintln(ctx: WaccParser.PrintlnContext): PrintlnNode = {
+    val text: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+
+    new PrintlnNode(text)
+  }
+
+  override def visitIf(ctx: WaccParser.IfContext): IfNode = {
+    val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+    val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
+    val elseStat: StatNode = visit(ctx.getChild(5)).asInstanceOf[StatNode]
+
+    new IfNode(condition, thenStat, elseStat)
+  }
+
+  override def visitWhile(ctx: WaccParser.WhileContext): WhileNode = {
+    val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+    val loopBody: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
+
+    new WhileNode(condition, loopBody)
+  }
+
+  override def visitNewBegin(ctx: WaccParser.NewBeginContext): NewBeginNode = {
+    val body: StatNode = visit(ctx.getChild(1)).asInstanceOf[StatNode]
+
+    new NewBeginNode(body)
+  }
+
+  override def visitSequence(ctx: WaccParser.SequenceContext): SequenceNode = {
+    val fstStat: StatNode = visit(ctx.getChild(0)).asInstanceOf[StatNode]
+    val sndStat: StatNode = visit(ctx.getChild(2)).asInstanceOf[StatNode]
+
+    new SequenceNode(fstStat, sndStat)
+  }
+
   override def visitDeclaration(ctx: WaccParser.DeclarationContext): AstNode = super.visitDeclaration(ctx)
 
   override def visitIdentLHS(ctx: WaccParser.IdentLHSContext): AstNode = super.visitIdentLHS(ctx)
