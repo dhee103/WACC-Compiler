@@ -73,35 +73,43 @@ expr: int_liter                                             #IntLiteral
     | array_elem                                            #ArrayElem
     | unary_oper expr                                       #UnaryOperation
     | expr binary_op1 expr                                  #BinaryOp1
-    | expr (PLUS) expr                                      #Plus
+    | expr binary_op2 expr                                  #BinaryOp2
     | expr binary_op3 expr                                  #BinaryOp3
     | expr binary_op4 expr                                  #BinaryOp4
-    | expr (LOGICAL_AND) expr                               #LogicalAnd
-    | expr (LOGICAL_OR) expr                                #LogicalOr
+    | expr binary_op5 expr                                  #BinaryOp5
+    | expr binary_op6 expr                                  #BinaryOp6
     | LPAREN expr RPAREN                                    #Parens
     ;
 
-unary_oper: EXCLAMATION                                     #LogicalNot
-          | MINUS                                           #Negative
-          | LENGTH                                          #Len
-          | ORD                                             #Ord
-          | CHR                                             #Chr
+unary_oper: EXCLAMATION                                     //#LogicalNot
+          | MINUS                                           //#Negative
+          | LENGTH                                          //#Len
+          | ORD                                             //#Ord
+          | CHR                                             //#Chr
           ;
 
-binary_op1: MULTIPLY                                        #MulOperation
-          | DIVIDE                                          #DivOperation
-          | MOD                                             #Mod
+binary_op1: MULTIPLY                                        //#MulOperation
+          | DIVIDE                                          //#DivOperation
+          | MOD                                             //#Mod
           ;
 
-binary_op3: GREATER_THAN                                    #GreaterThan
-          | GREATER_EQUAL                                   #GreaterEqual
-          | LESS_THAN                                       #LessThan
-          | LESS_EQUAL                                      #LessEqual
+binary_op2: PLUS
+          | MINUS
           ;
 
-binary_op4: DOUBLE_EQUAL                                    #DoubleEqual
-          | NOT_EQUAL                                       #NotEqual
+binary_op3: GREATER_THAN                                    //#GreaterThan
+          | GREATER_EQUAL                                   //#GreaterEqual
+          | LESS_THAN                                       //#LessThan
+          | LESS_EQUAL                                      //#LessEqual
           ;
+
+binary_op4: DOUBLE_EQUAL                                    //#DoubleEqual
+          | NOT_EQUAL                                       //#NotEqual
+          ;
+
+binary_op5: LOGICAL_AND ;
+
+binary_op6: LOGICAL_OR ;
 
 ident: ID ;
 
