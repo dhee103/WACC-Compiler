@@ -188,7 +188,12 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new StringTypeNode
   }
 
-  override def visitPair_type(ctx: WaccParser.Pair_typeContext): AstNode = super.visitPair_type(ctx)
+  override def visitPair_type(ctx: WaccParser.Pair_typeContext): PairTypeNode = {
+    val firstElemType: PairElemTypeNode = visit(ctx.getChild(1)).asInstanceOf[PairElemTypeNode]
+    val secondElemType: PairElemTypeNode = visit(ctx.getChild(3)).asInstanceOf[PairElemTypeNode]
+
+    new PairTypeNode(firstElemType, secondElemType)
+  }
 
   override def visitPair_elem_type(ctx: WaccParser.Pair_elem_typeContext): AstNode = super.visitPair_elem_type(ctx)
 
