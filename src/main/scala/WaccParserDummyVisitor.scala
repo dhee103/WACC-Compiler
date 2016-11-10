@@ -20,11 +20,19 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitParam(ctx: WaccParser.ParamContext): AstNode = super.visitParam(ctx)
 
-  override def visitAssignment(ctx: WaccParser.AssignmentContext): AstNode = super.visitAssignment(ctx)
-
   override def visitSkipStat(ctx: WaccParser.SkipStatContext): SkipStatNode = {
     new SkipStatNode()
   }
+
+  override def visitDeclaration(ctx: WaccParser.DeclarationContext): DeclarationNode = {
+    val variableType: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
+    val identifier: IdentNode = visit(ctx.getChild(1)).asInstanceOf[IdentNode]
+    val rhs: AssignmentRightNode =  visit(ctx.getChild(3)).asInstanceOf[AssignmentRightNode]
+
+    new DeclarationNode(variableType, identifier, rhs)
+  }
+
+  override def visitAssignment(ctx: WaccParser.AssignmentContext): AstNode = super.visitAssignment(ctx)
 
   override def visitRead(ctx: WaccParser.ReadContext): ReadNode = {
     val variable: AssignmentLeftNode = visit(ctx.getChild(1)).asInstanceOf[AssignmentLeftNode]
@@ -89,8 +97,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
     new SequenceNode(fstStat, sndStat)
   }
-
-  override def visitDeclaration(ctx: WaccParser.DeclarationContext): AstNode = super.visitDeclaration(ctx)
 
   override def visitIdentLHS(ctx: WaccParser.IdentLHSContext): AstNode = super.visitIdentLHS(ctx)
 
