@@ -269,7 +269,9 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitBinaryOperation6(ctx: BinaryOperation6Context): AstNode = super.visitBinaryOperation6(ctx)
 
-  override def visitParens(ctx: WaccParser.ParensContext): AstNode = super.visitParens(ctx)
+  override def visitParens(ctx: WaccParser.ParensContext): ExprNode = {
+    visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+  }
 
   override def visitArrayElem(ctx: WaccParser.ArrayElemContext): AstNode = super.visitArrayElem(ctx)
 
