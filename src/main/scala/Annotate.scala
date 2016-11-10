@@ -13,6 +13,7 @@ class Annotate(val _AST: ProgNode) {
   SymbolTable): Unit = {
 
     var statementType: String = getType(statement)
+
     statementType match {
 
       case "DeclarationNode" => annotateDeclarationNode(statement
@@ -40,7 +41,6 @@ class Annotate(val _AST: ProgNode) {
       case "SequenceNode" => annotateSequenceNode(statement
         .asInstanceOf[SequenceNode], STable)
 
-
     }
   }
 
@@ -53,6 +53,7 @@ class Annotate(val _AST: ProgNode) {
 
       case "IdentNode" => annotateIdentNode(expression
         .asInstanceOf[IdentNode], currentScopeSymbolTable)
+
       case "LogicalNotNode" => annotateUnaryOperationNode(expression
         .asInstanceOf[LogicalNotNode], currentScopeSymbolTable)
       case "OrdNode" => annotateUnaryOperationNode(expression
@@ -64,12 +65,37 @@ class Annotate(val _AST: ProgNode) {
       case "NegativeNode" => annotateUnaryOperationNode(expression
         .asInstanceOf[NegativeNode], currentScopeSymbolTable)
 
+      case "MulOperationNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[MulOperationNode], currentScopeSymbolTable)
+      case "DivOperationNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[DivOperationNode], currentScopeSymbolTable)
+      case "ModNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[ModNode], currentScopeSymbolTable)
+      case "PlusNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[PlusNode], currentScopeSymbolTable)
+      case "MinusNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[MinusNode], currentScopeSymbolTable)
+      case "GreaterThanNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[GreaterThanNode], currentScopeSymbolTable)
+      case "GreaterEqualNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[GreaterEqualNode], currentScopeSymbolTable)
+      case "LessThanNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[LessThanNode], currentScopeSymbolTable)
+      case "LessEqualNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[LessEqualNode], currentScopeSymbolTable)
+      case "DoubleEqualNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[DoubleEqualNode], currentScopeSymbolTable)
+      case "NotEqualNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[NotEqualNode], currentScopeSymbolTable)
+      case "LogicalOrNode" => annotateBinaryOperationNode(expression
+        .asInstanceOf[LogicalOrNode], currentScopeSymbolTable)
+
+//        TODO: add node for '(' <expr> ')'? 
     }
 
   }
 
   def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
-
     identifier.nodeType = currentST.lookupAll(identifier)
     //may throw exceptions here
 
@@ -77,8 +103,13 @@ class Annotate(val _AST: ProgNode) {
 
   def annotateUnaryOperationNode(unOPNode: UnaryOperationNode, currentST:
   SymbolTable) = {
+      annotateExprNode(unOPNode.argument, currentST)
+  }
 
-
+  def annotateBinaryOperationNode(binOpNode: BinaryOperationNode, currentST:
+  SymbolTable) = {
+    annotateExprNode(binOpNode.firstArg, currentST)
+    annotateExprNode(binOpNode.secondArg, currentST)
   }
 
   def annotateDeclarationNode(statement: DeclarationNode, currentST:
@@ -145,7 +176,6 @@ class Annotate(val _AST: ProgNode) {
       readTarget = statement.variable.asInstanceOf[IdentNode]
 
       readTarget.nodeType = currentST.lookupAll(readTarget)
-
 
     }
 
