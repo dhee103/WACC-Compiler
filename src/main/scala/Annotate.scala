@@ -33,33 +33,57 @@ class Annotate(val _AST: ProgNode) {
 
     def annotateDeclarationNode(statement: DeclarationNode, currentST: SymbolTable): Unit = {
 
-     val ident: IdentNode = statement.identifier
+     var ident: IdentNode = statement.identifier
 
      ident.nodeType = statement.variableType
 
      currentST.add(ident, ident.nodeType)
 
+     statement.identifier = ident
+
     }
 
     def annotateAssignmentNode(statement: AssignmentNode, currentST: SymbolTable): Unit = {
 
-      val lhsNode = statement.lhs
+      var lhsNode: IdentNode = null
 
-      if(getType(lhsNode) == "IdentNode"){
+      var rhsNode: IdentNode = null
 
+      if(getType(statement.lhs) == "IdentNode"){
 
+        lhsNode = lhsNode.asInstanceOf[IdentNode]
+
+        lhsNode.typeVal = currentST.lookupAll(lhsNode)
 
       }
 
+      if(getType(statement.rhs) == "IdentNode"){
 
+        rhsNode = rhsNode.asInstanceOf[IdentNode]
 
+        rhsNode.typeVal = currentST.lookupAll(rhsNode)
 
+      }
 
+      statement.rhs = rhsNode
 
+      statement.lhs = lhsNode
 
     }
 
     def annotateReadNode(statement: ReadNode, currentST: SymbolTable): Unit = {
+
+      var readTarget: IdentNode =  null
+
+      if(getType(statement.variable) == "IdentNode"){
+
+        readTarget = statement.variable.asInstanceOf[IdentNode]
+
+        readTarget.typeVal = currentST.lookupAll(readTarget)
+
+
+
+      }
 
     }
 

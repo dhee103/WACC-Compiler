@@ -9,15 +9,15 @@ class SkipStatNode extends StatNode {
 class DeclarationNode(val _variableType: TypeNode, val _identifier: IdentNode, val _rhs: AssignmentRightNode) extends StatNode {
 
   val variableType: TypeNode = _variableType
-  val identifier: IdentNode = _identifier
+  var identifier: IdentNode = _identifier
   val rhs: AssignmentRightNode = _rhs
 
 }
 
 class AssignmentNode(val _lhs: AssignmentLeftNode, val _rhs: AssignmentRightNode) extends StatNode {
 
-  val lhs: AssignmentLeftNode = _lhs
-  val rhs: AssignmentRightNode = _rhs
+  var lhs: AssignmentLeftNode = _lhs
+  var rhs: AssignmentRightNode = _rhs
 
 }
 

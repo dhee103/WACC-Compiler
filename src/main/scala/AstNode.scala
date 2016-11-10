@@ -86,7 +86,7 @@ class InnerPairTypeNode extends PairElemTypeNode {
 class IdentNode(val _name: String, val _type: TypeNode) extends ExprNode with AssignmentLeftNode {
 
   val name: String = _name
-  val typeVal: TypeNode = _type
+  var typeVal: TypeNode = _type
 
   override def equals(that: Any): Boolean = that match {
 
