@@ -51,10 +51,10 @@ type: base_type                                             #BaseType
     | pair_type                                             #PairType
     ;
 
-base_type: INT_TYPE                                         #Int
-         | BOOL_TYPE                                        #Bool
-         | CHAR_TYPE                                        #Char
-         | STRING_TYPE                                      #String
+base_type: INT_TYPE                                         #IntType
+         | BOOL_TYPE                                        #BoolType
+         | CHAR_TYPE                                        #CharType
+         | STRING_TYPE                                      #StringType
          ;
 
 pair_type: PAIR_TYPE LPAREN pair_elem_type COMMA pair_elem_type RPAREN ;
