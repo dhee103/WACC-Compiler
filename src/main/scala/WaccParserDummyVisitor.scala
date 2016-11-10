@@ -22,8 +22,8 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitAssignment(ctx: WaccParser.AssignmentContext): AstNode = super.visitAssignment(ctx)
 
-  override def visitSkipStat(ctx: WaccParser.SkipStatContext): AstNode = {
-    
+  override def visitSkipStat(ctx: WaccParser.SkipStatContext): SkipStatNode = {
+    new SkipStatNode()
   }
 
   override def visitRead(ctx: WaccParser.ReadContext): ReadNode = {
