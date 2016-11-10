@@ -59,9 +59,9 @@ base_type: INT_TYPE                                         #IntType
 
 pair_type: PAIR_TYPE LPAREN pair_elem_type COMMA pair_elem_type RPAREN ;
 
-pair_elem_type: base_type                                   
-              | type LBRACKET RBRACKET
-              | PAIR_TYPE
+pair_elem_type: base_type                                   #BaseTypePairElem
+              | type LBRACKET RBRACKET                      #ArrayTypePairElem
+              | PAIR_TYPE                                   #PairTypePairElem
               ;
 
 expr: int_liter                                             #IntLiteral
@@ -72,12 +72,12 @@ expr: int_liter                                             #IntLiteral
     | ident                                                 #IdentExpr
     | array_elem                                            #ArrayElemExpr
     | unary_oper expr                                       #UnaryOperation
-    | expr binary_op1 expr                                  #BinaryOp1
-    | expr binary_op2 expr                                  #BinaryOp2
-    | expr binary_op3 expr                                  #BinaryOp3
-    | expr binary_op4 expr                                  #BinaryOp4
-    | expr binary_op5 expr                                  #BinaryOp5
-    | expr binary_op6 expr                                  #BinaryOp6
+    | expr binary_op1 expr                                  #BinaryOperation1
+    | expr binary_op2 expr                                  #BinaryOperation2
+    | expr binary_op3 expr                                  #BinaryOperation3
+    | expr binary_op4 expr                                  #BinaryOperation4
+    | expr binary_op5 expr                                  #BinaryOperation5
+    | expr binary_op6 expr                                  #BinaryOperation6
     | LPAREN expr RPAREN                                    #Parens
     ;
 
