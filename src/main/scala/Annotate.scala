@@ -90,7 +90,7 @@ class Annotate(val _AST: ProgNode) {
       case "LogicalOrNode" => annotateBinaryOperationNode(expression
         .asInstanceOf[LogicalOrNode], currentScopeSymbolTable)
 
-//        TODO: add node for '(' <expr> ')'? 
+//        TODO: add node for '(' <expr> ')'?
     }
 
   }
@@ -182,38 +182,41 @@ class Annotate(val _AST: ProgNode) {
   }
 
   def annotateFreeNode(statement: FreeNode, currentST: SymbolTable): Unit = {
-
+    annotateExprNode(statement.variable, currentST)
   }
 
   def annotateReturnNode(statement: ReturnNode, currentST: SymbolTable): Unit
   = {
-
+    annotateExprNode(statement.returnValue, currentST)
   }
 
   def annotateExitNode(statement: ExitNode, currentST: SymbolTable): Unit = {
-
+    annotateExprNode(statement.exitCode, currentST)
   }
 
   def annotatePrintNode(statement: PrintNode, currentST: SymbolTable): Unit = {
-
+    annotateExprNode(statement.text,  currentST)
   }
 
   def annotatePrintlnNode(statement: PrintlnNode, currentST: SymbolTable):
   Unit = {
-
+    annotateExprNode(statement.text, currentST)
   }
 
   def annotateIfNode(statement: IfNode, currentST: SymbolTable): Unit = {
-
+    annotateExprNode(statement.condition, currentST)
+    annotateStatNode(statement.thenStat, currentST)
+    annotateStatNode(statement.elseStat, currentST)
   }
 
   def annotateWhileNode(statement: WhileNode, currentST: SymbolTable): Unit = {
-
+    annotateExprNode(statement.condition, currentST)
+    annotateStatNode(statement.loopBody, currentST)
   }
 
   def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable):
   Unit = {
-
+    annotateStatNode(statement.body, currentST)
   }
 
   def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable):
