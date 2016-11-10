@@ -1,13 +1,14 @@
-import org.antlr.v4.runtime.ANTLRFileStream._
-import org.antlr.v4.runtime.CommonTokenStream._
-import org.antlr.v4.runtime.Token._
-import org.antlr.v4.runtime.tree.ParseTree._
+
 
 object Main {
 
   def main(args : Array[String]): Unit = {
+    if (!args.isEmpty) sys.exit(compile(args(1)))
+    else compile("hello")
+  }
 
-    val filename = "wacc_examples/valid/if/if1.wacc"
+  def compile(in: String): Int = {
+    val filename = in
 
     val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
 
@@ -18,23 +19,31 @@ object Main {
 
     val waccParser = new WaccParser(tokens)
 
-    val tree = waccParser.prog();
+    val tree = waccParser.prog()
 
-    for (i <- 0 until tokens.size()) {
-      println("token " + i  + " is " + tokens.get(i).getText() + " of type " + mapToId(tokens.get(i).getType(), tokenIDs))
-    }
-
-    println("==================================================")
-
-    println(tree.toStringTree(waccParser));
-
-    println("==================================================")
+//    for (i <- 0 until tokens.size()) {
+//      println("token " + i  + " is " + tokens.get(i).getText() + " of type " + mapToId(tokens.get(i).getType(), tokenIDs))
+//    }
+//
+//    println("==================================================")
+//
+//    println(tree.toStringTree(waccParser));
+//
+//    println("==================================================")
 
     val visitor = new WaccParserDummyVisitor()
 
     visitor.visit(tree)
 
+    val noErrs = waccParser.getNumberOfSyntaxErrors
 
+    if (noErrs > 0) {
+      return 100
+    }
+
+    return 0
+
+//    sys.exit
   }
 
   def buildTree(currentTree: org.antlr.v4.runtime.tree.ParseTree, count: Int): Unit = {
@@ -45,8 +54,6 @@ object Main {
       print("\t" * count)
       print("child " + (i + 1) + " is ")
       buildTree(currentTree.getChild(i), count + 1)
-
-
     }
 
   }
