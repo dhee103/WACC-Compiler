@@ -209,33 +209,37 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new InnerPairTypeNode()
   }
 
-  override def visitIntLiteral(ctx: WaccParser.IntLiteralContext): AstNode = super.visitIntLiteral(ctx)
+  override def visitIntLiteral(ctx: IntLiteralContext): ExprNode = {
+    visit(ctx.getChild(0)).asInstanceOf[IntLiteralNode]
+  }
 
-  override def visitBinaryOp4(ctx: WaccParser.BinaryOp4Context): AstNode = super.visitBinaryOp4(ctx)
+  override def visitInt_liter(ctx: WaccParser.Int_literContext): IntLiteralNode = {
+    val value = Integer.parseInt(ctx.getText)
 
-  override def visitBinaryOp5(ctx: WaccParser.BinaryOp5Context): AstNode = super.visitBinaryOp5(ctx)
+    new IntLiteralNode(value)
+  }
 
-  override def visitBinaryOp2(ctx: WaccParser.BinaryOp2Context): AstNode = super.visitBinaryOp2(ctx)
+  override def visitBinaryOperation1(ctx: BinaryOperation1Context): AstNode = super.visitBinaryOperation1(ctx)
 
-  override def visitUnaryOperation(ctx: WaccParser.UnaryOperationContext): AstNode = super.visitUnaryOperation(ctx)
+  override def visitBinaryOperation2(ctx: BinaryOperation2Context): AstNode = super.visitBinaryOperation2(ctx)
 
-  override def visitBinaryOp3(ctx: WaccParser.BinaryOp3Context): AstNode = super.visitBinaryOp3(ctx)
+  override def visitBinaryOperation3(ctx: BinaryOperation3Context): AstNode = super.visitBinaryOperation3(ctx)
+
+  override def visitBinaryOperation4(ctx: BinaryOperation4Context): AstNode = super.visitBinaryOperation4(ctx)
+
+  override def visitBinaryOperation5(ctx: BinaryOperation5Context): AstNode = super.visitBinaryOperation5(ctx)
+
+  override def visitBinaryOperation6(ctx: BinaryOperation6Context): AstNode = super.visitBinaryOperation6(ctx)
 
   override def visitCharLiteral(ctx: WaccParser.CharLiteralContext): AstNode = super.visitCharLiteral(ctx)
 
   override def visitParens(ctx: WaccParser.ParensContext): AstNode = super.visitParens(ctx)
-
-  override def visitBinaryOp6(ctx: WaccParser.BinaryOp6Context): AstNode = super.visitBinaryOp6(ctx)
-
-  override def visitPairLiteral(ctx: WaccParser.PairLiteralContext): AstNode = super.visitPairLiteral(ctx)
 
   override def visitBoolLiteral(ctx: WaccParser.BoolLiteralContext): AstNode = super.visitBoolLiteral(ctx)
 
   override def visitStringLiteral(ctx: WaccParser.StringLiteralContext): AstNode = super.visitStringLiteral(ctx)
 
   override def visitArrayElem(ctx: WaccParser.ArrayElemContext): AstNode = super.visitArrayElem(ctx)
-
-  override def visitBinaryOp1(ctx: WaccParser.BinaryOp1Context): AstNode = super.visitBinaryOp1(ctx)
 
   override def visitUnary_oper(ctx: WaccParser.Unary_operContext): AstNode = super.visitUnary_oper(ctx)
 
@@ -255,8 +259,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitArrayElemExpr(ctx: ArrayElemExprContext): AstNode = super.visitArrayElemExpr(ctx)
 
-  override def visitInt_liter(ctx: WaccParser.Int_literContext): AstNode = super.visitInt_liter(ctx)
-
   override def visitBool_liter(ctx: WaccParser.Bool_literContext): AstNode = super.visitBool_liter(ctx)
 
   override def visitChar_liter(ctx: WaccParser.Char_literContext): AstNode = super.visitChar_liter(ctx)
@@ -270,4 +272,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitIdentExpr(ctx: IdentExprContext): AstNode = super.visitIdentExpr(ctx)
 
   override def visitArg_list(ctx: Arg_listContext): AstNode = super.visitArg_list(ctx)
+
+  override def visitUnaryOperation(ctx: UnaryOperationContext): AstNode = super.visitUnaryOperation(ctx)
 }
