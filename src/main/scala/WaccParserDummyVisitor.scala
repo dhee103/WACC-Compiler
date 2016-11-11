@@ -350,7 +350,9 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new IdentNode(name)
   }
 
-  override def visitArrayElemExpr(ctx: ArrayElemExprContext): AstNode = super.visitArrayElemExpr(ctx)
+  override def visitArrayElemExpr(ctx: ArrayElemExprContext): ExprNode  = {
+    visit(ctx.getChild(0)).asInstanceOf[ArrayElemNode]
+  }
 
   override def visitArray_liter(ctx: WaccParser.Array_literContext): AstNode = super.visitArray_liter(ctx)
 
