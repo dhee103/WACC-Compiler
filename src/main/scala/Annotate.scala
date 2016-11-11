@@ -1,12 +1,19 @@
 import scala.reflect.ClassTag
 
-class Annotate(val _AST: ProgNode) {
+object Annotate {
 
-  private var AST = _AST
+  private val sTable: SymbolTable = new SymbolTable(null)
 
-  private val STable: SymbolTable = new SymbolTable(null)
+  def AnnotateAST(ast: ProgNode): Unit = {
 
-  //def getAnnotatedAST
+    annotateProgNode(ast, sTable)
+  }
+
+  def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable): Unit = {
+
+    annotateStatNode(prog._statChild, topSymbolTable)
+
+  }
 
   def annotateStatNode(statement: StatNode, currentScopeSymbolTable:
   SymbolTable): Unit = {
@@ -16,29 +23,29 @@ class Annotate(val _AST: ProgNode) {
     statementType match {
 
       case "DeclarationNode" => annotateDeclarationNode(statement
-        .asInstanceOf[DeclarationNode], STable)
+        .asInstanceOf[DeclarationNode], sTable)
       case "AssignmentNode" => annotateAssignmentNode(statement
-        .asInstanceOf[AssignmentNode], STable)
+        .asInstanceOf[AssignmentNode], sTable)
       case "ReadNode" => annotateReadNode(statement.asInstanceOf[ReadNode],
-        STable)
+        sTable)
       case "FreeNode" => annotateFreeNode(statement.asInstanceOf[FreeNode],
-        STable)
+        sTable)
       case "ReturnNode" => annotateReturnNode(statement
-        .asInstanceOf[ReturnNode], STable)
+        .asInstanceOf[ReturnNode], sTable)
       case "ExitNode" => annotateExitNode(statement.asInstanceOf[ExitNode],
-        STable)
+        sTable)
       case "PrintNode" => annotatePrintNode(statement
-        .asInstanceOf[PrintNode], STable)
+        .asInstanceOf[PrintNode], sTable)
       case "PrintlnNode" => annotatePrintlnNode(statement
-        .asInstanceOf[PrintlnNode], STable)
+        .asInstanceOf[PrintlnNode], sTable)
       case "IfNode" => annotateIfNode(statement.asInstanceOf[IfNode], new
-          SymbolTable(STable))
+          SymbolTable(sTable))
       case "WhileNode" => annotateWhileNode(statement
-        .asInstanceOf[WhileNode], new SymbolTable(STable))
+        .asInstanceOf[WhileNode], new SymbolTable(sTable))
       case "NewBeginNode" => annotateNewBeginNode(statement
-        .asInstanceOf[NewBeginNode], new SymbolTable(STable))
+        .asInstanceOf[NewBeginNode], new SymbolTable(sTable))
       case "SequenceNode" => annotateSequenceNode(statement
-        .asInstanceOf[SequenceNode], STable)
+        .asInstanceOf[SequenceNode], sTable)
 
     }
   }
@@ -53,6 +60,7 @@ class Annotate(val _AST: ProgNode) {
       case "IdentNode" => annotateIdentNode(expression
         .asInstanceOf[IdentNode], currentScopeSymbolTable)
 
+      case "ArrayElemNode" => annotateArrayElemNode(expression.asInstanceOf[ArrayElemNode], currentScopeSymbolTable
       case "LogicalNotNode" => annotateUnaryOperationNode(expression
         .asInstanceOf[LogicalNotNode], currentScopeSymbolTable)
       case "OrdNode" => annotateUnaryOperationNode(expression
@@ -89,6 +97,7 @@ class Annotate(val _AST: ProgNode) {
       case "LogicalOrNode" => annotateBinaryOperationNode(expression
         .asInstanceOf[LogicalOrNode], currentScopeSymbolTable)
 
+
 //        TODO: add node for '(' <expr> ')'?
     }
 
@@ -97,6 +106,16 @@ class Annotate(val _AST: ProgNode) {
   def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
     identifier.nodeType = currentST.lookupAll(identifier)
     //may throw exceptions here
+
+  }
+
+  def annotateArrayElemNode(arrElem: ArrayElemNode, currentST: SymbolTable): Unit = {
+
+    annotateIdentNode(arrElem._identifier, currentST)
+
+    for (index <- arrElem.indices) {
+      annotateExprNode(index, currentST)
+    }
 
   }
 
@@ -139,14 +158,6 @@ class Annotate(val _AST: ProgNode) {
 
     }
 
-    //    if (getType(statement.rhs) == "IdentNode") {
-    //
-    //      rhsNode = statement.rhs.asInstanceOf[IdentNode]
-    //
-    //      rhsNode.nodeType = currentST.lookupAll(rhsNode)
-    //
-    //    }
-
     Annotate.getType(statement.rhs) match {
       case "ExprNode" => annotateExprNode(statement.asInstanceOf[ExprNode],
         currentST)
@@ -156,12 +167,11 @@ class Annotate(val _AST: ProgNode) {
         annotateExprNode(statement.asInstanceOf[NewPairNode].sndElem, currentST)
       case "PairElemNode" => annotatePairElemNode(statement
         .asInstanceOf[PairElemNode], currentST)
-      case "CallNode" => annotateIdentNode(statement.asInstanceOf[IdentNode],
+      case "CallNode" =>  throw new UnsupportedOperationException("No support for annotating calls.")//annotateIdentNode(statement.asInstanceOf[IdentNode],
         currentST); //TODO: add arglist?
       case _: Any => println("error")
     }
 
-//    statement.rhs = rhsNode
 
     statement.lhs = lhsNode
 
@@ -242,10 +252,6 @@ class Annotate(val _AST: ProgNode) {
     f(typeNode1, typeNode2)
   }
 
-
-}
-
-object Annotate {
   def getType[T](obj: T): String = {
     val str: String = obj.getClass().toString
     str.substring(6, str.length)
