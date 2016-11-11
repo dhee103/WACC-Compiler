@@ -87,8 +87,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new DeclarationNode(variableType, identifier, rhs)
   }
 
-  override def visitAssignment(ctx: WaccParser.AssignmentContext):
-  AssignmentNode = {
+  override def visitAssignment(ctx: WaccParser.AssignmentContext): AssignmentNode = {
     //    println("hit " + currentMethodName())
 
     val lhs: AssignmentLeftNode = visit(ctx.getChild(0))
@@ -527,8 +526,14 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   //TODO: sort this out
   override def visitArrayElem(ctx: WaccParser.ArrayElemContext): AstNode = {
     //    println("hit " + currentMethodName())
-    super.visitArrayElem(ctx)
+    val noOfChildren = ctx.getChildCount
 
+    val identifier: IdentNode = visit(ctx.getChild(0)).asInstanceOf[IdentNode]
+    val indices: IndexedSeq[ExprNode] =
+    for (i <- 0 until noOfChildren if i % 3 == 2)
+      yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]
+
+    new ArrayElemNode()
   }
 
   override def visitIdentifier(ctx: WaccParser.IdentifierContext): IdentNode = {
