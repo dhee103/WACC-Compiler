@@ -1,11 +1,3 @@
-/**
-  * Created by dsg115 on 10/11/16.
-  */
-
-//import org.junit.Test
-//import org.hamcrest.MatherAssert.assert
-//import org.hamcrest.cores.is
-
 import org.scalatest.{FlatSpec, Matchers}
 
 //Ruby generated test suite. To check WACCVisitor.
@@ -828,5 +820,3 @@ class WACCVisTest extends FlatSpec with Matchers {
 
   }
 }
-
-
