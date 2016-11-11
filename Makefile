@@ -27,4 +27,7 @@ rules:
 clean:
 	sbt clean
 
+run: 
+	sbt "run-main Main #{ARGS}"
+
 .PHONY: all rules clean
