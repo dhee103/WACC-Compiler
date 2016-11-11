@@ -2,8 +2,8 @@ object Main {
 
   def main(args : Array[String]): Unit = {
     if (!args.isEmpty) {
-//      sys.exit(compile(args(0)))
-      println(compile(args(0)))
+      sys.exit(compile(args(0)))
+      // println(compile(args(0)))
     }
     else {
       sys.error("No filename passed")
@@ -43,22 +43,4 @@ object Main {
     return 0
 
   }
-
-//  TODO: move these functions as they do not seem to fit here
-  def buildTree(currentTree: org.antlr.v4.runtime.tree.ParseTree, count: Int): Unit = {
-
-    println(currentTree)
-
-    for(i <- 0 until currentTree.getChildCount){
-      print("\t" * count)
-      print("child " + (i + 1) + " is ")
-      buildTree(currentTree.getChild(i), count + 1)
-    }
-
-  }
-
-  def mapToId(typeNum: Int, tokenNames: Array[String]): String = {
-    if (typeNum > 0) tokenNames(typeNum - 1) else "EOF"
-  }
-
 }
