@@ -60,7 +60,7 @@ object Annotate {
       case "IdentNode" => annotateIdentNode(expression
         .asInstanceOf[IdentNode], currentScopeSymbolTable)
 
-      case "ArrayElemNode" => annotateArrayElemNode(expression.asInstanceOf[ArrayElemNode], currentScopeSymbolTable
+      case "ArrayElemNode" => annotateArrayElemNode(expression.asInstanceOf[ArrayElemNode], currentScopeSymbolTable)
       case "LogicalNotNode" => annotateUnaryOperationNode(expression
         .asInstanceOf[LogicalNotNode], currentScopeSymbolTable)
       case "OrdNode" => annotateUnaryOperationNode(expression
@@ -133,13 +133,21 @@ object Annotate {
   def annotateDeclarationNode(statement: DeclarationNode, currentST:
   SymbolTable): Unit = {
 
-    val ident: IdentNode = statement.identifier
+    if(currentST.lookup(statement.identifier) != null){
 
-    ident.nodeType = statement.variableType
+      //sys.exit(200)
 
-    currentST.add(ident, ident.nodeType)
+    }else {
 
-    statement.identifier = ident
+      val ident: IdentNode = statement.identifier
+
+      ident.nodeType = statement.variableType
+
+      currentST.add(ident, ident.nodeType)
+
+      statement.identifier = ident
+
+    }
 
   }
 
@@ -168,7 +176,7 @@ object Annotate {
       case "PairElemNode" => annotatePairElemNode(statement
         .asInstanceOf[PairElemNode], currentST)
       case "CallNode" =>  throw new UnsupportedOperationException("No support for annotating calls.")//annotateIdentNode(statement.asInstanceOf[IdentNode],
-        currentST); //TODO: add arglist?
+        currentST; //TODO: add arglist?
       case _: Any => println("error")
     }
 
@@ -239,8 +247,6 @@ object Annotate {
   SymbolTable): Unit = {
     annotateExprNode(pairStatement.exprChild, currentST)
   }
-
-
 
 
   def checkNodesHaveSameType(typeNode1: TypeNode, typeNode2: TypeNode):
