@@ -138,8 +138,8 @@ class ArrayElemNode(val _identifier: IdentNode, val _indices: Array[ExprNode]) e
 
 }
 
-class ArrayLiteralNode(val _values: Array[ExprNode]) extends AssignmentRightNode {
+class ArrayLiteralNode(val _values: IndexedSeq[ExprNode]) extends AssignmentRightNode {
 
-  val values: Array[ExprNode] = _values
+  val values: Array[ExprNode] = _values.toArray
 
 }
