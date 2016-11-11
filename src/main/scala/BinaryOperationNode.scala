@@ -5,11 +5,11 @@ trait BinaryOperationNode extends ExprNode {
 
 }
 
-class MulOperationNode(val leftExpr: ExprNode, val rightExpr: ExprNode) extends BinaryOperationNode {
+class MulNode(val leftExpr: ExprNode, val rightExpr: ExprNode) extends BinaryOperationNode {
 
 }
 
-class DivOperationNode(val leftExpr: ExprNode, val rightExpr: ExprNode) extends BinaryOperationNode {
+class DivNode(val leftExpr: ExprNode, val rightExpr: ExprNode) extends BinaryOperationNode {
 
 }
 
