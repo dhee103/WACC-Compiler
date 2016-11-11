@@ -65,9 +65,9 @@ class Annotate(val _AST: ProgNode) {
         .asInstanceOf[NegativeNode], currentScopeSymbolTable)
 
       case "MulOperationNode" => annotateBinaryOperationNode(expression
-        .asInstanceOf[MulOperationNode], currentScopeSymbolTable)
+        .asInstanceOf[MulNode], currentScopeSymbolTable)
       case "DivOperationNode" => annotateBinaryOperationNode(expression
-        .asInstanceOf[DivOperationNode], currentScopeSymbolTable)
+        .asInstanceOf[DivNode], currentScopeSymbolTable)
       case "ModNode" => annotateBinaryOperationNode(expression
         .asInstanceOf[ModNode], currentScopeSymbolTable)
       case "PlusNode" => annotateBinaryOperationNode(expression
@@ -107,8 +107,8 @@ class Annotate(val _AST: ProgNode) {
 
   def annotateBinaryOperationNode(binOpNode: BinaryOperationNode, currentST:
   SymbolTable) = {
-    annotateExprNode(binOpNode.firstArg, currentST)
-    annotateExprNode(binOpNode.secondArg, currentST)
+    annotateExprNode(binOpNode.leftExpr, currentST)
+    annotateExprNode(binOpNode.rightExpr, currentST)
   }
 
   def annotateDeclarationNode(statement: DeclarationNode, currentST:

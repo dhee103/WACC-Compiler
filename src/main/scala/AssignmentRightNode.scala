@@ -7,7 +7,7 @@ class NewPairNode(val _fstElem: ExprNode, val _sndElem: ExprNode) extends Assign
   val sndElem: ExprNode = _sndElem
 }
 
-class CallNode(val _id: IdentNode, val _argList: ArgListNode) extends AssignmentRightNode {
+class CallNode(val _id: IdentNode, val _argList: Option[ArgListNode]) extends AssignmentRightNode {
   val id: IdentNode = _id
-  val argList: Option[ArgListNode] = Some(_argList)
+  val argList: Option[ArgListNode] = _argList
 }
