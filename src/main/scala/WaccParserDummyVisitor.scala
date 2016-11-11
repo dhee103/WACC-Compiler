@@ -257,6 +257,21 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new StringLiteralNode(value)
   }
 
+  override def visitUnaryOperation(ctx: UnaryOperationContext): ExprNode = {
+    val argument: ExprNode =visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+
+    val operation = ctx.getChild(1).getText
+
+    operation match {
+      case "!" => new LogicalNotNode(argument)
+      case "-" => new NegativeNode(argument)
+      case "len" => new LenNode(argument)
+      case "ord" => new OrdNode(argument)
+      case "chr" => new ChrNode(argument)
+      case _ => throw new RuntimeException("Unknown Unary Operand.")
+    }
+  }
+
   override def visitBinaryOperation1(ctx: BinaryOperation1Context): ExprNode = {
     val leftExpr: ExprNode = visit(ctx.getChild(0)).asInstanceOf[ExprNode]
     val rightExpr: ExprNode = visit(ctx.getChild(2)).asInstanceOf[ExprNode]
@@ -362,5 +377,4 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitArg_list(ctx: Arg_listContext): AstNode = super.visitArg_list(ctx)
 
-  override def visitUnaryOperation(ctx: UnaryOperationContext): AstNode = super.visitUnaryOperation(ctx)
 }
