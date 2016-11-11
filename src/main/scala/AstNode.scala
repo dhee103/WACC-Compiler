@@ -131,10 +131,10 @@ class IdentNode(val _name: String) extends ExprNode with AssignmentLeftNode {
 }
 
 
-class ArrayElemNode(val _identifier: IdentNode, val _indices: Array[ExprNode]) extends ExprNode with  AssignmentLeftNode {
+class ArrayElemNode(val _identifier: IdentNode, val _indices: IndexedSeq[ExprNode]) extends ExprNode with  AssignmentLeftNode {
 
   val identifier: IdentNode = _identifier
-  val indices: Array[ExprNode] = _indices
+  val indices: Array[ExprNode] = _indices.toArray
 
 }
 
