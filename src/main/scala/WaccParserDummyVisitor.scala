@@ -532,7 +532,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     for (i <- 0 until noOfChildren if i % 3 == 2)
       yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]
 
-    new ArrayElemNode()
+    new ArrayElemNode(identifier, indices)
   }
 
   override def visitIdentifier(ctx: WaccParser.IdentifierContext): IdentNode = {
