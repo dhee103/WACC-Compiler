@@ -1,5 +1,4 @@
 import scala.reflect.ClassTag
-import scala.reflect.runtime.{universe => univ}
 
 class Annotate(val _AST: ProgNode) {
 
