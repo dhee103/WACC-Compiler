@@ -15,11 +15,11 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new ProgNode(statChild, funcChildren)
   }
 
-  override def visitFunc(ctx: WaccParser.FuncContext): AstNode = super.visitFunc(ctx)
+  override def visitFunc(ctx: WaccParser.FuncContext): AstNode = super.visitFunc(ctx) // TO DO
 
-  override def visitParam_list(ctx: WaccParser.Param_listContext): AstNode = super.visitParam_list(ctx)
+  override def visitParam_list(ctx: WaccParser.Param_listContext): AstNode = super.visitParam_list(ctx) // TO DO
 
-  override def visitParam(ctx: WaccParser.ParamContext): AstNode = super.visitParam(ctx)
+  override def visitParam(ctx: WaccParser.ParamContext): AstNode = super.visitParam(ctx) // TO DO
 
   override def visitSkipStat(ctx: WaccParser.SkipStatContext): SkipStatNode = {
     new SkipStatNode()
@@ -356,7 +356,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   override def visitArrayElem(ctx: WaccParser.ArrayElemContext): AstNode = super.visitArrayElem(ctx)
-  
+
   override def visitIdentifier(ctx: WaccParser.IdentifierContext): IdentNode = {
     val name = ctx.getText
 
@@ -373,6 +373,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     visit(ctx.getChild(0)).asInstanceOf[IdentNode]
   }
 
-  override def visitArg_list(ctx: Arg_listContext): AstNode = super.visitArg_list(ctx)
+  override def visitArg_list(ctx: Arg_listContext): AstNode = super.visitArg_list(ctx) // TO DO
 
 }
