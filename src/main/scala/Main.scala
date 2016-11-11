@@ -1,5 +1,3 @@
-
-
 object Main {
 
   def main(args : Array[String]): Unit = {
@@ -16,10 +14,7 @@ object Main {
 
     val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
 
-    // Get a list of matched tokens
     val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLexer)
-
-//    val tokenIDs : Array[String] =  waccLexer.getRuleNames
 
     val waccParser = new WaccParser(tokens)
 
@@ -42,6 +37,7 @@ object Main {
 
   }
 
+//  TODO: move these functions as they do not seem to fit here
   def buildTree(currentTree: org.antlr.v4.runtime.tree.ParseTree, count: Int): Unit = {
 
     println(currentTree)
