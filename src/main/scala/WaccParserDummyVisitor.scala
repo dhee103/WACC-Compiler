@@ -343,19 +343,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitArrayElem(ctx: WaccParser.ArrayElemContext): AstNode = super.visitArrayElem(ctx)
 
   override def visitUnary_oper(ctx: WaccParser.Unary_operContext): AstNode = super.visitUnary_oper(ctx)
-
-  override def visitBinary_op1(ctx: WaccParser.Binary_op1Context): AstNode = super.visitBinary_op1(ctx)
-
-  override def visitBinary_op2(ctx: WaccParser.Binary_op2Context): AstNode = super.visitBinary_op2(ctx)
-
-  override def visitBinary_op3(ctx: WaccParser.Binary_op3Context): AstNode = super.visitBinary_op3(ctx)
-
-  override def visitBinary_op4(ctx: WaccParser.Binary_op4Context): AstNode = super.visitBinary_op4(ctx)
-
-  override def visitBinary_op5(ctx: WaccParser.Binary_op5Context): AstNode = super.visitBinary_op5(ctx)
-
-  override def visitBinary_op6(ctx: WaccParser.Binary_op6Context): AstNode = super.visitBinary_op6(ctx)
-
+  
   override def visitIdentifier(ctx: WaccParser.IdentifierContext): IdentNode = {
     val name = ctx.getText
 
