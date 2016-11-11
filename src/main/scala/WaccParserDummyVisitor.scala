@@ -543,10 +543,14 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     visit(ctx.getChild(0)).asInstanceOf[ArrayElemNode]
   }
 
-  //  TODO: Sort this out also
-  override def visitArray_liter(ctx: WaccParser.Array_literContext): AstNode = {
+  override def visitArray_liter(ctx: WaccParser.Array_literContext): ArrayLiteralNode = {
     //    println("hit " + currentMethodName())
-    super.visitArray_liter(ctx)
+    val noOfChildren = ctx.getChildCount
+    val values: IndexedSeq[ExprNode] =
+      for (i <- 0 until noOfChildren if i % 2 == 1)
+        yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]
+
+    new ArrayLiteralNode(values)
   }
 
   override def visitIdentExpr(ctx: IdentExprContext): ExprNode = {
