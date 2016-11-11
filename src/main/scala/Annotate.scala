@@ -11,7 +11,7 @@ class Annotate(val _AST: ProgNode) {
   def annotateStatNode(statement: StatNode, currentScopeSymbolTable:
   SymbolTable): Unit = {
 
-    val statementType: String = getType(statement)
+    val statementType: String = Annotate.getType(statement)
 
     statementType match {
 
@@ -46,7 +46,7 @@ class Annotate(val _AST: ProgNode) {
   def annotateExprNode(expression: ExprNode, currentScopeSymbolTable:
   SymbolTable): Unit = {
 
-    val exprType: String = getType(expression)
+    val exprType: String = Annotate.getType(expression)
 
     exprType match {
 
@@ -131,7 +131,7 @@ class Annotate(val _AST: ProgNode) {
 
     //    var rhsNode: AstNode = null
 
-    if (getType(statement.lhs) == "IdentNode") {
+    if (Annotate.getType(statement.lhs) == "IdentNode") {
 
       lhsNode = statement.lhs.asInstanceOf[IdentNode]
 
@@ -147,7 +147,7 @@ class Annotate(val _AST: ProgNode) {
     //
     //    }
 
-    getType(statement.rhs) match {
+    Annotate.getType(statement.rhs) match {
       case "ExprNode" => annotateExprNode(statement.asInstanceOf[ExprNode],
         currentST)
       case "ArrayLiteralNode" =>
@@ -171,7 +171,7 @@ class Annotate(val _AST: ProgNode) {
 
     var readTarget: IdentNode = null
 
-    if (getType(statement.variable) == "IdentNode") {
+    if (Annotate.getType(statement.variable) == "IdentNode") {
 
       readTarget = statement.variable.asInstanceOf[IdentNode]
 
@@ -231,10 +231,7 @@ class Annotate(val _AST: ProgNode) {
   }
 
 
-  def getType[T](obj: T): String = {
-    val str: String = obj.getClass().toString
-    str.substring(6, str.length)
-  }
+
 
   def checkNodesHaveSameType(typeNode1: TypeNode, typeNode2: TypeNode):
   Boolean = {
@@ -246,4 +243,11 @@ class Annotate(val _AST: ProgNode) {
   }
 
 
+}
+
+object Annotate {
+  def getType[T](obj: T): String = {
+    val str: String = obj.getClass().toString
+    str.substring(6, str.length)
+  }
 }

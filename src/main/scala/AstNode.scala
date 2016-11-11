@@ -10,8 +10,29 @@ class ProgNode(val _statChild: StatNode, val _funcChildren: IndexedSeq[FuncNode]
 }
 
 
-class FuncNode extends AstNode {
+class FuncNode(val _typeSignature: TypeNode, val _identifier: IdentNode,
+               val _paramList: ParamListNode, val _statement: StatNode)
+  extends AstNode {
+
+  var typeSignature: TypeNode = _typeSignature
+  var identifier: IdentNode = _identifier
+  var paramList: ParamListNode = _paramList
+  var statement: StatNode = _statement
+
+
+
 }
+
+class ParamListNode(val _params: IndexedSeq[ParamNode]) extends AstNode {
+  val params: Array[ParamNode] = _params.toArray
+}
+
+class ParamNode(val _variableType: TypeNode, val _identifier: IdentNode) extends
+  AstNode {
+  val variableType = _variableType
+  val identifier = _identifier
+}
+
 
 trait AssignmentLeftNode extends AstNode {
 
