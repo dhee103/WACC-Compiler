@@ -1,16 +1,10 @@
-#!/bin/bash
+#!/usr/bin/ruby
 # Ruby front-end for your compiler.
 # You are free to change the language used for this script,
 # but do *not* change its name.
 
-# targetPath = ARGV[0]
-#
+targetPath = ARGV[0]
+
 # puts `make run ARGS="#{targetPath}"`
 
-
-DIR=$(dirname $0)
-
-scala -cp $DIR/target/scala-2.11/wacc_08_2.11-1.0.jar:$DIR/lib/antlr-4.5.3-complete.jar \
-wacc.Compiler < $@
-
-exit $?
+puts `sbt "run-main Main #{targetPath}"`
