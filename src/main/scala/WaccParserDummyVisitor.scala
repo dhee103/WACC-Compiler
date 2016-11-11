@@ -281,7 +281,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitInt_liter(ctx: WaccParser.Int_literContext): IntLiteralNode = {
     println("hit " + currentMethodName())
-    sys.exit(100)
     try {
       val value = Integer.parseInt(ctx.getText)
       new IntLiteralNode(value)
