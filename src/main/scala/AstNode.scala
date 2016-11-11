@@ -38,7 +38,7 @@ trait AssignmentLeftNode extends AstNode {
 
 }
 
-class ArgListNode(val _exprChildren: ExprNode*) extends AstNode {
+class ArgListNode(val _exprChildren: IndexedSeq[ExprNode]) extends AstNode {
 
   val exprChildren: Array[ExprNode] = _exprChildren.toArray
 

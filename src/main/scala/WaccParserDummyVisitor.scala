@@ -38,7 +38,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
     new FuncNode(typeSignature, identChild, paramChild, statChild)
 
-  } // TO DO
+  }
 
   def isReturnStatement(statement: StatNode): Boolean = {
     val statType: String = Annotate.getType(statement)
@@ -554,10 +554,13 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     visit(ctx.getChild(0)).asInstanceOf[IdentNode]
   }
 
-  override def visitArg_list(ctx: Arg_listContext): AstNode = {
-    //    println("hit " + currentMethodName())
+  override def visitArg_list(ctx: Arg_listContext): ArgListNode = {
+    val noOfChildren = ctx.getChildCount
+    val exprChildren: IndexedSeq[ExprNode] =
+      for (i <- 0 until noOfChildren if i % 2 == 0)
+        yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]
 
-    super.visitArg_list(ctx)
-  } // TO DO
+    new ArgListNode(exprChildren)
+  }
 
 }
