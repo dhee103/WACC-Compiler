@@ -356,9 +356,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   override def visitArrayElem(ctx: WaccParser.ArrayElemContext): AstNode = super.visitArrayElem(ctx)
-
-  override def visitUnary_oper(ctx: WaccParser.Unary_operContext): AstNode = super.visitUnary_oper(ctx)
-
+  
   override def visitIdentifier(ctx: WaccParser.IdentifierContext): IdentNode = {
     val name = ctx.getText
 
