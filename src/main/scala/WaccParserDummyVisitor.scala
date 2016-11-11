@@ -523,7 +523,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     visit(ctx.getChild(1)).asInstanceOf[ExprNode]
   }
 
-  //TODO: sort this out
   override def visitArrayElem(ctx: WaccParser.ArrayElemContext): AstNode = {
     //    println("hit " + currentMethodName())
     val noOfChildren = ctx.getChildCount
