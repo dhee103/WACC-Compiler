@@ -2,8 +2,8 @@ object Main {
 
   def main(args : Array[String]): Unit = {
     if (!args.isEmpty) {
-//      sys.exit(compile(args(0)))
-      println(compile(args(0)))
+      sys.exit(compile(args(0)))
+//      println(compile(args(0)))
     }
     else {
       sys.error("No filename passed")
@@ -32,7 +32,7 @@ object Main {
       val ast: AstNode = visitor.visit(tree)
     } catch {
       case _:NumberFormatException => return 100
-      case _:Throwable => return 200
+      case e:Throwable => println(e)
     }
 
 
