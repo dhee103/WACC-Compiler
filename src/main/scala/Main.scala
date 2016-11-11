@@ -2,7 +2,8 @@ object Main {
 
   def main(args : Array[String]): Unit = {
     if (!args.isEmpty) {
-      sys.exit(compile(args(1)))
+//      sys.exit(compile(args(0)))
+      println(compile(args(0)))
     }
     else {
       sys.error("No filename passed")
@@ -27,7 +28,13 @@ object Main {
 
 
     val visitor = new WaccParserDummyVisitor()
-    visitor.visit(tree)
+    try {
+      val ast: AstNode = visitor.visit(tree)
+    } catch {
+      case _:NumberFormatException => return 100
+      case _:Throwable => return 200
+    }
+
 
 //    if (semanticErrs > 0) {
 //      return 200

@@ -1,4 +1,4 @@
-# int assignment overlow
+# int assignment overflow
 
 # Output:
 # #syntax_error#
@@ -9,5 +9,5 @@
 # Program:
 
 begin
-  int x = 2200000000 
+  int x = 2200000000
 end
