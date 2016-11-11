@@ -9,7 +9,15 @@ class SymbolTable(val _encTable: SymbolTable) {
   def add (identifier: IdentNode, typeinfo: TypeNode): Unit
     = dict+=(identifier -> typeinfo)
 
-  def lookup(identifier: IdentNode): TypeNode = dict(identifier)
+  def lookup(identifier: IdentNode): TypeNode = {
+
+    if(dict.isDefinedAt(identifier)){
+      dict(identifier)
+    }else {
+      null
+    }
+
+  }
 
   def lookupAll(identifier: IdentNode): TypeNode = {
 
