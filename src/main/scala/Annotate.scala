@@ -11,7 +11,7 @@ object Annotate {
 
   def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable): Unit = {
 
-    annotateStatNode(prog._statChild, topSymbolTable)
+    annotateStatNode(prog.statChild, topSymbolTable)
 
   }
 
