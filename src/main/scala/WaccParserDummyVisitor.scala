@@ -257,17 +257,84 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new StringLiteralNode(value)
   }
 
-  override def visitBinaryOperation1(ctx: BinaryOperation1Context): AstNode = super.visitBinaryOperation1(ctx)
+  override def visitBinaryOperation1(ctx: BinaryOperation1Context): ExprNode = {
+    val leftExpr: ExprNode = visit(ctx.getChild(0)).asInstanceOf[ExprNode]
+    val rightExpr: ExprNode = visit(ctx.getChild(2)).asInstanceOf[ExprNode]
 
-  override def visitBinaryOperation2(ctx: BinaryOperation2Context): AstNode = super.visitBinaryOperation2(ctx)
+    val operation = ctx.getChild(1).getText
 
-  override def visitBinaryOperation3(ctx: BinaryOperation3Context): AstNode = super.visitBinaryOperation3(ctx)
+    operation match {
+      case "*" => new MulNode(leftExpr, rightExpr)
+      case "/" => new DivNode(leftExpr, rightExpr)
+      case "%" => new ModNode(leftExpr, rightExpr)
+      case _ => throw new RuntimeException("Unknown Binary Operand with precedence 1.")
+    }
+  }
 
-  override def visitBinaryOperation4(ctx: BinaryOperation4Context): AstNode = super.visitBinaryOperation4(ctx)
+  override def visitBinaryOperation2(ctx: BinaryOperation2Context): ExprNode = {
+    val leftExpr: ExprNode = visit(ctx.getChild(0)).asInstanceOf[ExprNode]
+    val rightExpr: ExprNode = visit(ctx.getChild(2)).asInstanceOf[ExprNode]
 
-  override def visitBinaryOperation5(ctx: BinaryOperation5Context): AstNode = super.visitBinaryOperation5(ctx)
+    val operation = ctx.getChild(1).getText
 
-  override def visitBinaryOperation6(ctx: BinaryOperation6Context): AstNode = super.visitBinaryOperation6(ctx)
+    operation match {
+      case "+" => new PlusNode(leftExpr, rightExpr)
+      case "-" => new MinusNode(leftExpr, rightExpr)
+      case _ => throw new RuntimeException("Unknown Binary Operand with precedence 2.")
+    }
+  }
+
+  override def visitBinaryOperation3(ctx: BinaryOperation3Context): ExprNode = {
+    val leftExpr: ExprNode = visit(ctx.getChild(0)).asInstanceOf[ExprNode]
+    val rightExpr: ExprNode = visit(ctx.getChild(2)).asInstanceOf[ExprNode]
+
+    val operation = ctx.getChild(1).getText
+
+    operation match {
+      case ">" => new GreaterThanNode(leftExpr, rightExpr)
+      case ">=" => new GreaterEqualNode(leftExpr, rightExpr)
+      case "<" => new LessThanNode(leftExpr, rightExpr)
+      case "<=" => new LessEqualNode(leftExpr, rightExpr)
+      case _ => throw new RuntimeException("Unknown Binary Operand with precedence 3.")
+    }
+  }
+
+  override def visitBinaryOperation4(ctx: BinaryOperation4Context): ExprNode = {
+    val leftExpr: ExprNode = visit(ctx.getChild(0)).asInstanceOf[ExprNode]
+    val rightExpr: ExprNode = visit(ctx.getChild(2)).asInstanceOf[ExprNode]
+
+    val operation = ctx.getChild(1).getText
+
+    operation match {
+      case "==" => new DoubleEqualNode(leftExpr, rightExpr)
+      case "!=" => new NotEqualNode(leftExpr, rightExpr)
+      case _ => throw new RuntimeException("Unknown Binary Operand with precedence 4.")
+    }
+  }
+
+  override def visitBinaryOperation5(ctx: BinaryOperation5Context): ExprNode = {
+    val leftExpr: ExprNode = visit(ctx.getChild(0)).asInstanceOf[ExprNode]
+    val rightExpr: ExprNode = visit(ctx.getChild(2)).asInstanceOf[ExprNode]
+
+    val operation = ctx.getChild(1).getText
+
+    operation match {
+      case "&&" => new LogicalAndNode(leftExpr, rightExpr)
+      case _ => throw new RuntimeException("Unknown Binary Operand with precedence 5.")
+    }
+  }
+
+  override def visitBinaryOperation6(ctx: BinaryOperation6Context): ExprNode = {
+    val leftExpr: ExprNode = visit(ctx.getChild(0)).asInstanceOf[ExprNode]
+    val rightExpr: ExprNode = visit(ctx.getChild(2)).asInstanceOf[ExprNode]
+
+    val operation = ctx.getChild(1).getText
+
+    operation match {
+      case "||" => new LogicalAndNode(leftExpr, rightExpr)
+      case _ => throw new RuntimeException("Unknown Binary Operand with precedence 6.")
+    }
+  }
 
   override def visitParens(ctx: WaccParser.ParensContext): ExprNode = {
     visit(ctx.getChild(1)).asInstanceOf[ExprNode]
@@ -289,7 +356,11 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitBinary_op6(ctx: WaccParser.Binary_op6Context): AstNode = super.visitBinary_op6(ctx)
 
-  override def visitIdentifier(ctx: WaccParser.IdentifierContext): AstNode = super.visitIdentifier(ctx)
+  override def visitIdentifier(ctx: WaccParser.IdentifierContext): IdentNode = {
+    val name = ctx.getText
+
+    new IdentNode(name)
+  }
 
   override def visitArrayElemExpr(ctx: ArrayElemExprContext): AstNode = super.visitArrayElemExpr(ctx)
 
