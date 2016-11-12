@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # Ruby front-end for your compiler.
-# You are free to change the language used for this script,
+# You are free to change the language used for this script, cheers
 # but do *not* change its name.
 
 targetPath = ARGV[0]
