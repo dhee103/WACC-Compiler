@@ -58,7 +58,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitParam_list(ctx: WaccParser.Param_listContext): AstNode = {
     val noOfChildren = ctx.getChildCount
     val paramChildren: IndexedSeq[ParamNode] =
-      for (i <- 0 until noOfChildren if (i % 2 == 0))
+      for (i <- 0 until noOfChildren if i % 2 == 0)
         yield visit(ctx.getChild(i)).asInstanceOf[ParamNode]
 
     new ParamListNode(paramChildren)
@@ -350,7 +350,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       val value = Integer.parseInt(ctx.getText)
       new IntLiteralNode(value)
     } catch {
-      case _ => sys.exit(100)
+      case _: NumberFormatException => sys.exit(100)
     }
 
   }

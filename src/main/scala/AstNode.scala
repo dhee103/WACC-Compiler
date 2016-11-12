@@ -127,7 +127,7 @@ class IdentNode(val _name: String) extends ExprNode with AssignmentLeftNode {
 
   override def hashCode: Int = {
 
-    var prime = 67
+    val prime = 67
 
     var result: Int = 1
 

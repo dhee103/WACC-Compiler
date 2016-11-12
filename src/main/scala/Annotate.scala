@@ -171,12 +171,13 @@ object Annotate {
         currentST)
       case "ArrayLiteralNode" =>
       case "NewPairNode" => annotateExprNode(statement
-        .asInstanceOf[NewPairNode].fstElem, currentST);
+        .asInstanceOf[NewPairNode].fstElem, currentST)
         annotateExprNode(statement.asInstanceOf[NewPairNode].sndElem, currentST)
       case "PairElemNode" => annotatePairElemNode(statement
         .asInstanceOf[PairElemNode], currentST)
-      case "CallNode" =>  throw new UnsupportedOperationException("No support for annotating calls.")//annotateIdentNode(statement.asInstanceOf[IdentNode],
-        currentST; //TODO: add arglist?
+      case "CallNode" =>  throw new UnsupportedOperationException("No support for annotating calls.")
+        //annotateIdentNode(statement.asInstanceOf[IdentNode], currentST);
+      // TODO: add arglist?
       case _: Any => println("error")
     }
 
@@ -259,7 +260,7 @@ object Annotate {
   }
 
   def getType[T](obj: T): String = {
-    val str: String = obj.getClass().toString
+    val str: String = obj.getClass.toString
     str.substring(6, str.length)
   }
 }
