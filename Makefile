@@ -19,5 +19,3 @@ clean:
 	sbt clean
 
 .PHONY: all rules clean
-
-#mad
