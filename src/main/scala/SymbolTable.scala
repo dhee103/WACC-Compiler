@@ -1,4 +1,4 @@
-import scala.collection.mutable.HashMap
+import collection.mutable.HashMap
 
 class SymbolTable(val _encTable: SymbolTable) {
 
