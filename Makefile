@@ -50,9 +50,11 @@ rules:
 	$(JAVAC) $(JFLAGS) @$@
 	$(RM) rules
 	$(SBT) package
-	$(SBT) compile
+	# $(SBT) compile
 
 clean:
-	sbt clean
+	$(RM) rules $(OUTPUT_DIR)
+	# sbt clean
+
 
 .PHONY: all rules clean
