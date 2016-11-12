@@ -4,7 +4,6 @@
 ANTLR_DIR	:= antlr
 SOURCE_DIR	:= src
 OUTPUT_DIR	:= bin
-SBT ?= sbt
 
 # Tools
 
@@ -23,12 +22,7 @@ all: rules
 
 rules:
 	cd $(ANTLR_DIR) && ./$(ANTLR)
-	$(FIND) $(SOURCE_DIR) -name '*.java' > $@
-	$(MKDIR) $(OUTPUT_DIR)
-	$(JAVAC) $(JFLAGS) @$@
-	$(RM) rules
-	$(SBT) package
-	# sbt compile
+	sbt compile
 
 clean:
 	sbt clean

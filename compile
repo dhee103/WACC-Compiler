@@ -5,6 +5,4 @@
 
 targetPath = ARGV[0]
 
-# puts `make run ARGS="#{targetPath}"`
-
 puts `sbt "run-main Main #{targetPath}"`
