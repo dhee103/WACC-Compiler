@@ -13,5 +13,7 @@ initialize := {
     sys.error("Java 8 is required for this project.")
 }
 
+fork in run := true
+
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
