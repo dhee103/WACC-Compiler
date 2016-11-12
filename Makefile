@@ -50,7 +50,7 @@ rules:
 	$(JAVAC) $(JFLAGS) @$@
 	$(RM) rules
 	$(SBT) package
-	# sbt compile
+	$(SBT) compile
 
 clean:
 	sbt clean
