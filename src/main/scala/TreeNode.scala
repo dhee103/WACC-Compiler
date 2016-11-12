@@ -1,3 +1,6 @@
+/**
+  * Created by dsg115 on 12/11/16.
+  */
 class TreeNode[T](val _item: T, val _children: Array[TreeNode[T]], val _parent: TreeNode[T]) {
 
   private var item: T = _item
@@ -16,19 +19,5 @@ class TreeNode[T](val _item: T, val _children: Array[TreeNode[T]], val _parent: 
 
   def print: T
   = item
-
-}
-
-trait GenericTree[T] {
-
-  var head: TreeNode[T]
-
-  def add(node: TreeNode[T]): Unit
-
-  def toPreOrderList: Array[T]
-
-  def toInOrderList: Array[T]
-
-  def toPostOrderList: Array[T]
 
 }

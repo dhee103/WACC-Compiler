@@ -1,5 +1,8 @@
 import scala.reflect.ClassTag
 
+/**
+  * Created by dsg115 on 12/11/16.
+  */
 object Annotate {
 
   private val sTable: SymbolTable = new SymbolTable(null)
