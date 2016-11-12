@@ -28,7 +28,7 @@ object Main {
 
     println("generated tokens")
 
-    val waccParser = new WaccParser(tokens)#
+    val waccParser = new WaccParser(tokens)
 
     println("generated parser")
 
@@ -58,7 +58,6 @@ object Main {
       val ast: AstNode = visitor.visit(tree)
       println("generated ast")
     } catch {
-      println("started catch")
       case _:NumberFormatException => return 100
       case _:Throwable => return 200
     }
