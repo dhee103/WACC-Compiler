@@ -1,5 +1,4 @@
 import org.scalatest.{FlatSpec, Matchers}
-import Main
 
 //Ruby generated test suite. To check WACCVisitor.
 //Created at: 10/11/2016 19:12.

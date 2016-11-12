@@ -1,8 +1,5 @@
 import scala.reflect.ClassTag
 
-/**
-  * Created by dsg115 on 12/11/16.
-  */
 object Annotate {
 
   private val sTable: SymbolTable = new SymbolTable(null)
@@ -60,10 +57,14 @@ object Annotate {
 
     exprType match {
 
-      case "IdentNode" => annotateIdentNode(expression.asInstanceOf[IdentNode], currentScopeSymbolTable)
+      case "IdentNode" => annotateIdentNode(expression
+        .asInstanceOf[IdentNode], currentScopeSymbolTable)
+
       case "ArrayElemNode" => annotateArrayElemNode(expression.asInstanceOf[ArrayElemNode], currentScopeSymbolTable)
-      case "LogicalNotNode" => annotateUnaryOperationNode(expression.asInstanceOf[LogicalNotNode], currentScopeSymbolTable)
-      case "OrdNode" => annotateUnaryOperationNode(expression.asInstanceOf[OrdNode], currentScopeSymbolTable)
+      case "LogicalNotNode" => annotateUnaryOperationNode(expression
+        .asInstanceOf[LogicalNotNode], currentScopeSymbolTable)
+      case "OrdNode" => annotateUnaryOperationNode(expression
+        .asInstanceOf[OrdNode], currentScopeSymbolTable)
       case "ChrNode" => annotateUnaryOperationNode(expression
         .asInstanceOf[ChrNode], currentScopeSymbolTable)
       case "LenNode" => annotateUnaryOperationNode(expression

@@ -68,19 +68,27 @@ trait BaseTypeNode extends TypeNode with PairElemTypeNode {
 }
 
 class IntTypeNode extends BaseTypeNode {
-
+  override def equals(other: Any): Boolean = {
+    other.isInstanceOf[IntTypeNode]
+  }
 }
 
 class BoolTypeNode extends BaseTypeNode {
-
+  override def equals(other: Any): Boolean = {
+    other.isInstanceOf[BoolTypeNode]
+  }
 }
 
 class CharTypeNode extends BaseTypeNode {
-
+  override def equals(other: Any): Boolean = {
+    other.isInstanceOf[CharTypeNode]
+  }
 }
 
 class StringTypeNode extends BaseTypeNode {
-
+  override def equals(other: Any): Boolean = {
+    other.isInstanceOf[StringTypeNode]
+  }
 }
 
 class ArrayTypeNode(val _elemType: TypeNode) extends PairElemTypeNode with TypeNode {
@@ -108,6 +116,7 @@ class IdentNode(val _name: String) extends ExprNode with AssignmentLeftNode {
 
   val name: String = _name
 
+
   var typeVal: TypeNode = _
 
   override def equals(that: Any): Boolean = that match {
@@ -115,6 +124,7 @@ class IdentNode(val _name: String) extends ExprNode with AssignmentLeftNode {
     case that: IdentNode => that.name == this.name && that.hashCode == this.hashCode
     case _ => false
   }
+
   override def hashCode: Int = {
 
     val prime = 67
