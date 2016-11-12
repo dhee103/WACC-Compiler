@@ -7,6 +7,17 @@ targetPath = ARGV[0]
 
 # puts `sbt "run-main Main #{targetPath}"`
 
-`sbt "run-main Main #{targetPath}"`
+# `sbt "run-main Main #{targetPath}"`
 
-puts `echo $?`
+sbtOutput = `sbt "run-main Main #{targetPath}"`
+
+# puts sbtOutput
+
+if sbtOutput.include? "java.lang.RuntimeException"
+  sbtErr = sbtOutput.split("Nonzero exit code returned from runner: ")
+  # puts sbtErr[1]
+  exit sbtErr[1].slice(0..3).to_i
+  # puts "there is an error"
+end
+
+exit 0
