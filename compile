@@ -8,3 +8,5 @@ targetPath = ARGV[0]
 # puts `sbt "run-main Main #{targetPath}"`
 
 `sbt "run-main Main #{targetPath}"`
+
+puts `echo $?`

@@ -2,10 +2,19 @@
 # Locations
 
 ANTLR_DIR	:= antlr
+SOURCE_DIR	:= src
+OUTPUT_DIR	:= bin
 
 # Tools
 
 ANTLR	:= antlrBuild
+FIND	:= find
+RM	:= rm -rf
+MKDIR	:= mkdir -p
+JAVA	:= java
+JAVAC	:= javac
+
+JFLAGS	:= -sourcepath $(SOURCE_DIR) -d $(OUTPUT_DIR) -cp lib/antlr-4.5.3-complete.jar
 
 # the make rules
 
