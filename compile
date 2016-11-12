@@ -15,7 +15,12 @@ sbtOutput = `sbt "run-main Main #{targetPath}"`
 
 if sbtOutput.include? "java.lang.RuntimeException"
   sbtErr = sbtOutput.split("Nonzero exit code returned from runner: ")
-  # puts sbtErr[1]
+
+# print errors as well
+  # splitAtErrors = sbtErr[0].split("error")
+  # # puts splitAtErrors
+  # errors = splitAtErrors[1].split("java.lang.RuntimeException")
+  # puts errors[0][1..errors[0].length]
   exit sbtErr[1].slice(0..3).to_i
   # puts "there is an error"
 end
