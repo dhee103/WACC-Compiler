@@ -9,7 +9,7 @@
 # Program:
 
 begin
-  int f(int *x) is 
+  int f(int *x) is
     *x = *x + 1;
     return 0
   end

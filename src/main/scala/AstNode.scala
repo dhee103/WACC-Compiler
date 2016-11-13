@@ -10,14 +10,35 @@ class ProgNode(val _statChild: StatNode, val _funcChildren: IndexedSeq[FuncNode]
 }
 
 
-class FuncNode extends AstNode {
+class FuncNode(val _typeSignature: TypeNode, val _identifier: IdentNode,
+               val _paramList: ParamListNode, val _statement: StatNode)
+  extends AstNode {
+
+  var typeSignature: TypeNode = _typeSignature
+  var identifier: IdentNode = _identifier
+  var paramList: ParamListNode = _paramList
+  var statement: StatNode = _statement
+
+
+
 }
+
+class ParamListNode(val _params: IndexedSeq[ParamNode]) extends AstNode {
+  val params: Array[ParamNode] = _params.toArray
+}
+
+class ParamNode(val _variableType: TypeNode, val _identifier: IdentNode) extends
+  AstNode {
+  val variableType = _variableType
+  val identifier = _identifier
+}
+
 
 trait AssignmentLeftNode extends AstNode {
 
 }
 
-class ArgListNode(val _exprChildren: ExprNode*) extends AstNode {
+class ArgListNode(val _exprChildren: IndexedSeq[ExprNode]) extends AstNode {
 
   val exprChildren: Array[ExprNode] = _exprChildren.toArray
 
@@ -47,19 +68,27 @@ trait BaseTypeNode extends TypeNode with PairElemTypeNode {
 }
 
 class IntTypeNode extends BaseTypeNode {
-
+  override def equals(other: Any): Boolean = {
+    other.isInstanceOf[IntTypeNode]
+  }
 }
 
 class BoolTypeNode extends BaseTypeNode {
-
+  override def equals(other: Any): Boolean = {
+    other.isInstanceOf[BoolTypeNode]
+  }
 }
 
 class CharTypeNode extends BaseTypeNode {
-
+  override def equals(other: Any): Boolean = {
+    other.isInstanceOf[CharTypeNode]
+  }
 }
 
 class StringTypeNode extends BaseTypeNode {
-
+  override def equals(other: Any): Boolean = {
+    other.isInstanceOf[StringTypeNode]
+  }
 }
 
 class ArrayTypeNode(val _elemType: TypeNode) extends PairElemTypeNode with TypeNode {
@@ -86,20 +115,41 @@ class InnerPairTypeNode extends PairElemTypeNode {
 class IdentNode(val _name: String) extends ExprNode with AssignmentLeftNode {
 
   val name: String = _name
+
+
   var typeVal: TypeNode = _
 
+  override def equals(that: Any): Boolean = that match {
+
+    case that: IdentNode => that.name == this.name && that.hashCode == this.hashCode
+    case _ => false
+  }
+
+  override def hashCode: Int = {
+
+    val prime = 67
+
+    var result: Int = 1
+
+     result = prime * (result + name.length)
+
+     result = result * prime + (if (name == null) 0 else name.hashCode)
+
+     result
+  }
+
 }
 
 
-class ArrayElemNode(val _identifier: IdentNode, val _indices: Array[ExprNode]) extends ExprNode with  AssignmentLeftNode {
+class ArrayElemNode(val _identifier: IdentNode, val _indices: IndexedSeq[ExprNode]) extends ExprNode with  AssignmentLeftNode {
 
   val identifier: IdentNode = _identifier
-  val indices: Array[ExprNode] = _indices
+  val indices: Array[ExprNode] = _indices.toArray
 
 }
 
-class ArrayLiteralNode(val _values: Array[ExprNode]) extends AssignmentRightNode {
+class ArrayLiteralNode(val _values: IndexedSeq[ExprNode]) extends AssignmentRightNode {
 
-  val values: Array[ExprNode] = _values
+  val values: Array[ExprNode] = _values.toArray
 
 }

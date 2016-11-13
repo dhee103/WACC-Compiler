@@ -1,4 +1,6 @@
 # create a pair(int, char) with a second reference to it and check it works
+# incorporated free, null, printNull, printNullPair, writeFst, writeSnd
+# includes createPairs, createRefPair, printPair
 
 # Output:
 # #addrs#
@@ -10,6 +12,10 @@
 # a
 # a
 # true
+# 42
+# d
+# (nil)
+# (nil)
 
 # Program:
 
@@ -28,5 +34,16 @@ begin
   char c2 = snd q ;
   println c1 ;
   println c2 ;
-  println c1 == c2
+  println c1 == c2;
+  fst p = 42;
+  snd p = 'd';
+  int n = fst p;
+  char m = snd p;
+  println n;
+  println m;
+  p = null;
+  println p;
+  println null;
+  free p;
+  free q
 end

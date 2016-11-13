@@ -1,6 +1,28 @@
 #!/usr/bin/ruby
 # Ruby front-end for your compiler.
-# You are free to change the language used for this script,
+# You are free to change the language used for this script, cheers
 # but do *not* change its name.
 
-puts "TODO: setup this script to call your WACC compiler"
+targetPath = ARGV[0]
+
+# puts `sbt "run-main Main #{targetPath}"`
+
+# `sbt "run-main Main #{targetPath}"`
+
+sbtOutput = `sbt "run-main Main #{targetPath}"`
+
+# puts sbtOutput
+
+if sbtOutput.include? "java.lang.RuntimeException"
+  sbtErr = sbtOutput.split("Nonzero exit code returned from runner: ")
+
+# print errors as well
+  # splitAtErrors = sbtErr[0].split("error")
+  # # puts splitAtErrors
+  # errors = splitAtErrors[1].split("java.lang.RuntimeException")
+  # puts errors[0][1..errors[0].length]
+  exit sbtErr[1].slice(0..3).to_i
+  # puts "there is an error"
+end
+
+exit 0

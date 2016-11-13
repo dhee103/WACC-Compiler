@@ -1,10 +1,14 @@
-    lexer grammar WaccLexer;
+lexer grammar WaccLexer;
 
 BEGIN : 'begin' ;
 END : 'end' ;
 IS : 'is' ;
 SKIP_ : 'skip' ;
+<<<<<<< HEAD
+EQUALS : '=' ;
+=======
 EQUAL : '=' ;
+>>>>>>> LexerTesting
 READ : 'read' ;
 FREE : 'free' ;
 RETURN : 'return' ;
@@ -23,8 +27,13 @@ NULL : 'null' ;
 INT_LITERAL : ('+' | '-')? DIGIT+ ;
 fragment DIGIT : [0-9] ;
 
+<<<<<<< HEAD
+CHAR_LITER : ('\'') CHARACTER ('\'') ;
+STR_LITER : ('"') CHARACTER* ('"') ;
+=======
 CHAR_LITERAL : ('\'') CHARACTER ('\'') ;
 STR_LITERAL : ('"') CHARACTER* ('"') ;
+>>>>>>> LexerTesting
 fragment CHARACTER : ('\\') ESCAPED_CHAR
               | ~([\\\'"])
               ;
@@ -61,6 +70,12 @@ UNDERSCORE : '_' ;
 TRUE_LITERAL : 'true' ;
 FALSE_LITERAL : 'false' ;
 
+<<<<<<< HEAD
+//SINGLE_QUOTE : '\'' ;
+//DOUBLE_QUOTE : '"' ;
+
+=======
+>>>>>>> LexerTesting
 NEWPAIR : 'newpair' ;
 CALL : 'call' ;
 
@@ -76,4 +91,8 @@ PAIR_TYPE : 'pair' ;
 
 ID : ('_'|[a-zA-Z])([a-zA-Z0-9]*) ;
 COMMENT : '#' ~[\n]* '\n' -> skip;
+<<<<<<< HEAD
 WS : [ \t\r\n]+ -> skip;
+=======
+WS : [ \t\r\n]+ -> skip;
+>>>>>>> LexerTesting

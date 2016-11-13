@@ -11,5 +11,5 @@
 begin
   while false doo
     skip
-  done
+  dono
 end
