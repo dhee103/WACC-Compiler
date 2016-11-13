@@ -1,6 +1,6 @@
 trait ExprNode extends AssignmentRightNode {
 
-var nodeType: TypeNode = null
+  var nodeType: TypeNode = null
 
 }
 
@@ -16,7 +16,6 @@ class BoolLiteralNode(val _value: Boolean) extends ExprNode {
 
   val value: Boolean = _value
   nodeType = new BoolTypeNode
-
 
 }
 
