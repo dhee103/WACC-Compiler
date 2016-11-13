@@ -112,31 +112,30 @@ class InnerPairTypeNode extends PairElemTypeNode {
 
 }
 
-class IdentNode(val _name: String) extends ExprNode with AssignmentLeftNode {
+case class IdentNode(val name: String, override var nodeType: Option[TypeNode]) extends ExprNode with AssignmentLeftNode {
 
-  val name: String = _name
+  // val name: String = _name
 
+  // var typeVal: TypeNode = _
 
-  var typeVal: TypeNode = _
+  //override def equals(that: Any): Boolean = that match {
 
-  override def equals(that: Any): Boolean = that match {
+    //case that: IdentNode => that.name == this.name && that.hashCode == this.hashCode
+    //case _ => false
+  //}
 
-    case that: IdentNode => that.name == this.name && that.hashCode == this.hashCode
-    case _ => false
-  }
+  //override def hashCode: Int = {
 
-  override def hashCode: Int = {
+  //  val prime = 67
 
-    val prime = 67
+  //  var result: Int = 1
 
-    var result: Int = 1
+  //   result = prime * (result + name.length)
 
-     result = prime * (result + name.length)
+  //   result = result * prime + (if (name == null) 0 else name.hashCode)
 
-     result = result * prime + (if (name == null) 0 else name.hashCode)
-
-     result
-  }
+  //   result
+  //}
 
 }
 

@@ -1,43 +1,37 @@
 trait ExprNode extends AssignmentRightNode {
 
-  var nodeType: TypeNode = null
+  def nodeType: Option[TypeNode] = None
 
 }
 
 
-class IntLiteralNode(val _value: Int) extends ExprNode {
+case class IntLiteralNode(val value: Int) extends ExprNode {
 
-  val value: Int = _value
-  nodeType = new IntTypeNode
-
-}
-
-class BoolLiteralNode(val _value: Boolean) extends ExprNode {
-
-  val value: Boolean = _value
-  nodeType = new BoolTypeNode
+  override val nodeType = Some(new IntTypeNode)
 
 }
 
-class CharLiteralNode(val _value: Char) extends ExprNode {
+case class BoolLiteralNode(val value: Boolean) extends ExprNode {
 
-  val value: Char = _value
-  nodeType = new CharTypeNode
-
+  override val nodeType = Some(new BoolTypeNode)
 
 }
 
-class StringLiteralNode(val _value: String) extends ExprNode {
+case class CharLiteralNode(val value: Char) extends ExprNode {
 
-  val value: String = _value
-  nodeType = new StringTypeNode
+  override val nodeType = Some(new CharTypeNode)
+
+}
+
+case class StringLiteralNode(val value: String) extends ExprNode {
+
+  override val nodeType = Some(new StringTypeNode)
 
 
 }
 
-class PairLiteralNode extends ExprNode {
+case class PairLiteralNode() extends ExprNode {
 
-  nodeType = new PairTypeNode(null, null)
-
+  override val nodeType = Some(new PairTypeNode(null, null))
 
 }

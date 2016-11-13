@@ -1,45 +1,45 @@
 trait BinaryOperationNode extends ExprNode {
 
-  val leftExpr: ExprNode
-  val rightExpr: ExprNode
+  def leftExpr: ExprNode
+  def rightExpr: ExprNode
 
 }
 
-class MulNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class MulNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class DivNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class DivNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class ModNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class ModNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class PlusNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class PlusNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class MinusNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class MinusNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class GreaterThanNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class GreaterThanNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class GreaterEqualNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class GreaterEqualNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class LessThanNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class LessThanNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class LessEqualNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class LessEqualNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class DoubleEqualNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class DoubleEqualNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class NotEqualNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class NotEqualNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class LogicalAndNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class LogicalAndNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }
 
-class LogicalOrNode(val leftExpr: ExprNode, val rightExpr: ExprNode)
+case class LogicalOrNode(override val leftExpr: ExprNode, override val rightExpr: ExprNode)
   extends BinaryOperationNode { }

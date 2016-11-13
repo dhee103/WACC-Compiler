@@ -357,7 +357,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       case _: NumberFormatException => sys.exit(100)
     }
 
-    new IntLiteralNode(value)
   }
 
   override def visitPairLiteral(ctx: WaccParser.PairLiteralContext): ExprNode
@@ -543,7 +542,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     //    println("hit " + currentMethodName())
     val name = ctx.getText
 
-    new IdentNode(name)
+    new IdentNode(name, None)
   }
 
   override def visitArrayElemExpr(ctx: ArrayElemExprContext): ExprNode = {
