@@ -15,7 +15,7 @@ class SymbolTable(val encTable: Option[SymbolTable]) {
 
     encTable match {
       case None => lookup(identifier)
-      case Some(_) => dict.getOrElse(identifier, encTable.lookupAll(identifier))
+      case Some(parentTable: SymbolTable) => dict.getOrElse(identifier, parentTable.lookupAll(identifier))
     }
 
   }
