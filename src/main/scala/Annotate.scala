@@ -4,49 +4,28 @@ object Annotate {
 
   private val sTable: SymbolTable = new SymbolTable(null)
 
-  def AnnotateAST(ast: ProgNode): Unit = {
-
-    annotateProgNode(ast, sTable)
+  def annotateAST(ast: ProgNode): Unit = {
+    annotateProgNode(ast, new SymbolTable(None))
   }
 
   def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable): Unit = {
-
     annotateStatNode(prog.statChild, topSymbolTable)
-
   }
 
-  def annotateStatNode(statement: StatNode, currentScopeSymbolTable:
-  SymbolTable): Unit = {
-
-    val statementType: String = Annotate.getType(statement)
-
-    statementType match {
-
-      case "DeclarationNode" => annotateDeclarationNode(statement
-        .asInstanceOf[DeclarationNode], sTable)
-      case "AssignmentNode" => annotateAssignmentNode(statement
-        .asInstanceOf[AssignmentNode], sTable)
-      case "ReadNode" => annotateReadNode(statement.asInstanceOf[ReadNode],
-        sTable)
-      case "FreeNode" => annotateFreeNode(statement.asInstanceOf[FreeNode],
-        sTable)
-      case "ReturnNode" => annotateReturnNode(statement
-        .asInstanceOf[ReturnNode], sTable)
-      case "ExitNode" => annotateExitNode(statement.asInstanceOf[ExitNode],
-        sTable)
-      case "PrintNode" => annotatePrintNode(statement
-        .asInstanceOf[PrintNode], sTable)
-      case "PrintlnNode" => annotatePrintlnNode(statement
-        .asInstanceOf[PrintlnNode], sTable)
-      case "IfNode" => annotateIfNode(statement.asInstanceOf[IfNode], new
-          SymbolTable(sTable))
-      case "WhileNode" => annotateWhileNode(statement
-        .asInstanceOf[WhileNode], new SymbolTable(sTable))
-      case "NewBeginNode" => annotateNewBeginNode(statement
-        .asInstanceOf[NewBeginNode], new SymbolTable(sTable))
-      case "SequenceNode" => annotateSequenceNode(statement
-        .asInstanceOf[SequenceNode], sTable)
-
+  def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable): Unit = {
+    statement match {
+      case DeclarationNode(_,_,_) => annotateDeclarationNode(statement, currentScopeSymbolTable)
+      case AssignmentNode(_,_)    => annotateAssignmentNode(statement, currentScopeSymbolTable)
+      case ReadNode(_)            => annotateReadNode(statement, currentScopeSymbolTable)
+      case FreeNode(_)            => annotateFreeNode(statement, currentScopeSymbolTable)
+      case ReturnNode(_)          => annotateReturnNode(statement, currentScopeSymbolTable)
+      case ExitNode(_)            => annotateExitNode(statement, currentScopeSymbolTable)
+      case PrintNode(_)           => annotatePrintNode(statement, currentScopeSymbolTable)
+      case PrintlnNode(_)         => annotatePrintlnNode(statement, currentScopeSymbolTable)
+      case IfNode(_,_,_)          => annotateIfNode(statement, new SymbolTable(Some(currentScopeSymbolTable)))
+      case WhileNode(_,_)         => annotateWhileNode(statement, new SymbolTable(Some(currentScopeSymbolTable)))
+      case NewBeginNode(_)        => annotateNewBeginNode(statement, new SymbolTable(Some(currentScopeSymbolTable)))
+      case SequenceNode(_,_)      => annotateSequenceNode(statement, currentScopeSymbolTable)
     }
   }
 
