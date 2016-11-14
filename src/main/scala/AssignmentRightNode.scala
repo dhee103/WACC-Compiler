@@ -1,13 +1,8 @@
 trait AssignmentRightNode extends AstNode {
-
 }
 
-class NewPairNode(val _fstElem: ExprNode, val _sndElem: ExprNode) extends AssignmentRightNode {
-  val fstElem: ExprNode = _fstElem
-  val sndElem: ExprNode = _sndElem
+case class NewPairNode(val fstElem: ExprNode, val sndElem: ExprNode) extends AssignmentRightNode {
 }
 
-class CallNode(val _id: IdentNode, val _argList: Option[ArgListNode]) extends AssignmentRightNode {
-  val id: IdentNode = _id
-  val argList: Option[ArgListNode] = _argList
+case class CallNode(val id: IdentNode, val argList: Option[ArgListNode]) extends AssignmentRightNode {
 }
