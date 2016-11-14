@@ -1,86 +1,41 @@
 trait StatNode extends AstNode {
-
 }
 
-class SkipStatNode extends StatNode {
-
+case class SkipStatNode() extends StatNode {
 }
 
-class DeclarationNode(val _variableType: TypeNode, val _identifier: IdentNode, val _rhs: AssignmentRightNode) extends StatNode {
-
-  val variableType: TypeNode = _variableType
-  var identifier: IdentNode = _identifier
-  val rhs: AssignmentRightNode = _rhs
-
+case class DeclarationNode(val variableType: TypeNode, var identifier: IdentNode, val rhs: AssignmentRightNode) extends StatNode {
 }
 
-class AssignmentNode(val _lhs: AssignmentLeftNode, val _rhs: AssignmentRightNode) extends StatNode {
-
-  var lhs: AssignmentLeftNode = _lhs
-  var rhs: AssignmentRightNode = _rhs
-
+case class AssignmentNode(var lhs: AssignmentLeftNode, val rhs: AssignmentRightNode) extends StatNode {
 }
 
-class ReadNode(val _variable: AssignmentLeftNode) extends StatNode {
-
-  val variable: AssignmentLeftNode = _variable
-
+case class ReadNode(val variable: AssignmentLeftNode) extends StatNode {
 }
 
-class FreeNode(val _variable: ExprNode) extends StatNode {
-
-  val variable: ExprNode = _variable
-
+case class FreeNode(val variable: ExprNode) extends StatNode {
 }
 
-class ReturnNode(val _returnValue: ExprNode) extends StatNode {
-
-  val returnValue: ExprNode = _returnValue
-
+case class ReturnNode(val returnValue: ExprNode) extends StatNode {
 }
 
-class ExitNode(val _exitCode: ExprNode) extends StatNode {
-
-  val exitCode: ExprNode = _exitCode
-
+case class ExitNode(val exitCode: ExprNode) extends StatNode {
 }
 
-class PrintNode(val _text: ExprNode) extends StatNode {
-
-  val text: ExprNode = _text
-
+case class PrintNode(val text: ExprNode) extends StatNode {
 }
 
-class PrintlnNode(val _text: ExprNode) extends StatNode {
-
-  val text: ExprNode = _text
-
+case class PrintlnNode(val text: ExprNode) extends StatNode {
 }
 
-class IfNode (val _condition: ExprNode, val _thenStat: StatNode, val _elseStat: StatNode) extends StatNode {
-
-  val condition: ExprNode = _condition
-  val thenStat: StatNode = _thenStat
-  val elseStat: StatNode = _elseStat
-
+case class IfNode (val condition: ExprNode, val thenStat: StatNode, val elseStat: StatNode) extends StatNode {
 }
 
-class WhileNode(val _condition: ExprNode, val _loopBody: StatNode) extends StatNode {
-
-  val condition: ExprNode = _condition
-  val loopBody: StatNode = _loopBody
-
+case class WhileNode(val condition: ExprNode, val loopBody: StatNode) extends StatNode {
 }
 
-class NewBeginNode(val _body: StatNode) extends StatNode {
-
-  val body: StatNode = _body
-
+case class NewBeginNode(val body: StatNode) extends StatNode {
 }
 
-class SequenceNode(val _fstStat: StatNode, val _sndStat: StatNode) extends StatNode {
-
-  val fstStat: StatNode = _fstStat
-  val sndStat: StatNode = _sndStat
-
+case class SequenceNode(val fstStat: StatNode, val sndStat: StatNode) extends StatNode {
 }

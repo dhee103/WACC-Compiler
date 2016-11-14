@@ -111,7 +111,7 @@ object Annotate {
 
   def annotateArrayElemNode(arrElem: ArrayElemNode, currentST: SymbolTable): Unit = {
 
-    annotateIdentNode(arrElem._identifier, currentST)
+    annotateIdentNode(arrElem.identifier, currentST)
 
     for (index <- arrElem.indices) {
       annotateExprNode(index, currentST)
