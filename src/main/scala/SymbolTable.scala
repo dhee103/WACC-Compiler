@@ -1,48 +1,23 @@
 import collection.mutable.HashMap
 
-class SymbolTable(val _encTable: SymbolTable) {
-
-  val encTable: SymbolTable =_encTable
+class SymbolTable(val encTable: Option[SymbolTable]) {
 
   val dict: HashMap[IdentNode, TypeNode] = new HashMap[IdentNode, TypeNode]()
 
   def add (identifier: IdentNode, typeinfo: TypeNode): Unit
-    = dict+=(identifier -> typeinfo)
+    = dict += (identifier -> typeinfo)
 
   def lookup(identifier: IdentNode): TypeNode = {
-
-    if(dict.isDefinedAt(identifier)){
-      dict(identifier)
-    }else {
-      null
-    }
-
+    dict.getOrElse(identifier, throw new RuntimeException("Variable used but not in scope"))
   }
 
   def lookupAll(identifier: IdentNode): TypeNode = {
 
-    var result: TypeNode = null
-
-    if(dict.isEmpty){
-
-      null
-
-      //Throw our own exception
-
-    }else{
-
-      if(dict.isDefinedAt(identifier)){
-
-        dict(identifier)
-
-      }else{
-
-      encTable.lookupAll(identifier)
-
+    encTable match {
+      case None => lookup(identifier)
+      case Some(_) => dict.getOrElse(identifier, encTable.lookupAll(identifier))
     }
 
   }
-}
-
 
 }
