@@ -33,11 +33,12 @@ object Annotate {
   SymbolTable): Unit = {
     try {
       currentST.lookup(statement.identifier)
+      // TODO: deal with redeclaration
     } catch {
       case e: RuntimeException =>
         val ident: IdentNode = statement.identifier
-        ident.nodeType = statement.variableType
-        currentST.add(ident, ident.nodeType)
+        ident.nodeType = Some(statement.variableType)
+        currentST.add(ident, ident.nodeType.getOrElse(throw new RuntimeException("Fatal error")))
       case a: Any => throw a
     }
     annotateAssignmentRightNode(statement.rhs, currentST)
@@ -168,7 +169,7 @@ object Annotate {
 
   def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
     try {
-      identifier.nodeType = currentST.lookupAll(identifier)
+      identifier.nodeType = Some(currentST.lookupAll(identifier))
     } catch {
       case e: Exception => println("add to error log"); throw e
     }
@@ -188,15 +189,17 @@ object Annotate {
     }
   }
 
-// helper function
-  def checkNodesHaveSameType(typeNode1: TypeNode, typeNode2: TypeNode):
-  Boolean = {
-    def f[A, B: ClassTag](a: A, b: B) = a match {
-      case _: B => true
-      case _    => false
-    }
-    f(typeNode1, typeNode2)
-  }
+// helper
+// function
+// import ClassTag
+  // def checkNodesHaveSameType(typeNode1: TypeNode, typeNode2: TypeNode):
+  // Boolean = {
+  //   def f[A, B: ClassTag](a: A, b: B) = a match {
+  //     case _: B => true
+  //     case _    => false
+  //   }
+  //   f(typeNode1, typeNode2)
+  // }
 
   def getType[T](obj: T): String = {
     val str: String = obj.getClass.toString
