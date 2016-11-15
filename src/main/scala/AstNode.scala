@@ -19,7 +19,7 @@ case class ParamNode(val variableType: TypeNode, val identifier: IdentNode) exte
 trait AssignmentLeftNode extends AstNode {
 }
 
-case class ArgListNode(val exprChildren: IndexedSeq[ExprNode]) extends AstNode {
+case class ArgListNode(val exprs: IndexedSeq[ExprNode]) extends AstNode {
 }
 
 trait PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
@@ -67,7 +67,7 @@ case class InnerPairTypeNode() extends PairElemTypeNode {
 case class IdentNode(val name: String, override var nodeType: Option[TypeNode]) extends ExprNode with AssignmentLeftNode {
 }
 
-case class ArrayElemNode(val identifier: IdentNode, val indices: IndexedSeq[ExprNode]) extends ExprNode with  AssignmentLeftNode {
+case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNode]) extends ExprNode with  AssignmentLeftNode {
 }
 
 case class ArrayLiteralNode(val values: IndexedSeq[ExprNode]) extends AssignmentRightNode {
