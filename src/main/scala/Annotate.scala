@@ -1,5 +1,9 @@
 object Annotate {
 
+  var numSemanticErrors: Int = 0
+
+  def getNumberOfSemanticErrors(): Int = numSemanticErrors
+
   def annotateAST(ast: ProgNode): Unit = {
     annotateProgNode(ast, new SymbolTable(None), new FunctionTable())
   }
@@ -25,15 +29,16 @@ object Annotate {
       case stat: WhileNode       => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), functionTable)
       case stat: NewBeginNode    => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), functionTable)
       case stat: SequenceNode    => annotateSequenceNode(stat, currentScopeSymbolTable, functionTable)
-      case stat: SkipStatNode    => println("Got a skip")
-      case _: Any                => println("error")
+      case stat: SkipStatNode    =>
+      case _: Any                => println("error"); numSemanticErrors += 1
     }
   }
 
   def annotateDeclarationNode(statement: DeclarationNode, currentST: SymbolTable, functionTable: FunctionTable): Unit = {
     if (currentST.doesContain(statement.identifier)) {
       // throw some error
-      println("Semantic: redeclaration error - add to log")
+      println("[Semantic Error]: Redeclaration error")
+      numSemanticErrors += 1
     } else {
       val ident: IdentNode = statement.identifier
       ident.nodeType = Some(statement.variableType)
@@ -99,7 +104,7 @@ object Annotate {
       case lhs: IdentNode     => annotateIdentNode(lhs, currentST)
       case lhs: ArrayElemNode => annotateArrayElemNode(lhs, currentST)
       case lhs: PairElemNode  => annotatePairElemNode(lhs, currentST)
-      case _: Any             => println("error")
+      case _: Any             => println("error"); numSemanticErrors += 1
     }
   }
 
@@ -111,7 +116,7 @@ object Annotate {
       case rhs: PairElemNode     => annotatePairElemNode(rhs, currentST)
       case rhs: CallNode         => annotateCallNode(rhs, currentST, functionTable)
       case rhs: ArgListNode      => annotateArgListNode(rhs, currentST)
-      case _: Any                => println("error")
+      case _: Any                => println("error"); numSemanticErrors += 1
     }
   }
 
@@ -154,8 +159,8 @@ object Annotate {
          | _: BoolLiteralNode
          | _: CharLiteralNode
          | _: StringLiteralNode
-         | _: PairLiteralNode        => println("got a literal")
-      case _: Any                    => println("error")
+         | _: PairLiteralNode        =>
+      case _: Any                    => println("error"); numSemanticErrors += 1
     }
   }
 
@@ -174,7 +179,7 @@ object Annotate {
     try {
       identifier.nodeType = Some(currentST.lookupAll(identifier))
     } catch {
-      case e: Exception => println("add to error log"); throw e
+      case e: Exception => println(s"[Semantic Error]: Variable $identifier.nodeType doesn't exist"); numSemanticErrors += 1; throw e
     }
   }
 

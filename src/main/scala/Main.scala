@@ -55,17 +55,20 @@ object Main {
 
     try {
 //      println("started try")
-      val ast: AstNode = visitor.visit(tree)
+      val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
 //      println("generated ast")
+      Annotate.annotateAST(ast)
     } catch {
       case _:NumberFormatException => return 100
       case _:Throwable => return 200
     }
 
 
-//    if (semanticErrs > 0) {
-//      return 200
-//    }
+    var numSemanticErrors: Int = 0
+    numSemanticErrors += Annotate.getNumberOfSemanticErrors
+    if (numSemanticErrors > 0) {
+     return 200
+    }
 
     return 0
 
