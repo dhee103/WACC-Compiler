@@ -4,34 +4,33 @@ object Annotate {
     annotateProgNode(ast, new SymbolTable(None), new FunctionTable())
   }
 
-  def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable, funcTable: FunctionTable): Unit = {
+  def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable, functionTable: FunctionTable): Unit = {
     for (f <- prog.funcChildren) {
-      funcTable.add(f)
+      functionTable.add(f)
     }
-    annotateStatNode(prog.statChild, topSymbolTable)
+    annotateStatNode(prog.statChild, topSymbolTable, functionTable)
   }
 
-  def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable): Unit = {
+  def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable, functionTable: FunctionTable): Unit = {
     statement match {
-      case stat: DeclarationNode => annotateDeclarationNode(stat, currentScopeSymbolTable)
-      case stat: AssignmentNode  => annotateAssignmentNode(stat, currentScopeSymbolTable)
+      case stat: DeclarationNode => annotateDeclarationNode(stat, currentScopeSymbolTable, functionTable)
+      case stat: AssignmentNode  => annotateAssignmentNode(stat, currentScopeSymbolTable, functionTable)
       case stat: ReadNode        => annotateReadNode(stat, currentScopeSymbolTable)
       case stat: FreeNode        => annotateFreeNode(stat, currentScopeSymbolTable)
       case stat: ReturnNode      => annotateReturnNode(stat, currentScopeSymbolTable)
       case stat: ExitNode        => annotateExitNode(stat, currentScopeSymbolTable)
       case stat: PrintNode       => annotatePrintNode(stat, currentScopeSymbolTable)
       case stat: PrintlnNode     => annotatePrintlnNode(stat, currentScopeSymbolTable)
-      case stat: IfNode          => annotateIfNode(stat, new SymbolTable(Some(currentScopeSymbolTable)))
-      case stat: WhileNode       => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)))
-      case stat: NewBeginNode    => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)))
-      case stat: SequenceNode    => annotateSequenceNode(stat, currentScopeSymbolTable)
+      case stat: IfNode          => annotateIfNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), functionTable)
+      case stat: WhileNode       => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), functionTable)
+      case stat: NewBeginNode    => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), functionTable)
+      case stat: SequenceNode    => annotateSequenceNode(stat, currentScopeSymbolTable, functionTable)
       case stat: SkipStatNode    => println("Got a skip")
       case _: Any                => println("error")
     }
   }
 
-  def annotateDeclarationNode(statement: DeclarationNode, currentST:
-  SymbolTable): Unit = {
+  def annotateDeclarationNode(statement: DeclarationNode, currentST: SymbolTable, functionTable: FunctionTable): Unit = {
     if (currentST.doesContain(statement.identifier)) {
       // throw some error
       println("Semantic: redeclaration error - add to log")
@@ -39,14 +38,13 @@ object Annotate {
       val ident: IdentNode = statement.identifier
       ident.nodeType = Some(statement.variableType)
       currentST.add(ident, ident.nodeType.getOrElse(throw new RuntimeException("Fatal error")))
-      annotateAssignmentRightNode(statement.rhs, currentST)
+      annotateAssignmentRightNode(statement.rhs, currentST, functionTable)
     }
   }
 
-  def annotateAssignmentNode(statement: AssignmentNode, currentST:
-  SymbolTable): Unit = {
+  def annotateAssignmentNode(statement: AssignmentNode, currentST: SymbolTable, functionTable: FunctionTable): Unit = {
     annotateAssignmentLeftNode(statement.lhs, currentST)
-    annotateAssignmentRightNode(statement.rhs, currentST)
+    annotateAssignmentRightNode(statement.rhs, currentST, functionTable)
   }
 
   def annotateReadNode(statement: ReadNode, currentST: SymbolTable): Unit = {
@@ -74,26 +72,26 @@ object Annotate {
     annotateExprNode(statement.text, currentST)
   }
 
-  def annotateIfNode(statement: IfNode, currentST: SymbolTable): Unit = {
+  def annotateIfNode(statement: IfNode, currentST: SymbolTable, functionTable: FunctionTable): Unit = {
     annotateExprNode(statement.condition, currentST)
-    annotateStatNode(statement.thenStat, currentST)
-    annotateStatNode(statement.elseStat, currentST)
+    annotateStatNode(statement.thenStat, currentST, functionTable)
+    annotateStatNode(statement.elseStat, currentST, functionTable)
   }
 
-  def annotateWhileNode(statement: WhileNode, currentST: SymbolTable): Unit = {
+  def annotateWhileNode(statement: WhileNode, currentST: SymbolTable, functionTable: FunctionTable): Unit = {
     annotateExprNode(statement.condition, currentST)
-    annotateStatNode(statement.loopBody, currentST)
+    annotateStatNode(statement.loopBody, currentST, functionTable)
   }
 
-  def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable):
+  def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable, functionTable: FunctionTable):
   Unit = {
-    annotateStatNode(statement.body, currentST)
+    annotateStatNode(statement.body, currentST, functionTable)
   }
 
-  def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable):
+  def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable, functionTable: FunctionTable):
   Unit = {
-    annotateStatNode(statement.fstStat, currentST)
-    annotateStatNode(statement.sndStat, currentST)
+    annotateStatNode(statement.fstStat, currentST, functionTable)
+    annotateStatNode(statement.sndStat, currentST, functionTable)
   }
 
   def annotateAssignmentLeftNode(statement: AssignmentLeftNode, currentST: SymbolTable): Unit = {
@@ -105,13 +103,13 @@ object Annotate {
     }
   }
 
-  def annotateAssignmentRightNode(statement: AssignmentRightNode, currentST: SymbolTable): Unit = {
+  def annotateAssignmentRightNode(statement: AssignmentRightNode, currentST: SymbolTable, functionTable: FunctionTable): Unit = {
     statement match {
       case rhs: ExprNode         => annotateExprNode(rhs, currentST)
       case rhs: ArrayLiteralNode => annotateArrayLiteralNode(rhs, currentST)
       case rhs: NewPairNode      => annotateNewPairNode(rhs, currentST)
       case rhs: PairElemNode     => annotatePairElemNode(rhs, currentST)
-      case rhs: CallNode         => annotateCallNode(rhs, currentST)
+      case rhs: CallNode         => annotateCallNode(rhs, currentST, functionTable)
       case rhs: ArgListNode      => annotateArgListNode(rhs, currentST)
       case _: Any                => println("error")
     }
@@ -123,7 +121,7 @@ object Annotate {
   }
 
   // TODO: Implement functionTable; annotateCallNode should get return type of function by looking up ident in functionTable
-  def annotateCallNode(call: CallNode, currentST: SymbolTable): Unit = {
+  def annotateCallNode(call: CallNode, currentST: SymbolTable, functionTable: FunctionTable): Unit = {
     // annotateIdentNode()
     val identifier = call.id
   }
