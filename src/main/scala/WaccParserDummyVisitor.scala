@@ -44,16 +44,12 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   def isReturnStatement(statement: StatNode): Boolean = {
-    val statType: String = Annotate.getType(statement)
-    statType match {
-      case "ReturnNode" => true
-      case "ExitNode" => true
-      case "SequenceNode" => isReturnStatement(statement
-        .asInstanceOf[SequenceNode].sndStat)
-      case "IfNode" => isReturnStatement(statement.asInstanceOf[IfNode]
-        .thenStat) && isReturnStatement(statement.asInstanceOf[IfNode].elseStat)
-      case "BeginNode" => isReturnStatement(statement
-        .asInstanceOf[NewBeginNode].body)
+
+    statement match {
+      case _: ReturnNode | _: ExitNode => true
+      case stat: SequenceNode => isReturnStatement(stat.sndStat)
+      case stat: IfNode => isReturnStatement(stat.thenStat) && isReturnStatement(stat.elseStat)
+      case stat: NewBeginNode => isReturnStatement(stat.body)
       case _ => false
     }
   }
