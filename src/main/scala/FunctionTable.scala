@@ -10,9 +10,11 @@ class FunctionTable() {
     val returnType: TypeNode = func.typeSignature
     val paramTypes: IndexedSeq[TypeNode] = for (param <- func.paramList.params)
       yield param.variableType
-    
+
     dict += (identifier -> (returnType, paramTypes))
   }
+
+  def getReturnType(ident: IdentNode) = lookup(ident)._1
 
   // def add(identifier: IdentNode, typeinfo: (TypeNode, IndexedSeq[TypeNode])): Unit
   //   = dict += (identifier -> typeinfo)

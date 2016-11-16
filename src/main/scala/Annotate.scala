@@ -1,7 +1,5 @@
 object Annotate {
 
-  private val sTable: SymbolTable = new SymbolTable(null)
-
   def annotateAST(ast: ProgNode): Unit = {
     annotateProgNode(ast, new SymbolTable(None), new FunctionTable())
   }
@@ -127,8 +125,7 @@ object Annotate {
   // TODO: Implement functionTable; annotateCallNode should get return type of function by looking up ident in functionTable
   def annotateCallNode(call: CallNode, currentST: SymbolTable): Unit = {
     // annotateIdentNode()
-    println("we love you mark")
-    throw new UnsupportedOperationException("No support for annotating calls.")
+    val identifier = call.id
   }
 
   def annotateArgListNode(argList: ArgListNode, currentST: SymbolTable): Unit = {
