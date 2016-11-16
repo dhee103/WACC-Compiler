@@ -122,8 +122,15 @@ object Annotate {
 
   // TODO: Implement functionTable; annotateCallNode should get return type of function by looking up ident in functionTable
   def annotateCallNode(call: CallNode, currentST: SymbolTable, functionTable: FunctionTable): Unit = {
-    // annotateIdentNode()
+
     val identifier = call.id
+    identifier.nodeType = Some(functionTable.getReturnType(identifier))
+
+    call.argList match {
+      case None =>
+      case Some(args) => annotateArgListNode(args, currentST)
+    }
+
   }
 
   def annotateArgListNode(argList: ArgListNode, currentST: SymbolTable): Unit = {
