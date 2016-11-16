@@ -3,10 +3,13 @@ object Annotate {
   private val sTable: SymbolTable = new SymbolTable(null)
 
   def annotateAST(ast: ProgNode): Unit = {
-    annotateProgNode(ast, new SymbolTable(None))
+    annotateProgNode(ast, new SymbolTable(None), new FunctionTable())
   }
 
-  def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable): Unit = {
+  def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable, funcTable: FunctionTable): Unit = {
+    for (f <- prog.funcChildren) {
+      funcTable.add(f)
+    }
     annotateStatNode(prog.statChild, topSymbolTable)
   }
 

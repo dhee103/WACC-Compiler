@@ -4,6 +4,7 @@ trait AstNode {
 case class ProgNode(val statChild: StatNode, val funcChildren: IndexedSeq[FuncNode]) extends AstNode {
 }
 
+// TODO: Change typeSignature to returnType
 case class FuncNode(val typeSignature: TypeNode, val identifier: IdentNode,
                val paramList: ParamListNode, val statement: StatNode)
   extends AstNode {
