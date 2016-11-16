@@ -542,7 +542,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     //    println("hit " + currentMethodName())
     val name = ctx.getText
 
-    new IdentNode(name, None)
+    new IdentNode(name)
   }
 
   override def visitArrayElemExpr(ctx: ArrayElemExprContext): ExprNode = {

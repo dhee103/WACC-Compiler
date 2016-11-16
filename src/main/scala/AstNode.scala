@@ -64,7 +64,8 @@ trait PairElemTypeNode extends AstNode {
 case class InnerPairTypeNode() extends PairElemTypeNode {
 }
 
-case class IdentNode(val name: String, override var nodeType: Option[TypeNode]) extends ExprNode with AssignmentLeftNode {
+case class IdentNode(val name: String) extends ExprNode with AssignmentLeftNode {
+  nodeType = None
 }
 
 case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNode]) extends ExprNode with  AssignmentLeftNode {

@@ -194,7 +194,7 @@ object Annotate {
 // import ClassTag
   // def checkNodesHaveSameType(typeNode1: TypeNode, typeNode2: TypeNode):
   // Boolean = {
-  //   def f[A, B: ClassTag](a: A, b: B) = a match {
+  //   def f[A, B: ClassTyearag](a: A, b: B) = a match {
   //     case _: B => true
   //     case _    => false
   //   }
