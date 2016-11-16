@@ -20,4 +20,13 @@ class SymbolTable(val encTable: Option[SymbolTable]) {
 
   }
 
+  def doesContain(identifier: IdentNode): Boolean = {
+    try {
+      lookup(identifier)
+      true
+    } catch {
+      case _:Throwable => false
+    }
+  }
+
 }

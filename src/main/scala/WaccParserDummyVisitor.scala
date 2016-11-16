@@ -77,7 +77,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitDeclaration(ctx: WaccParser.DeclarationContext):
   DeclarationNode = {
-    //    println("hit " + currentMethodName())
     val variableType: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
     val identifier: IdentNode = visit(ctx.getChild(1)).asInstanceOf[IdentNode]
     val rhs: AssignmentRightNode = visit(ctx.getChild(3))
@@ -87,8 +86,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   override def visitAssignment(ctx: WaccParser.AssignmentContext): AssignmentNode = {
-    //    println("hit " + currentMethodName())
-
     val lhs: AssignmentLeftNode = visit(ctx.getChild(0))
       .asInstanceOf[AssignmentLeftNode]
     val rhs: AssignmentRightNode = visit(ctx.getChild(2))
@@ -98,8 +95,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   override def visitRead(ctx: WaccParser.ReadContext): ReadNode = {
-    //    println("hit " + currentMethodName())
-
     val variable: AssignmentLeftNode = visit(ctx.getChild(1))
       .asInstanceOf[AssignmentLeftNode]
 
@@ -107,24 +102,18 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   override def visitFree(ctx: WaccParser.FreeContext): FreeNode = {
-    //    println("hit " + currentMethodName())
-
     val variable: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
     new FreeNode(variable)
   }
 
   override def visitReturn(ctx: WaccParser.ReturnContext): ReturnNode = {
-    //    println("hit " + currentMethodName())
-
     val returnValue: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
     new ReturnNode(returnValue)
   }
 
   override def visitExit(ctx: WaccParser.ExitContext): ExitNode = {
-    //    println("hit " + currentMethodName())
-
     val exitCode: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
     new ExitNode(exitCode)

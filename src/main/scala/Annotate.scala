@@ -31,17 +31,15 @@ object Annotate {
 
   def annotateDeclarationNode(statement: DeclarationNode, currentST:
   SymbolTable): Unit = {
-    try {
-      currentST.lookup(statement.identifier)
-      // TODO: deal with redeclaration
-    } catch {
-      case e: RuntimeException =>
-        val ident: IdentNode = statement.identifier
-        ident.nodeType = Some(statement.variableType)
-        currentST.add(ident, ident.nodeType.getOrElse(throw new RuntimeException("Fatal error")))
-      case a: Any => throw a
+    if (currentST.doesContain(statement.identifier)) {
+      // throw some error
+      println("Semantic: redeclaration error - add to log")
+    } else {
+      val ident: IdentNode = statement.identifier
+      ident.nodeType = Some(statement.variableType)
+      currentST.add(ident, ident.nodeType.getOrElse(throw new RuntimeException("Fatal error")))
+      annotateAssignmentRightNode(statement.rhs, currentST)
     }
-    annotateAssignmentRightNode(statement.rhs, currentST)
   }
 
   def annotateAssignmentNode(statement: AssignmentNode, currentST:
