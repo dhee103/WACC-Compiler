@@ -45,6 +45,40 @@ object Main {
       case _:NumberFormatException => return 100
       case e :Throwable => println("Dodgy try catch"); println(e); return 200
     }
+    // scala.MatchError: null
+    /* nullPointerException for:
+     binarySortTree.wacc,
+     fibonacciFullRec.wacc,
+     fibonacciRecursive.wacc,
+     fixedPointRealArithmetic.wacc
+     functionConditionalReturn.wacc
+     mutualRecursion.wacc
+     printInputTriangle.wacc
+     simpleRecursion.wacc
+     functionDeclaration.wacc
+     functionManyArguments.wacc
+     functionReturnPair.wacc
+     functionSimple.wacc
+     functionUpdateParameter.wacc
+     incFunction.wacc
+     sameArgName.wacc
+     */
+    // syntaxErr for minusNoWhitespaceExpr.wacc, plusNoWhitespaceExpr
+    /* unknown unary op for:
+        hashTable.wacc => table
+        array.wacc => a
+        arrayLength.wacc => a
+        boolExpr1.wacc => ((true&&false)||(true&&false))
+        mathsExpr.wacc => ((true&&false)||(true&&false))
+        multipleMathsOps.wacc => x
+        negExpr.wacc => x
+        notExpr.wacc => a
+        ordAndchrExpr.wacc => a
+        asciiTable.wacc => ' '
+        negFunction.wacc => b
+        intnegateOverflow.wacc => x
+        whileBoolFlip.wacc => b
+    */
 
     var numSemanticErrors: Int = 0
     println("match error")

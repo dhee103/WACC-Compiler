@@ -398,6 +398,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new StringLiteralNode(value)
   }
 
+// TODO: Find out why we are matching lots of non unary operations
   override def visitUnaryOperation(ctx: UnaryOperationContext): ExprNode = {
     //    println("hit " + currentMethodName())
     val argument: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
@@ -410,7 +411,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       case "len" => new LenNode(argument)
       case "ord" => new OrdNode(argument)
       case "chr" => new ChrNode(argument)
-      case _ => throw new RuntimeException("Unknown Unary Operand.")
+      case e => println(e); throw new RuntimeException("Unknown Unary Operand.")
     }
   }
 
