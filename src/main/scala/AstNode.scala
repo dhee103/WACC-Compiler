@@ -26,6 +26,7 @@ case class ArgListNode(val exprs: IndexedSeq[ExprNode]) extends AstNode {
 trait PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
 
   def exprChild: ExprNode
+  def nodeType: TypeNode = exprChild.nodeType.get
 
 }
 
@@ -54,6 +55,7 @@ case class StringTypeNode() extends BaseTypeNode {
 }
 
 case class ArrayTypeNode(val elemType: TypeNode) extends PairElemTypeNode with TypeNode {
+
 }
 
 case class PairTypeNode(val firstElemType: PairElemTypeNode, val secondElemType: PairElemTypeNode) extends TypeNode {
@@ -66,7 +68,7 @@ case class InnerPairTypeNode() extends PairElemTypeNode {
 }
 
 case class IdentNode(val name: String) extends ExprNode with AssignmentLeftNode {
-  nodeType = None
+  nodeType = None // isn't this line redundant?
 }
 
 case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNode]) extends ExprNode with  AssignmentLeftNode {
