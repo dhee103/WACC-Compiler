@@ -29,7 +29,7 @@ class FunctionTable() {
       lookup(identifier)
       true
     } catch {
-      case _:Throwable => false
+      case _: Throwable => false
     }
   }
 }
