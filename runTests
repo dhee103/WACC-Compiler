@@ -4,8 +4,6 @@ dir = "wacc_examples/valid"
 
 files = `find #{dir}/ -name *.wacc`.split("\n")
 
-$numErrors = 0
-
 def getString(file)
   return `./compile #{file}`
 end
@@ -16,13 +14,10 @@ end
 
 def fullMessage(file)
   if getError(getString(file))
-    puts "#{file} returns error code: #{getString(file)} #{Time.new.inspect} +
-    \n\n==================================================================================\n\n"
-    numErrors += 1
+    puts "#{file} returns error code: #{getString(file)} #{Time.new.inspect}\n\n"
   end
   # return ""
 end
 
 files.map { |file| fullMessage(file) }
 
-puts numErrors
