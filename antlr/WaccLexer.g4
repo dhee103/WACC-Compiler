@@ -1,6 +1,4 @@
-    lexer grammar WaccLexer;
-
-BEGIN : 'begin' ;
+lexer grammar WaccLexer;BEGIN : 'begin' ;
 END : 'end' ;
 IS : 'is' ;
 SKIP_ : 'skip' ;
@@ -17,33 +15,23 @@ ELSE : 'else' ;
 FI : 'fi' ;
 WHILE : 'while' ;
 DO : 'do' ;
-DONE : 'done' ;
-
-NULL : 'null' ;
+DONE : 'done' ;NULL : 'null' ;
 INT_LITERAL : ('+' | '-')? DIGIT+ ;
-fragment DIGIT : [0-9] ;
-
-CHAR_LITERAL : ('\'') CHARACTER ('\'') ;
+fragment DIGIT : [0-9] ;CHAR_LITERAL : ('\'') CHARACTER ('\'') ;
 STR_LITERAL : ('"') CHARACTER* ('"') ;
 fragment CHARACTER : ('\\') ESCAPED_CHAR
-              | ~([\\\'"])
-              ;
-fragment ESCAPED_CHAR : '0' | 'b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\' ;
-
-LPAREN : '(' ;
+             | ~([\\\'"])
+             ;
+fragment ESCAPED_CHAR : '0' | 'b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\' ;LPAREN : '(' ;
 RPAREN : ')' ;
 LBRACKET : '[' ;
 RBRACKET : ']' ;
 COMMA : ',' ;
-SEMICOLON : ';' ;
-
-EXCLAMATION : '!' ;
+SEMICOLON : ';' ;EXCLAMATION : '!' ;
 MINUS : '-' ;
 LENGTH : 'len' ;
 ORD : 'ord' ;
-CHR : 'chr' ;
-
-MULTIPLY : '*' ;
+CHR : 'chr' ;MULTIPLY : '*' ;
 DIVIDE : '/' ;
 MOD : '%' ;
 PLUS : '+' ;
@@ -54,26 +42,13 @@ LESS_EQUAL : '<=' ;
 DOUBLE_EQUAL : '==' ;
 NOT_EQUAL : '!=' ;
 LOGICAL_AND : '&&' ;
-LOGICAL_OR : '||' ;
-
-UNDERSCORE : '_' ;
-
-TRUE_LITERAL : 'true' ;
-FALSE_LITERAL : 'false' ;
-
-NEWPAIR : 'newpair' ;
-CALL : 'call' ;
-
-FIRST : 'fst' ;
-SECOND : 'snd' ;
-
-INT_TYPE : 'int' ;
+LOGICAL_OR : '||' ;TRUE_LITERAL : 'true' ;
+FALSE_LITERAL : 'false' ;NEWPAIR : 'newpair' ;
+CALL : 'call' ;FIRST : 'fst' ;
+SECOND : 'snd' ;INT_TYPE : 'int' ;
 BOOL_TYPE : 'bool' ;
 CHAR_TYPE : 'char' ;
 STRING_TYPE : 'string' ;
-PAIR_TYPE : 'pair' ;
-
-
-ID : ('_'|[a-zA-Z])([a-zA-Z0-9]*) ;
+PAIR_TYPE : 'pair' ;ID : ('_'|[a-zA-Z])('_'|[a-zA-Z0-9])* ;
 COMMENT : '#' ~[\n]* '\n' -> skip;
 WS : [ \t\r\n]+ -> skip;
