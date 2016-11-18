@@ -2,8 +2,6 @@ object Annotate {
 
   var numSemanticErrors: Int = 0
 
-  def getNumberOfSemanticErrors(): Int =  // TO DO: don't need getter? not java
-
   def annotateAST(ast: ProgNode, functionTable: FunctionTable): Unit = {
     annotateProgNode(ast, new SymbolTable(None), functionTable)
   }
