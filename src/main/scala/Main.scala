@@ -70,7 +70,7 @@ object Main {
      incFunction.wacc
      sameArgName.wacc
      --> broken by changing 1 to 0  arrayEmpty.wacc
-     --> broken by changing 1 to 0  
+     --> broken by changing 1 to 0
      --> broken by changing 1 to 0
      --> broken by changing 1 to 0
      --> broken by changing 1 to 0
