@@ -13,12 +13,12 @@ def getString(file)
   return `./compile #{file}`
 end
 
-def getError(msg)
-  return !(msg.include? "success")
-end
 # def getError(msg)
-#   return !(msg.include? "Nonzero exit code returned from runner: 100")
+#   return !(msg.include? "success")
 # end
+def getError(msg)
+  return !(msg.include? "Nonzero exit code returned from runner: 200")
+end
 
 def fullMessage(file)
   if getError(getString(file))
@@ -30,4 +30,4 @@ end
 
 files.map { |file| fullMessage(file) }
 
-puts "There are #{count} errors in #{dir}"
+puts "There are #{count}/#{files.length} errors in #{dir}"
