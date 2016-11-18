@@ -1,6 +1,6 @@
 import collection.mutable.HashMap
 
-class FunctionTable() {
+object FunctionTable {
 // TODO: consider having tuple of TypeNode and paramList
 // TODO: consider having an trait/abstract class for functionTable & SymbolTable
   val dict = new HashMap[IdentNode, (TypeNode, IndexedSeq[TypeNode])]()
