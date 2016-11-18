@@ -38,6 +38,7 @@ object Main {
     }
 
     val visitor = new WaccParserDummyVisitor()
+    val funcTable: FunctionTable = new FunctionTable()
 
     // sort out this try catch - it returns 200 far more than it shoud; maybe there are other errors and cases to catch
 // add methods to get number of syntax errors/ semantic errors from visitor
@@ -45,8 +46,7 @@ object Main {
       println("before visiting the tree")
       val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
       println("visited the tree")
-      Annotate.annotateAST(ast)
-      println("annotated ast")
+      Annotate.annotateAST(ast, funcTable)
     } catch {
       case _: NullPointerException =>
       case _: NumberFormatException => return 100
