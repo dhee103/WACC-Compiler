@@ -26,7 +26,7 @@ case class ArgListNode(val exprs: IndexedSeq[ExprNode]) extends AstNode {
 trait PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
 
   def exprChild: ExprNode
-  def nodeType: TypeNode = exprChild.nodeType.get
+  def nodeType: TypeNode = exprChild.nodeType
 
 }
 
@@ -68,7 +68,8 @@ case class InnerPairTypeNode() extends PairElemTypeNode {
 }
 
 case class IdentNode(val name: String) extends ExprNode with AssignmentLeftNode {
-  nodeType = None // isn't this line redundant?
+  var identType: Option[TypeNode] = None // isn't this line redundant?
+  override def nodeType: TypeNode = identType.getOrElse(throw new RuntimeException("Fatal Error: Identifier not annotated."))
 }
 
 case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNode]) extends ExprNode with  AssignmentLeftNode {

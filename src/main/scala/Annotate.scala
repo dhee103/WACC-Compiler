@@ -39,8 +39,8 @@ object Annotate {
       numSemanticErrors += 1
     } else {
       val ident: IdentNode = statement.identifier
-      ident.nodeType = Some(statement.variableType)
-      currentST.add(ident, ident.nodeType.getOrElse(throw new RuntimeException("Fatal error")))
+      ident.identType = Some(statement.variableType)
+      currentST.add(ident, ident.nodeType)
       annotateAssignmentRightNode(statement.rhs, currentST)
     }
   }
@@ -127,7 +127,7 @@ object Annotate {
   def annotateCallNode(call: CallNode, currentST: SymbolTable): Unit = {
 
     val identifier = call.id
-    identifier.nodeType = Some(FunctionTable.getReturnType(identifier))
+    identifier.identType= Some(FunctionTable.getReturnType(identifier))
 
     call.argList match {
       case None =>
@@ -175,7 +175,7 @@ object Annotate {
 
   def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
     try {
-      identifier.nodeType = Some(currentST.lookupAll(identifier))
+      identifier.identType = Some(currentST.lookupAll(identifier))
     } catch {
       case e: Exception => println(s"[Semantic Error]: Variable $identifier.nodeType doesn't exist"); numSemanticErrors += 1; throw e
     }
