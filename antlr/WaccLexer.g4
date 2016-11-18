@@ -16,7 +16,7 @@ FI : 'fi' ;
 WHILE : 'while' ;
 DO : 'do' ;
 DONE : 'done' ;NULL : 'null' ;
-INT_LITERAL : ('+' | '-')? DIGIT+ ;
+INT_LITERAL : DIGIT+ ;
 fragment DIGIT : [0-9] ;CHAR_LITERAL : ('\'') CHARACTER ('\'') ;
 STR_LITERAL : ('"') CHARACTER* ('"') ;
 fragment CHARACTER : ('\\') ESCAPED_CHAR
