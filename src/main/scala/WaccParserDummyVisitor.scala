@@ -326,9 +326,21 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new InnerPairTypeNode()
   }
 
+//  TODO: negative int overflow
   override def visitIntLiteral(ctx: IntLiteralContext): ExprNode = {
     //    println("hit " + currentMethodName())
-    visit(ctx.getChild(0)).asInstanceOf[IntLiteralNode]
+    val noOfChildren = ctx.getChildCount
+    if (noOfChildren == 1) {
+      visit(ctx.getChild(0)).asInstanceOf[IntLiteralNode]
+    } else {
+      val sign = ctx.getChild(0).getText
+      val posIntNode = visit(ctx.getChild(1)).asInstanceOf[IntLiteralNode]
+      sign match {
+        case "+" => posIntNode
+        case "-" => negateIntLiteralNode(posIntNode)
+      }
+    }
+
   }
 
   override def visitInt_liter(ctx: WaccParser.Int_literContext):
@@ -341,6 +353,10 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       case _: NumberFormatException => sys.exit(100)
     }
 
+  }
+
+  def negateIntLiteralNode(intNode: IntLiteralNode): IntLiteralNode = {
+    return IntLiteralNode(- intNode.value)
   }
 
   override def visitPairLiteral(ctx: WaccParser.PairLiteralContext): ExprNode
