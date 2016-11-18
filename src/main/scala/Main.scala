@@ -106,7 +106,7 @@ object Main {
 
     var numSemanticErrors: Int = 0
     println("match error")
-    numSemanticErrors += Annotate.getNumberOfSemanticErrors
+    numSemanticErrors += Annotate.numSemanticErrors
     println(s"there are $numSemanticErrors semantic errors")
     if (numSemanticErrors > 0) {
      return 200
