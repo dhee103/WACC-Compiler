@@ -348,7 +348,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     //    println("hit " + currentMethodName())
     try {
       val value = Integer.parseInt(ctx.getText)
-      new IntLiteralNode(value)
+      IntLiteralNode(value)
     } catch {
       case _: NumberFormatException => sys.exit(100)
     }
