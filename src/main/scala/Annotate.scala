@@ -40,7 +40,7 @@ object Annotate {
     } else {
       val ident: IdentNode = statement.identifier
       ident.identType = Some(statement.variableType)
-      currentST.add(ident, ident.nodeType)
+      currentST.add(ident, ident.getType)
       annotateAssignmentRightNode(statement.rhs, currentST)
     }
   }
