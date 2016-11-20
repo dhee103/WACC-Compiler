@@ -5,13 +5,7 @@
 
 targetPath = ARGV[0]
 
-# puts `sbt "run-main Main #{targetPath}"`
-
-# `sbt "run-main Main #{targetPath}"`
-
 puts sbtOutput = `sbt "run-main Main #{targetPath}"`
-
-# puts sbtOutput
 
 if sbtOutput.include? "java.lang.RuntimeException"
   sbtErr = sbtOutput.split("Nonzero exit code returned from runner: ")

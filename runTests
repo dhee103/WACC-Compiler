@@ -1,6 +1,8 @@
 #!/usr/bin/ruby
 
-dir = "wacc_examples/valid/while"
+# initTime = Time.now
+
+dir = ARGV[0]
 
 files = `find #{dir}/ -name *.wacc`.split("\n")
 
@@ -14,7 +16,8 @@ def getString(file)
 end
 
 def getError(msg)
-  return !(msg.include? "success")
+  return true
+  # return !(msg.include? "success")
 end
 
 def fullMessage(file)
@@ -25,6 +28,10 @@ def fullMessage(file)
   # return ""
 end
 
+initTime = Time.now
+
 files.map { |file| fullMessage(file) }
 
-puts "There are #{count} errors in #{dir}"
+puts "There are #{count}/#{files.length} errors in #{dir}"
+
+puts "Time taken to run compile on all files: #{Time.now - initTime}"

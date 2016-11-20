@@ -117,7 +117,7 @@ ident: ID  #Identifier
 array_elem: ident (LBRACKET expr RBRACKET)+  #ArrayElem
           ;
 
-int_liter: INT_LITERAL ;
+int_liter: (PLUS | MINUS)?  INT_LITERAL ;
 
 bool_liter: TRUE_LITERAL
           | FALSE_LITERAL

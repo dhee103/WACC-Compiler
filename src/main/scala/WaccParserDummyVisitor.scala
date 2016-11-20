@@ -327,9 +327,28 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     new InnerPairTypeNode()
   }
 
+  // override def visitIntLiteral(ctx: IntLiteralContext): ExprNode = {
+  //   //    println("hit " + currentMethodName())
+  //   visit(ctx.getChild(0)).asInstanceOf[IntLiteralNode]
+  // }
+
   override def visitIntLiteral(ctx: IntLiteralContext): ExprNode = {
-    //    println("hit " + currentMethodName())
-    visit(ctx.getChild(0)).asInstanceOf[IntLiteralNode]
+  //    println("hit " + currentMethodName())
+    val noOfChildren = ctx.getChildCount
+    if (noOfChildren == 1) {
+      visit(ctx.getChild(0)).asInstanceOf[IntLiteralNode]
+    } else {
+      val sign = ctx.getChild(0).getText
+      val posIntNode = visit(ctx.getChild(1)).asInstanceOf[IntLiteralNode]
+      sign match {
+        case "+" => posIntNode
+        case "-" => negateIntLiteralNode(posIntNode)
+      }
+    }
+  }
+
+def negateIntLiteralNode(intNode: IntLiteralNode): IntLiteralNode = {
+    return IntLiteralNode(- intNode.value)
   }
 
   override def visitInt_liter(ctx: WaccParser.Int_literContext):
@@ -403,7 +422,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     //    println("hit " + currentMethodName())
     val argument: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    val operation = ctx.getChild(1).getText
+    val operation = ctx.getChild(0).getText
 
     operation match {
       case "!" => new LogicalNotNode(argument)
