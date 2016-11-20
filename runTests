@@ -4,33 +4,51 @@
 
 dir = ARGV[0]
 
-files = `find #{dir}/ -name *.wacc`.split("\n")
+files = `find #{dir} -name *.wacc`.split("\n")
 
 def count
   @count ||= -1
   @count += 1
 end
 
-def getString(file)
-  return `./compile #{file}`
-end
+# def getString(file)
+#   return `./compile #{file}`
+# end
+#
+# def getError(msg)
+#   return true
+#   # return !(msg.include? "success")
+# end
+#
+# def fullMessage(file)
+#   if getError(getString(file))
+#      puts "#{file} returns error code: #{getString(file)} #{Time.new.inspect}\n\n"
+#      count
+#   end
+#   # return ""
+# end
 
-def getError(msg)
-  return true
-  # return !(msg.include? "success")
-end
-
-def fullMessage(file)
-  if getError(getString(file))
-    puts "#{file} returns error code: #{getString(file)} #{Time.new.inspect}\n\n"
-    count
+def outputMessage(file)
+  puts "#{file}"
+  exitCode = system("./compile #{file}")
+  if file.include? "wacc_examples/valid"
+    if !exitCode
+      count
+    end
+  elsif file.include? "wacc_examples/invalid"
+    if exitCode
+      count
+    end
   end
-  # return ""
+  puts "\n\n"
 end
+
 
 initTime = Time.now
 
-files.map { |file| fullMessage(file) }
+# files.map { |file| fullMessage(file) }
+
+files.map { |file| outputMessage(file)  }
 
 puts "There are #{count}/#{files.length} errors in #{dir}"
 

@@ -3,10 +3,6 @@ object Main {
   /*
     For testing purposes we have split the compilation into two functions.
     Compile returns the exit code as an integer as this can be tested.
-
-
-
-
   */
 
   def main(args : Array[String]): Unit = {
@@ -29,7 +25,7 @@ object Main {
     val waccParser = new WaccParser(tokens)
     val tree = waccParser.prog()
     val numSyntaxErrs = waccParser.getNumberOfSyntaxErrors
-    println(s"there are $numSyntaxErrs syntax errors")
+    // println(s"there are $numSyntaxErrs syntax errors")
 
     if (numSyntaxErrs > 0) {
       return 100
@@ -82,7 +78,7 @@ object Main {
 
     var numSemanticErrors: Int = 0
     numSemanticErrors += Annotate.getNumberOfSemanticErrors
-    println(s"there are $numSemanticErrors semantic errors")
+    // println(s"there are $numSemanticErrors semantic errors")
     if (numSemanticErrors > 0) {
      return 200
     }
