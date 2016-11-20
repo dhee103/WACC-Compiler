@@ -415,21 +415,8 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   // TODO: Find out why we are matching lots of non unary operations
   override def visitUnaryOperation(ctx: UnaryOperationContext): ExprNode = {
-    println("hit " + currentMethodName())
     val argument: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
-
-//    var i = 0
-//    while (i < ctx.getChildCount) {
-//      println(ctx.getChild(i).getText)
-//      i += 1
-//    }
-
-    println("argument is: " + argument)
-//    val operation = ctx.getChild(1).getText
     val operation = ctx.getChild(0).getText
-    println("operation: " + operation)
-//    TODO: see why I can't call getText on child0 which is the correct one for whileBoolFlip
-    println("first child: " + ctx.getChild(0).getText)
 
     operation match {
       case "!" => new LogicalNotNode(argument)
