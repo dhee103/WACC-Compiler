@@ -303,7 +303,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val secondElemType: PairElemTypeNode = visit(ctx.getChild(3))
       .asInstanceOf[PairElemTypeNode]
 
-    new PairTypeNode(firstElemType, secondElemType)
+    PairTypeNode(firstElemType, secondElemType)
   }
 
   override def visitBaseTypePairElem(ctx: BaseTypePairElemContext):
@@ -368,7 +368,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitPair_liter(ctx: WaccParser.Pair_literContext):
   PairLiteralNode = {
     //    println("hit " + currentMethodName())
-    new PairLiteralNode()
+    PairLiteralNode()
   }
 
   override def visitBoolLiteral(ctx: WaccParser.BoolLiteralContext): ExprNode
@@ -382,7 +382,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     //    println("hit " + currentMethodName())
     val value = ctx.getText.toBoolean
 
-    new BoolLiteralNode(value)
+    BoolLiteralNode(value)
   }
 
   override def visitCharLiteral(ctx: WaccParser.CharLiteralContext): ExprNode
@@ -396,7 +396,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     //    println("hit " + currentMethodName())
     val value = ctx.getText.charAt(0)
 
-    new CharLiteralNode(value)
+    CharLiteralNode(value)
   }
 
   override def visitStringLiteral(ctx: WaccParser.StringLiteralContext):
@@ -410,7 +410,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     //    println("hit " + currentMethodName())
     val value = ctx.getText
 
-    new StringLiteralNode(value)
+    StringLiteralNode(value)
   }
 
   // TODO: Find out why we are matching lots of non unary operations
@@ -419,11 +419,11 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(0).getText
 
     operation match {
-      case "!" => new LogicalNotNode(argument)
-      case "-" => new NegativeNode(argument)
-      case "len" => new LenNode(argument)
-      case "ord" => new OrdNode(argument)
-      case "chr" => new ChrNode(argument)
+      case "!" => LogicalNotNode(argument)
+      case "-" => NegativeNode(argument)
+      case "len" => LenNode(argument)
+      case "ord" => OrdNode(argument)
+      case "chr" => ChrNode(argument)
       case e: Any => throw new RuntimeException("Unknown Unary Operand.")
     }
   }

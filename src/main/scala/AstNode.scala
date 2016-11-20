@@ -87,7 +87,11 @@ case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNo
 case class ArrayLiteralNode(val values: IndexedSeq[ExprNode]) extends AssignmentRightNode {
     // Also need to check that each ExprNode here has a nodeType of IntTypeNode
   override def getType: TypeNode = {
-    val elemType: TypeNode = values(0).getType // But what if it's an empty array
-    ArrayTypeNode(elemType)
+    if (values.isEmpty) {
+      ArrayTypeNode(null)
+    } else {
+      val elemType: TypeNode = values(0).getType // But what if it's an empty array
+      ArrayTypeNode(elemType)
+    }
   }
 }
