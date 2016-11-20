@@ -4,7 +4,6 @@
 ANTLR_DIR	:= antlr
 SOURCE_DIR	:= src
 OUTPUT_DIR	:= bin
-SBT ?= sbt
 
 # Tools
 
@@ -27,32 +26,10 @@ rules:
 	$(MKDIR) $(OUTPUT_DIR)
 	$(JAVAC) $(JFLAGS) @$@
 	$(RM) rules
-	$(SBT) package
-	# sbt compile
+	sbt package
 
 clean:
 	$(RM) rules $(OUTPUT_DIR)
+	sbt clean
 
 .PHONY: all rules clean
-
-# # Sample Makefile for the WACC Compiler lab: edit this to build your own compiler
-# # Locations
-#
-# ANTLR_DIR	:= antlr
-#
-# # Tools
-#
-# ANTLR	:= antlrBuild
-#
-# # the make rules
-#
-# all: rules
-#
-# rules:
-# 	cd $(ANTLR_DIR) && ./$(ANTLR)
-# 	sbt compile
-#
-# clean:
-# 	sbt clean
-#
-# .PHONY: all rules clean
