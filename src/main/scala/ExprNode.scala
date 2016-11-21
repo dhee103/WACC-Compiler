@@ -3,21 +3,21 @@ trait ExprNode extends AssignmentRightNode {
 
 
 case class IntLiteralNode(val value: Int) extends ExprNode {
-  override def getType = new IntTypeNode
+  override def getType = IntTypeNode()
 }
 
 case class BoolLiteralNode(val value: Boolean) extends ExprNode {
-  override def getType = new BoolTypeNode
+  override def getType = BoolTypeNode()
 }
 
 case class CharLiteralNode(val value: Char) extends ExprNode {
-   override def getType = new CharTypeNode
+   override def getType = CharTypeNode()
 }
 
 case class StringLiteralNode(val value: String) extends ExprNode {
-   override def getType = new StringTypeNode
+   override def getType = StringTypeNode()
 }
 
 case class PairLiteralNode() extends ExprNode {
-   override def getType = new PairTypeNode(null, null)
+   override def getType = PairTypeNode(null, null)
 }
