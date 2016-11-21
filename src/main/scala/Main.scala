@@ -1,8 +1,14 @@
+
+
 object Main {
 
   /*
     For testing purposes we have split the compilation into two functions.
     Compile returns the exit code as an integer as this can be tested.
+
+
+
+
   */
 
   def main(args : Array[String]): Unit = {
@@ -32,14 +38,19 @@ object Main {
     }
 
     val visitor = new WaccParserDummyVisitor()
+    val funcTable: FunctionTable = new FunctionTable()
 
     // sort out this try catch - it returns 200 far more than it shoud; maybe there are other errors and cases to catch
+// add methods to get number of syntax errors/ semantic errors from visitor
     try {
+      // println("before visiting the tree")
       val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
+      // println("visited the tree")
       Annotate.annotateAST(ast)
     } catch {
-      case _:NumberFormatException => return 100
-      case e :Throwable => println("Dodgy try catch"); println(e); return 200
+      case _: NullPointerException =>
+      case _: NumberFormatException => return 100
+      case e : Throwable => println("Dodgy try catch"); println(e); return 200
     }
     // scala.MatchError: null
     /* nullPointerException for:
@@ -58,26 +69,45 @@ object Main {
      functionUpdateParameter.wacc
      incFunction.wacc
      sameArgName.wacc
+     --> broken by changing 1 to 0  arrayEmpty.wacc
+     --> broken by changing 1 to 0
+     --> broken by changing 1 to 0
+     --> broken by changing 1 to 0
+     --> broken by changing 1 to 0
+     --> broken by changing 1 to 0
+     --> broken by changing 1 to 0
+     --> broken by changing 1 to 0
      */
     // syntaxErr for minusNoWhitespaceExpr.wacc, plusNoWhitespaceExpr
     /* unknown unary op for:
-        hashTable.wacc => table
-        array.wacc => a
-        arrayLength.wacc => a
-        boolExpr1.wacc => ((true&&false)||(true&&false))
-        mathsExpr.wacc => ((true&&false)||(true&&false))
-        multipleMathsOps.wacc => x
-        negExpr.wacc => x
-        notExpr.wacc => a
-        ordAndchrExpr.wacc => a
-        asciiTable.wacc => ' '
-        negFunction.wacc => b
-        intnegateOverflow.wacc => x
-        whileBoolFlip.wacc => b
+        hashTable.wacc => table <-- error changed by changing 1 to 0
+        array.wacc => a <-- error changed by changing 1 to 0
+        arrayLength.wacc => a <-- fixed by changing 1 to 0
+        boolExpr1.wacc => ((true&&false)||(true&&false)) <-- fixed by changing 1 to 0
+        mathsExpr.wacc => ((true&&false)||(true&&false)) <-- fixed by changing 1 to 0
+        multipleMathsOps.wacc => x <-- fixed by changing 1 to 0
+        negExpr.wacc => x   <-- fixed by changing 1 to 0
+        notExpr.wacc => a    <-- fixed by changing 1 to 0
+        ordAndchrExpr.wacc => a <-- fixed by changing 1 to 0
+        asciiTable.wacc => ' ' <-- fixed by changing 1 to 0
+        negFunction.wacc => b <-- fixed by changing 1 to 0
+        intnegateOverflow.wacc => x <-- fixed by changing 1 to 0
+        whileBoolFlip.wacc => b x <-- fixed by changing 1 to 0
     */
 
+    /*
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    * */
+
     var numSemanticErrors: Int = 0
-    numSemanticErrors += Annotate.getNumberOfSemanticErrors
+    // println("match error")
+    numSemanticErrors += Annotate.numSemanticErrors
     // println(s"there are $numSemanticErrors semantic errors")
     if (numSemanticErrors > 0) {
      return 200
