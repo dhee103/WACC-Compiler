@@ -421,7 +421,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
     operation match {
       case "!" => LogicalNotNode(argument)
-      case "-" => NegativeNode(argument)
+      case "-" => NegationNode(argument)
       case "len" => LenNode(argument)
       case "ord" => OrdNode(argument)
       case "chr" => ChrNode(argument)
