@@ -42,10 +42,19 @@ case class OrdNode(override val argument: ExprNode) extends UnaryOperationNode {
     if (argument.getType == CharTypeNode()) {
       IntTypeNode()
     } else {
-      ErrorLog.add("[Semantic Error]: Argument of bool type expected in logical not operation.")
+      ErrorLog.add("[Semantic Error]: Argument of char type expected in ord operation.")
       ErrorTypeNode()
     }
   }
 }
 
-case class ChrNode(override val argument: ExprNode) extends UnaryOperationNode { }
+case class ChrNode(override val argument: ExprNode) extends UnaryOperationNode {
+  override def getType: TypeNode = {
+    if (argument.getType == IntTypeNode()) {
+      CharTypeNode()
+    } else {
+      ErrorLog.add("[Semantic Error]: Argument of int type expected in chr operation.")
+      ErrorTypeNode()
+    }
+  }
+}
