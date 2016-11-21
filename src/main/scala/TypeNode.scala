@@ -31,3 +31,7 @@ trait PairElemTypeNode extends AstNode {
 
 case class InnerPairTypeNode() extends PairElemTypeNode {
 }
+
+case class ErrorTypeNode() extends TypeNode {
+  override def toPairElemTypeNode: PairElemTypeNode = this // does this cause any problems?
+}

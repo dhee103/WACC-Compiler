@@ -8,7 +8,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitProg(ctx: WaccParser.ProgContext): AstNode = {
 //    println("hit " + currentMethodName())
-
     val noOfChildren = ctx.getChildCount
     val statChild: StatNode = visit(ctx.getChild(noOfChildren - 3))
       .asInstanceOf[StatNode]
@@ -20,7 +19,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   override def visitFunc(ctx: WaccParser.FuncContext): AstNode = {
-    println("hit " + currentMethodName())
+    // println("hit " + currentMethodName())
     val noOfChildren = ctx.getChildCount
     val typeSignature: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
     val identChild: IdentNode = visit(ctx.getChild(1)).asInstanceOf[IdentNode]
@@ -32,7 +31,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       .asInstanceOf[StatNode]
 
     if (!isReturnStatement(statChild)) {
-      println("Syntax Error: Unreachable code!")
+      println("[Syntax Error] Unreachable code!")
       sys.exit(100)
     }
 
@@ -415,7 +414,9 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   // TODO: Find out why we are matching lots of non unary operations
   override def visitUnaryOperation(ctx: UnaryOperationContext): ExprNode = {
+    //    println("hit " + currentMethodName())
     val argument: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+
     val operation = ctx.getChild(0).getText
 
     operation match {
@@ -557,7 +558,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       for (i <- 0 until noOfChildren if i % 2 == 1)
         yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]
 
-    new ArrayLiteralNode(if (noOfChildren == 2) IndexedSeq[ExprNode]() else
+    ArrayLiteralNode(if (noOfChildren == 2) IndexedSeq[ExprNode]() else
       values)
   }
 

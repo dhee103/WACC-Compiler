@@ -1,30 +1,8 @@
-#!/usr/bin/ruby
-# Ruby front-end for your compiler.
-# You are free to change the language used for this script, cheers
-# but do *not* change its name.
+# !/bin/bash
 
-targetPath = ARGV[0]
+DIR=$(dirname $0)
 
-# puts `sbt "run-main Main #{targetPath}"`
+scala -cp "$DIR/target/scala-2.11/wacccompiler_2.11-1.0.jar:$DIR/lib/antlr-4.5.3-complete.jar" \
+src/main/scala/Main.scala $@
 
-# `sbt "run-main Main #{targetPath}"`
-
-puts sbtOutput = `sbt "run-main Main #{targetPath}"`
-
-# puts sbtOutput
-
-if sbtOutput.include? "java.lang.RuntimeException"
-  sbtErr = sbtOutput.split("Nonzero exit code returned from runner: ")
-
-# print errors as well
-  # splitAtErrors = sbtErr[0].split("error")
-  # # puts splitAtErrors
-  # errors = splitAtErrors[1].split("java.lang.RuntimeException")
-  # puts errors[0][1..errors[0].length]
-  puts "Error code: #{sbtErr[1].slice(0..3).to_i}"
-  exit sbtErr[1].slice(0..3).to_i
-  # puts "there is an error"
-end
-
-puts "Error code: 0"
-exit 0
+exit $?
