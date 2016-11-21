@@ -5,10 +5,6 @@ object Main {
   /*
     For testing purposes we have split the compilation into two functions.
     Compile returns the exit code as an integer as this can be tested.
-
-
-
-
   */
 
   def main(args : Array[String]): Unit = {
@@ -29,7 +25,21 @@ object Main {
     val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLexer)
 
     val waccParser = new WaccParser(tokens)
+
+    // val diagErrL = new DiagnosticErrorListener()
+
+    val dEL = new DescriptiveErrorListener
+
+    // waccLexer.addErrorListener(diagErrL)
+    // waccParser.addErrorListener(diagErrL)
+
+//    waccLexer.removeErrorListeners();
+    waccLexer.addErrorListener(dEL);
+//    waccParser.removeErrorListeners();
+    waccParser.addErrorListener(dEL);
+
     val tree = waccParser.prog()
+
     val numSyntaxErrs = waccParser.getNumberOfSyntaxErrors
     // println(s"there are $numSyntaxErrs syntax errors")
 
@@ -52,58 +62,7 @@ object Main {
       case _: NumberFormatException => return 100
       case e : Throwable => println("Dodgy try catch"); println(e); return 200
     }
-    // scala.MatchError: null
-    /* nullPointerException for:
-     binarySortTree.wacc,
-     fibonacciFullRec.wacc,
-     fibonacciRecursive.wacc,
-     fixedPointRealArithmetic.wacc
-     functionConditionalReturn.wacc
-     mutualRecursion.wacc
-     printInputTriangle.wacc
-     simpleRecursion.wacc
-     functionDeclaration.wacc
-     functionManyArguments.wacc
-     functionReturnPair.wacc
-     functionSimple.wacc
-     functionUpdateParameter.wacc
-     incFunction.wacc
-     sameArgName.wacc
-     --> broken by changing 1 to 0  arrayEmpty.wacc
-     --> broken by changing 1 to 0
-     --> broken by changing 1 to 0
-     --> broken by changing 1 to 0
-     --> broken by changing 1 to 0
-     --> broken by changing 1 to 0
-     --> broken by changing 1 to 0
-     --> broken by changing 1 to 0
-     */
-    // syntaxErr for minusNoWhitespaceExpr.wacc, plusNoWhitespaceExpr
-    /* unknown unary op for:
-        hashTable.wacc => table <-- error changed by changing 1 to 0
-        array.wacc => a <-- error changed by changing 1 to 0
-        arrayLength.wacc => a <-- fixed by changing 1 to 0
-        boolExpr1.wacc => ((true&&false)||(true&&false)) <-- fixed by changing 1 to 0
-        mathsExpr.wacc => ((true&&false)||(true&&false)) <-- fixed by changing 1 to 0
-        multipleMathsOps.wacc => x <-- fixed by changing 1 to 0
-        negExpr.wacc => x   <-- fixed by changing 1 to 0
-        notExpr.wacc => a    <-- fixed by changing 1 to 0
-        ordAndchrExpr.wacc => a <-- fixed by changing 1 to 0
-        asciiTable.wacc => ' ' <-- fixed by changing 1 to 0
-        negFunction.wacc => b <-- fixed by changing 1 to 0
-        intnegateOverflow.wacc => x <-- fixed by changing 1 to 0
-        whileBoolFlip.wacc => b x <-- fixed by changing 1 to 0
-    */
-
-    /*
-    *
-    *
-    *
-    *
-    *
-    *
-    *
-    * */
+    // Only errors are semantic errors
 
     var numSemanticErrors: Int = 0
     // println("match error")
