@@ -15,7 +15,16 @@ case class LogicalNotNode(override val argument: ExprNode) extends UnaryOperatio
   }
 }
 
-case class NegativeNode(override val argument: ExprNode) extends UnaryOperationNode { }
+case class NegationNode(override val argument: ExprNode) extends UnaryOperationNode {
+  override def getType: TypeNode = {
+    if (argument.getType == IntTypeNode()) {
+      IntTypeNode()
+    } else {
+      ErrorLog.add("[Semantic Error]: Argument of int type expected in negation operation.")
+      ErrorTypeNode()
+    }
+  }
+}
 
 case class LenNode(override val argument: ExprNode) extends UnaryOperationNode { }
 
