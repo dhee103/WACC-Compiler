@@ -26,8 +26,19 @@ case class NegationNode(override val argument: ExprNode) extends UnaryOperationN
   }
 }
 
-case class LenNode(override val argument: ExprNode) extends UnaryOperationNode { }
+case class LenNode(override val argument: ExprNode) extends UnaryOperationNode {
+  override def getType: TypeNode = {
+    if (argument.getType.isInstanceOf[ArrayTypeNode]) {
+      IntTypeNode()
+    } else {
+      ErrorLog.add("[Semantic Error]: Array expected as argument of len operation.")
+      ErrorTypeNode()
+    }
+  }
+}
 
-case class OrdNode(override val argument: ExprNode) extends UnaryOperationNode { }
+case class OrdNode(override val argument: ExprNode) extends UnaryOperationNode {
+
+}
 
 case class ChrNode(override val argument: ExprNode) extends UnaryOperationNode { }
