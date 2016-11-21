@@ -8,7 +8,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitProg(ctx: WaccParser.ProgContext): AstNode = {
 //    println("hit " + currentMethodName())
-
     val noOfChildren = ctx.getChildCount
     val statChild: StatNode = visit(ctx.getChild(noOfChildren - 3))
       .asInstanceOf[StatNode]
@@ -32,7 +31,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       .asInstanceOf[StatNode]
 
     if (!isReturnStatement(statChild)) {
-      println("Syntax Error: Unreachable code!")
+      println("[Syntax Error] Unreachable code!")
       sys.exit(100)
     }
 

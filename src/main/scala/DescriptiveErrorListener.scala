@@ -1,12 +1,6 @@
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.RecognitionException
 import org.antlr.v4.runtime.Recognizer
-import DescriptiveErrorListener._
-
-object DescriptiveErrorListener {
-
-  var INSTANCE: DescriptiveErrorListener = new DescriptiveErrorListener()
-}
 
 class DescriptiveErrorListener extends BaseErrorListener {
 

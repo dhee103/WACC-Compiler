@@ -1,13 +1,18 @@
+// import errorLogging.ErrorLog._
 
 
-object Main {
+
 
   /*
     For testing purposes we have split the compilation into two functions.
     Compile returns the exit code as an integer as this can be tested.
   */
 
+  object Main {
+
+
   def main(args : Array[String]): Unit = {
+
     if (!args.isEmpty) {
       sys.exit(compile(args(0)))
     }
@@ -20,22 +25,30 @@ object Main {
 
   def compile(in: String): Int = {
 
+// maps string locations to the error message
+// can then print out nicely at the end
+    // var semanticErrorLog = HashMap[String, String]()
+
+    // to add you can do: semanticErrorLog :+= (the string)
+
     val filename = in
     val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
     val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLexer)
 
     val waccParser = new WaccParser(tokens)
 
+
+
     // val diagErrL = new DiagnosticErrorListener()
 
-    val dEL = new DescriptiveErrorListener
 
     // waccLexer.addErrorListener(diagErrL)
     // waccParser.addErrorListener(diagErrL)
 
-//    waccLexer.removeErrorListeners();
+    val dEL = new DescriptiveErrorListener
+   waccLexer.removeErrorListeners();
     waccLexer.addErrorListener(dEL);
-//    waccParser.removeErrorListeners();
+   waccParser.removeErrorListeners();
     waccParser.addErrorListener(dEL);
 
     val tree = waccParser.prog()
@@ -66,7 +79,7 @@ object Main {
 
     var numSemanticErrors: Int = 0
     // println("match error")
-    numSemanticErrors += Annotate.numSemanticErrors
+    numSemanticErrors += Annotate.numSemanticErrors + ErrorLog.getNumErrors
     // println(s"there are $numSemanticErrors semantic errors")
     if (numSemanticErrors > 0) {
      return 200
