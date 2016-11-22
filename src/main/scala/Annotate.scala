@@ -44,12 +44,10 @@ object Annotate {
   }
 
   def annotateDeclarationNode(statement: DeclarationNode, currentST: SymbolTable): Unit = {
-    if (currentST.doesContain(statement.identifier)) {
-      // throw some error
-      println("[Semantic Error]: Redeclaration error")
-      numSemanticErrors += 1
+    val ident: IdentNode = statement.identifier
+    if (currentST.doesContain(ident)) {
+      SemanticErrorLog.add(s"[Semantic Error]: Attempted to redeclare variable $ident")
     } else {
-      val ident: IdentNode = statement.identifier
       ident.identType = Some(statement.variableType)
       currentST.add(ident, ident.getType)
       annotateAssignmentRightNode(statement.rhs, currentST)
@@ -113,7 +111,7 @@ object Annotate {
       case lhs: IdentNode     => annotateIdentNode(lhs, currentST)
       case lhs: ArrayElemNode => annotateArrayElemNode(lhs, currentST)
       case lhs: PairElemNode  => annotatePairElemNode(lhs, currentST)
-      case _: Any             => println("error"); numSemanticErrors += 1
+//      case _: Any             => println("error"); numSemanticErrors += 1
     }
   }
 
@@ -125,7 +123,7 @@ object Annotate {
       case rhs: PairElemNode     => annotatePairElemNode(rhs, currentST)
       case rhs: CallNode         => annotateCallNode(rhs, currentST)
       case rhs: ArgListNode      => annotateArgListNode(rhs, currentST)
-      case _: Any                => println("error"); numSemanticErrors += 1
+//      case _: Any                => println("error"); numSemanticErrors += 1
     }
   }
 
@@ -168,7 +166,7 @@ object Annotate {
          | _: CharLiteralNode
          | _: StringLiteralNode
          | _: PairLiteralNode        =>
-      case _: Any                    => println("error"); numSemanticErrors += 1
+//      case _: Any                    => println("error"); numSemanticErrors += 1
     }
   }
 
