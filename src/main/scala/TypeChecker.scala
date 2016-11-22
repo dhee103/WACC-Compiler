@@ -2,9 +2,24 @@ object TypeChecker {
 
   def beginSemanticCheck(node: ProgNode): Unit = {
     // check all funcNodes in funcChildren
-    for (func <- node.funcChildren) checkStatement(func.statement)
+    for (func <- node.funcChildren) {
+      checkStatement(func.statement)
+      checkFunctionReturnStatement(func.statement, func.returnType, func.identifier.name)
+    }
 
     checkStatement(node.statChild)
+  }
+
+  def checkFunctionReturnStatement(statement: StatNode, correctType: TypeNode, functionName: String): Unit = {
+    statement match {
+      case ReturnNode(expr) => val foundType = expr.getType
+        if (!foundType.isEquivalentTo(correctType))
+        SemanticErrorLog.add(s"[Semantic Error] Function $functionName expected return type $correctType. Found $foundType)")
+      case stat: SequenceNode => checkFunctionReturnStatement(stat.sndStat, correctType, functionName)
+      case stat: IfNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
+        checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
+      case stat: NewBeginNode => checkFunctionReturnStatement(stat.body, correctType, functionName)
+    }
   }
 
   def checkStatement(statement: StatNode): Unit = {

@@ -30,7 +30,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val statChild: StatNode = visit(ctx.getChild(noOfChildren - 2))
       .asInstanceOf[StatNode]
 
-    if (!isReturnStatement(statChild)) {
+    if (!endsInReturnStatement(statChild)) {
       println("[Syntax Error] Unreachable code!")
       sys.exit(100)
     }
@@ -39,14 +39,14 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   }
 
-  def isReturnStatement(statement: StatNode): Boolean = {
+  def endsInReturnStatement(statement: StatNode): Boolean = {
 
     statement match {
       case _: ReturnNode | _: ExitNode => true
-      case stat: SequenceNode => isReturnStatement(stat.sndStat)
-      case stat: IfNode => isReturnStatement(stat.thenStat) &&
-        isReturnStatement(stat.elseStat)
-      case stat: NewBeginNode => isReturnStatement(stat.body)
+      case stat: SequenceNode => endsInReturnStatement(stat.sndStat)
+      case stat: IfNode => endsInReturnStatement(stat.thenStat) &&
+        endsInReturnStatement(stat.elseStat)
+      case stat: NewBeginNode => endsInReturnStatement(stat.body)
       case _ => false
     }
   }
