@@ -18,6 +18,7 @@ case class ParamNode(val variableType: TypeNode, val identifier: IdentNode) exte
 }
 
 trait AssignmentLeftNode extends AstNode {
+  def getType: TypeNode
 }
 
 case class ArgListNode(val exprs: IndexedSeq[ExprNode]) extends AstNode {
