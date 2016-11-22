@@ -7,11 +7,11 @@ object SemanticErrorLog {
     semanticErrorLog = semanticErrorLog :+ s
   }
 
-  def getNumErrors(): Int = {
+  def getNumErrors: Int = {
     semanticErrorLog.size
   }
 
-  def getErrors(): Seq[String] = {
+  def getErrors: Seq[String] = {
     semanticErrorLog
   }
 
