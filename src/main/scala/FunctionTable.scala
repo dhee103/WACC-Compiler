@@ -16,6 +16,8 @@ object FunctionTable {
 
   def getReturnType(ident: IdentNode) = lookup(ident)._1
 
+  def getParamTypes(ident: IdentNode): IndexedSeq[TypeNode] = lookup(ident)._2
+
   // def add(identifier: IdentNode, typeinfo: (TypeNode, IndexedSeq[TypeNode])): Unit
   //   = dict += (identifier -> typeinfo)
 
