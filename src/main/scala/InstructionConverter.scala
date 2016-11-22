@@ -1,17 +1,11 @@
 object InstructionConverter {
 
+  def translate(instructions: List[Instruction]): String = {
 
-  def functionConvert(func: Function): String = {
-
-    null
-
-  }
-
-  def convertProgram(functionList: List[Function]):String = {
-
-    functionList.map(functionConvert).mkString
+    instructions.map(inToString).mkString
 
   }
 
+  def inToString(instr: Instruction) = instr.toString()
 
 }

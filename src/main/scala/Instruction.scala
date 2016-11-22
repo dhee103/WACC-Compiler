@@ -47,9 +47,9 @@ case class Move(val dst: Register, val src: Operand) extends Instruction {
 
 }
 
-case class Mul(val dst: Register, val src1: Register, val src2: Register) extends Instruction {
+case class SMull(val dst1: Register, dst2: Register, val src1: Register, val src2: Register) extends Instruction {
 
-  override def toString() = "MUL " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
+  override def toString() = "SMULL " + dst1.toString() + ", " + dst2.toString() + ", " + src1.toString() + ", " + src2.toString()
 
 }
 

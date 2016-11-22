@@ -4,7 +4,9 @@ case class Jump(val goToLabel: String) extends Instruction {
 
 }
 
-case class BranchEqual() extends Instruction {
-  //todo
+case class BranchEqual(val goToLabel: String) extends Instruction {
+
+  override def toString() = "BEQ" + goToLabel
+
 
 }
