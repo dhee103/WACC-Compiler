@@ -21,11 +21,11 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitFunc(ctx: WaccParser.FuncContext): AstNode = {
     // println("hit " + currentMethodName())
     val noOfChildren = ctx.getChildCount
-    val typeSignature: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
+    val returnType: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
     val identChild: IdentNode = visit(ctx.getChild(1)).asInstanceOf[IdentNode]
     var paramChild: ParamListNode = ParamListNode(IndexedSeq())
     if (noOfChildren == 8) {
-      paramChild = visit(ctx.getChild(2)).asInstanceOf[ParamListNode]
+      paramChild = visit(ctx.getChild(3)).asInstanceOf[ParamListNode]
     }
     val statChild: StatNode = visit(ctx.getChild(noOfChildren - 2))
       .asInstanceOf[StatNode]
@@ -35,7 +35,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       sys.exit(100)
     }
 
-    FuncNode(typeSignature, identChild, paramChild, statChild)
+    FuncNode(returnType, identChild, paramChild, statChild)
 
   }
 
@@ -297,9 +297,9 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   = {
     //    println("hit " + currentMethodName())
 
-    val firstElemType: PairElemTypeNode = visit(ctx.getChild(1))
+    val firstElemType: PairElemTypeNode = visit(ctx.getChild(2))
       .asInstanceOf[PairElemTypeNode]
-    val secondElemType: PairElemTypeNode = visit(ctx.getChild(3))
+    val secondElemType: PairElemTypeNode = visit(ctx.getChild(4))
       .asInstanceOf[PairElemTypeNode]
 
     PairTypeNode(firstElemType, secondElemType)
