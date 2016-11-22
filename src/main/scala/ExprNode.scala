@@ -19,5 +19,5 @@ case class StringLiteralNode(val value: String) extends ExprNode {
 }
 
 case class PairLiteralNode() extends ExprNode {
-   override def getType = PairTypeNode(null, null)
+   override def getType = PairTypeNode(AnyTypeNode(), AnyTypeNode())
 }

@@ -56,6 +56,7 @@ object TypeChecker {
     if (!rhsType.isEquivalentTo(lhsType)) {
       SemanticErrorLog.add("[Semantic Error] Type mismatch in assignment statement.")
     }
+
   }
 
   def checkRead(readNode: ReadNode): Unit = {
