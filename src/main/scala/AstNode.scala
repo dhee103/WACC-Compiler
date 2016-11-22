@@ -25,7 +25,6 @@ case class ArgListNode(val exprs: IndexedSeq[ExprNode]) extends AstNode {
 
 trait PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
   def exprChild: ExprNode
-  def getType: TypeNode = exprChild.getType // this is wrong?
 }
 
 case class FstNode(override val exprChild: ExprNode) extends PairElemNode {
