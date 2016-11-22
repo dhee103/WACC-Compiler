@@ -4,7 +4,7 @@ class SymbolTable(val encTable: Option[SymbolTable]) {
 
   val dict: HashMap[IdentNode, TypeNode] = new HashMap[IdentNode, TypeNode]()
 
-  def add (identifier: IdentNode, typeinfo: TypeNode): Unit
+  def add(identifier: IdentNode, typeinfo: TypeNode): Unit
     = dict += (identifier -> typeinfo)
 
   def lookup(identifier: IdentNode): TypeNode = {
