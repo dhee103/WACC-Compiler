@@ -1,16 +1,11 @@
 // import errorLogging.ErrorLog._
 
-
-
-
   /*
     For testing purposes we have split the compilation into two functions.
     Compile returns the exit code as an integer as this can be tested.
   */
 
-  object Main {
-
-
+object Main {
   def main(args : Array[String]): Unit = {
 
     if (!args.isEmpty) {
@@ -21,9 +16,7 @@
     }
   }
 
-
-
-  def compile(in: String): Int = {
+  def compile(filename: String): Int = {
 
 // maps string locations to the error message
 // can then print out nicely at the end
@@ -31,7 +24,6 @@
 
     // to add you can do: semanticErrorLog :+= (the string)
 
-    val filename = in
     val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
     val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLexer)
 
