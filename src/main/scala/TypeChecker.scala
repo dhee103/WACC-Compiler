@@ -11,12 +11,7 @@ object TypeChecker {
     val identType: TypeNode = ident.getType
     val rhsType: TypeNode = rhs.getType
 
-    rhsType match {
-      case ArrayTypeNode(null) => (identType.isInstanceOf[ArrayTypeNode], "[Semantic Error] Type mismatch in declaration statement.")
-      case PairTypeNode(null, null) => (identType.isInstanceOf[PairTypeNode], "[Semantic Error] Type mismatch in declaration statement.")
-      case _ => (rhsType == identType, "[Semantic Error] Type mismatch in declaration statement.")
-    }
-
+    (rhsType.isEquivalentTo(identType), "[Semantic Error] Type mismatch in declaration statement.")
   }
 
   // TO DO: Redo this entire function.
