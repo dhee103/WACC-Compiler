@@ -2,7 +2,7 @@ object TypeChecker {
 
   def beginSemanticCheck(node: ProgNode): Unit = {
     // check all funcNodes in funcChildren
-    // check the single statement
+    checkStatement(node.statChild)
   }
 
   def checkStatement(statement: StatNode): Unit = {
