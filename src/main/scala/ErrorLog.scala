@@ -16,6 +16,26 @@ object SemanticErrorLog {
   }
 
   def printErrors(): Unit = {
-    println(semanticErrorLog)
+    semanticErrorLog map (println _)
+  }
+}
+
+object SyntaxErrorLog {
+  var syntaxErrorLog = Seq[String]()
+
+  def add(s: String): Unit = {
+    syntaxErrorLog = syntaxErrorLog :+ s
+  }
+
+  def getNumErrors: Int = {
+    syntaxErrorLog.size
+  }
+
+  def getErrors: Seq[String] = {
+    syntaxErrorLog
+  }
+
+  def printErrors(): Unit = {
+    syntaxErrorLog map (println _)
   }
 }
