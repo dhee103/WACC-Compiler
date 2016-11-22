@@ -37,10 +37,7 @@
 
     val waccParser = new WaccParser(tokens)
 
-
-
     // val diagErrL = new DiagnosticErrorListener()
-
 
     // waccLexer.addErrorListener(diagErrL)
     // waccParser.addErrorListener(diagErrL)
@@ -61,7 +58,6 @@
     }
 
     val visitor = new WaccParserDummyVisitor()
-    val funcTable: FunctionTable = new FunctionTable()
 
     // sort out this try catch - it returns 200 far more than it shoud; maybe there are other errors and cases to catch
 // add methods to get number of syntax errors/ semantic errors from visitor

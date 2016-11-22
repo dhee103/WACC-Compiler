@@ -41,7 +41,7 @@ object TypeChecker {
     }
   }
 
-  def checkAssignment(assignmentNode: AssignmentNode): (Boolean, String) = {
+  def checkAssignment(assignmentNode: AssignmentNode): Unit = {
     val lhs = assignmentNode.lhs
     val rhs = assignmentNode.rhs
 
@@ -58,7 +58,7 @@ object TypeChecker {
     }
   }
 
-  def checkRead(readNode: ReadNode): (Boolean, String) = {
+  def checkRead(readNode: ReadNode): Unit = {
     val target = readNode.variable
     val targetType = target.getType
     val targetIsChar = targetType.isEquivalentTo(CharTypeNode())
