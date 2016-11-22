@@ -24,17 +24,22 @@ case class ArgListNode(val exprs: IndexedSeq[ExprNode]) extends AstNode {
 }
 
 trait PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
-
   def exprChild: ExprNode
-
   def getType: TypeNode = exprChild.getType // this is wrong?
-
 }
 
 case class FstNode(override val exprChild: ExprNode) extends PairElemNode {
+  override def getType: TypeNode = exprChild.getType match {
+    case PairTypeNode(fstElemType, _) => fstElemType.toTypeNode
+    case _ => ErrorLog.add("[Semantic Error] Identifier in fst expression is not a pair."); ErrorTypeNode()
+  }
 }
 
 case class SndNode(override val exprChild: ExprNode) extends PairElemNode {
+  override def getType: TypeNode = exprChild.getType match {
+    case PairTypeNode(_, sndElemType) => sndElemType.toTypeNode
+    case _ => ErrorLog.add("[Semantic Error] Identifier in snd expression is not a pair."); ErrorTypeNode()
+  }
 }
 
 case class IdentNode(val name: String) extends ExprNode with AssignmentLeftNode {
