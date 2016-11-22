@@ -134,7 +134,6 @@ object Annotate {
     annotateExprNode(node.sndElem, currentST)
   }
 
-  // TODO: Implement functionTable; annotateCallNode should get return type of function by looking up ident in functionTable
   def annotateCallNode(call: CallNode, currentST: SymbolTable): Unit = {
 
     val identifier = call.id
