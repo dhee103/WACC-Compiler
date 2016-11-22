@@ -10,7 +10,18 @@ object Annotate {
     for (f <- prog.funcChildren) {
       FunctionTable.add(f)
     }
+    for (f <- prog.funcChildren) {
+      annotateFuncNode(f, new SymbolTable(Some(topSymbolTable)))
+    }
     annotateStatNode(prog.statChild, topSymbolTable)
+  }
+
+  def annotateFuncNode(function: FuncNode, currentScopeSymbolTable: SymbolTable): Unit = {
+    // go through parameters and add all to symbol table
+    for (param <- function.paramList.params) {
+      currentScopeSymbolTable.add(param.identifier, param.variableType)
+    }
+    annotateStatNode(function.statement, currentScopeSymbolTable)
   }
 
   def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable): Unit = {
@@ -177,7 +188,7 @@ object Annotate {
     try {
       identifier.identType = Some(currentST.lookupAll(identifier))
     } catch {
-      case e: Exception => println(s"[Semantic Error]: Variable $identifier.nodeType doesn't exist"); numSemanticErrors += 1; throw e
+      case e: Exception => println(s"[Semantic Error]: Variable $identifier doesn't exist"); numSemanticErrors += 1; throw e
     }
   }
 
