@@ -5,13 +5,18 @@ object FunctionTable {
 // TODO: consider having an trait/abstract class for functionTable & SymbolTable
   val dict = new HashMap[IdentNode, (TypeNode, IndexedSeq[TypeNode])]()
 
-  def add(func: FuncNode) {
+  def add(func: FuncNode): Unit = {
     val identifier: IdentNode = func.identifier
     val returnType: TypeNode = func.typeSignature
     val paramTypes: IndexedSeq[TypeNode] = for (param <- func.paramList.params)
       yield param.variableType
 
-    dict += (identifier -> (returnType, paramTypes))
+    if (dict.contains(identifier)) {
+      val name = identifier.name
+      SemanticErrorLog.add(s"[Semantic Error] Attempted to redefine function $name.")
+    } else {
+      dict += (identifier -> (returnType, paramTypes))
+    }
   }
 
   def getReturnType(ident: IdentNode) = lookup(ident)._1

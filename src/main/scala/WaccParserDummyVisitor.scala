@@ -351,7 +351,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     } catch {
       case _: NumberFormatException =>
         SyntaxErrorLog.add("[Syntax Error] Integer is too large/small to store in 32 bits.")
-        IntLiteralNode(null)
+        IntLiteralNode(-1)
     }
 
   }
