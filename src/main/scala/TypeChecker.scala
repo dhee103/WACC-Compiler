@@ -119,7 +119,7 @@ object TypeChecker {
     rhs match {
       case ArrayLiteralNode(values) =>
         if (values.nonEmpty) {
-          values.forall(expr => expr.getType == values.head.getType)
+          values.forall(expr => expr.getType.isEquivalentTo(values.head.getType))
         } else {
           true
         }

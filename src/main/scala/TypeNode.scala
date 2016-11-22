@@ -35,7 +35,10 @@ case class ArrayTypeNode(val elemType: TypeNode) extends PairElemTypeNode with T
     this match {
       case ArrayTypeNode(AnyTypeNode()) => that.isInstanceOf[ArrayTypeNode]
       case ArrayTypeNode(CharTypeNode()) => (this == that) || (that == StringTypeNode())
-      case _ => (this == that) || that == ArrayTypeNode(AnyTypeNode())
+      case _ => that match {
+        case ArrayTypeNode(thatType) => elemType.isEquivalentTo(thatType)
+        case _ => false
+      }
     }
   }
 }
