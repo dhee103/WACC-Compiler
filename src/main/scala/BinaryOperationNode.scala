@@ -1,9 +1,6 @@
 trait BinaryOperationNode extends ExprNode {
-
   def leftExpr: ExprNode
-
   def rightExpr: ExprNode
-
 }
 
 trait ArithmeticBinaryOperationNode extends BinaryOperationNode {
