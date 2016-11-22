@@ -1,9 +1,8 @@
 
-class Stack {
+object StackInstructions {
 
-  var progStack : List[Data] = List[Data]()
-
-  def pushInstr(item: Data): Instruction = {
+  def pushInstr(src: Register): Instruction = {
+    //also generate the push instruction to do this
     null
   }
 
@@ -13,7 +12,7 @@ class Stack {
     null
   }
 
-  def getInstr(offset: Int): Instruction = {
+  def getInstrOperand(offset: Int): StackReference = {
     null
   }
 
