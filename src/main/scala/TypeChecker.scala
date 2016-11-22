@@ -13,6 +13,7 @@ object TypeChecker {
 
     rhsType match {
       case ArrayTypeNode(null) => (identType.isInstanceOf[ArrayTypeNode], "[Semantic Error] Type mismatch in declaration statement.")
+      case PairTypeNode(null, null) => (identType.isInstanceOf[PairTypeNode], "[Semantic Error] Type mismatch in declaration statement.")
       case _ => (rhsType == identType, "[Semantic Error] Type mismatch in declaration statement.")
     }
 
