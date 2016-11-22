@@ -31,14 +31,14 @@ trait PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
 case class FstNode(override val exprChild: ExprNode) extends PairElemNode {
   override def getType: TypeNode = exprChild.getType match {
     case PairTypeNode(fstElemType, _) => fstElemType.toTypeNode
-    case _ => ErrorLog.add("[Semantic Error] Identifier in fst expression is not a pair."); ErrorTypeNode()
+    case _ => SemanticErrorLog.add("[Semantic Error] Identifier in fst expression is not a pair."); ErrorTypeNode()
   }
 }
 
 case class SndNode(override val exprChild: ExprNode) extends PairElemNode {
   override def getType: TypeNode = exprChild.getType match {
     case PairTypeNode(_, sndElemType) => sndElemType.toTypeNode
-    case _ => ErrorLog.add("[Semantic Error] Identifier in snd expression is not a pair."); ErrorTypeNode()
+    case _ => SemanticErrorLog.add("[Semantic Error] Identifier in snd expression is not a pair."); ErrorTypeNode()
   }
 }
 
@@ -52,7 +52,7 @@ case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNo
   override def getType: TypeNode = {
     identifier.getType match {
       case ArrayTypeNode(elemType) => elemType
-      case _ => ErrorLog.add(s"[Semantic Error] $identifier is not an array"); ErrorTypeNode()
+      case _ => SemanticErrorLog.add(s"[Semantic Error] $identifier is not an array"); ErrorTypeNode()
     }
   }
 }

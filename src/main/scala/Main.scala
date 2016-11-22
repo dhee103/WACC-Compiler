@@ -60,7 +60,7 @@ object Main {
       var numSemanticErrors: Int = 0
       // println("match error")
       TypeChecker.beginSemanticCheck(ast)
-      numSemanticErrors += Annotate.numSemanticErrors + ErrorLog.getNumErrors
+      numSemanticErrors += Annotate.numSemanticErrors + SemanticErrorLog.getNumErrors
       // println(s"there are $numSemanticErrors semantic errors")
       if (numSemanticErrors > 0) {
         return 200

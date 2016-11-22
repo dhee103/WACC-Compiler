@@ -23,7 +23,7 @@ case class CallNode(val id: IdentNode, val argList: Option[ArgListNode]) extends
     if (argListMatchesParamList) {
       FunctionTable.getReturnType(id)
     } else {
-      ErrorLog.add("[Semantic Error] Invalid parameters provided to function call.")
+      SemanticErrorLog.add("[Semantic Error] Invalid parameters provided to function call.")
       ErrorTypeNode()
     }
   }

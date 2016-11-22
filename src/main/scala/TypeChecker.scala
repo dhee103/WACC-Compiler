@@ -29,7 +29,7 @@ object TypeChecker {
     val rhs = declarationNode.rhs
 
     if (!isArrayLiteralValid(rhs)) {
-      ErrorLog.add("[Semantic Error] Array literal in declaration contains expressions of differing types.")
+      SemanticErrorLog.add("[Semantic Error] Array literal in declaration contains expressions of differing types.")
       return
     }
 
@@ -37,7 +37,7 @@ object TypeChecker {
     val rhsType: TypeNode = rhs.getType
 
     if (!rhsType.isEquivalentTo(identType)) {
-      ErrorLog.add("[Semantic Error] Type mismatch in declaration statement.")
+      SemanticErrorLog.add("[Semantic Error] Type mismatch in declaration statement.")
     }
   }
 
@@ -46,7 +46,7 @@ object TypeChecker {
     val rhs = assignmentNode.rhs
 
     if (!isArrayLiteralValid(rhs)) {
-      ErrorLog.add("[Semantic Error] Array literal in assignment contains expressions of differing types.")
+      SemanticErrorLog.add("[Semantic Error] Array literal in assignment contains expressions of differing types.")
       return
     }
 
@@ -54,7 +54,7 @@ object TypeChecker {
     val rhsType: TypeNode = rhs.getType
 
     if (!rhsType.isEquivalentTo(lhsType)) {
-      ErrorLog.add("[Semantic Error] Type mismatch in assignment statement.")
+      SemanticErrorLog.add("[Semantic Error] Type mismatch in assignment statement.")
     }
   }
 
@@ -65,7 +65,7 @@ object TypeChecker {
     val targetIsInt = targetType.isEquivalentTo(IntTypeNode())
 
     if (!(targetIsInt || targetIsChar)) {
-      ErrorLog.add("[Semantic Error] Read statement expects integer or character target.")
+      SemanticErrorLog.add("[Semantic Error] Read statement expects integer or character target.")
     }
   }
 
@@ -76,7 +76,7 @@ object TypeChecker {
     val varIsArray = varType.isInstanceOf[ArrayTypeNode]
 
     if (!(varIsPair || varIsArray)) {
-      ErrorLog.add("[Semantic Error] Free statement expects pair or array target.")
+      SemanticErrorLog.add("[Semantic Error] Free statement expects pair or array target.")
     }
   }
 
@@ -86,7 +86,7 @@ object TypeChecker {
     val exitCodeIsInt = exitCodeType.isEquivalentTo(IntTypeNode())
 
     if (!exitCodeIsInt) {
-      ErrorLog.add("[Semantic Error] Exit statement expects integer argument.")
+      SemanticErrorLog.add("[Semantic Error] Exit statement expects integer argument.")
     }
   }
 
@@ -97,7 +97,7 @@ object TypeChecker {
     val condType = ifNode.condition.getType
     val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
     if (!condIsBoolean) {
-      ErrorLog.add("[Semantic Error] If statement expects boolean condition.")
+      SemanticErrorLog.add("[Semantic Error] If statement expects boolean condition.")
     }
   }
 
@@ -107,7 +107,7 @@ object TypeChecker {
     val condType = whileNode.condition.getType
     val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
     if (!condIsBoolean) {
-      ErrorLog.add("[Semantic Error] While statement expects boolean condition.")
+      SemanticErrorLog.add("[Semantic Error] While statement expects boolean condition.")
     }
   }
 

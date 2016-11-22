@@ -1,6 +1,6 @@
 // package errorLogging
 
-object ErrorLog {
+object SemanticErrorLog {
   var semanticErrorLog = Seq[String]()
 
   def add(s: String): Unit = {
