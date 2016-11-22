@@ -184,10 +184,11 @@ object Annotate {
   }
 
   def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
-    try {
+    val identType = currentST.lookupAll(identifier)
+    if (identType == ErrorTypeNode()) {
+      SemanticErrorLog.add(s"[Semantic Error]: Variable $identifier doesn't exist")
+    } else {
       identifier.identType = Some(currentST.lookupAll(identifier))
-    } catch {
-      case e: Exception => println(s"[Semantic Error]: Variable $identifier doesn't exist"); numSemanticErrors += 1; throw e
     }
   }
 
