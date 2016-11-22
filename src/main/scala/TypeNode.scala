@@ -1,6 +1,6 @@
 trait TypeNode extends AstNode {
   def toPairElemTypeNode: PairElemTypeNode
-  def isEquivalentTo(that: TypeNode): Boolean = this == that && !that.isInstanceOf[ErrorTypeNode]
+  def isEquivalentTo(that: TypeNode): Boolean = (this == that) && !that.isInstanceOf[ErrorTypeNode]
 }
 
 trait BaseTypeNode extends TypeNode with PairElemTypeNode {
@@ -30,8 +30,8 @@ case class ArrayTypeNode(val elemType: TypeNode) extends PairElemTypeNode with T
 
   override def isEquivalentTo(that: TypeNode): Boolean = {
     this match {
-      case ArrayTypeNode(null) => that.isInstanceOf[ArrayTypeNode]
-      case _ => this == that  || that == ArrayTypeNode(null)
+      case ArrayTypeNode(AnyTypeNode()) => that.isInstanceOf[ArrayTypeNode]
+      case _ => this == that  || that == ArrayTypeNode(AnyTypeNode())
     }
   }
 }
@@ -41,18 +41,24 @@ case class PairTypeNode(val firstElemType: PairElemTypeNode, val secondElemType:
 
   override def isEquivalentTo(that: TypeNode): Boolean = {
     this match {
-      case PairTypeNode(null, null) => that.isInstanceOf[PairTypeNode]
-      case _ => this == that  || that == PairTypeNode(null, null)
+      case PairTypeNode(AnyTypeNode(), AnyTypeNode()) => that.isInstanceOf[PairTypeNode]
+      case _ => this == that  || that == PairTypeNode(AnyTypeNode(), AnyTypeNode())
     }
   }
 }
 
 case class InnerPairTypeNode() extends PairElemTypeNode {
-  override def toTypeNode: TypeNode = PairTypeNode(null, null) // watch out for this
+  override def toTypeNode: TypeNode = PairTypeNode(AnyTypeNode(), AnyTypeNode()) // watch out for this
 }
 
 case class ErrorTypeNode() extends TypeNode with PairElemTypeNode {
   override def toPairElemTypeNode: PairElemTypeNode = this // does this cause any problems?
   override def toTypeNode: TypeNode = this
   override def isEquivalentTo(that: TypeNode): Boolean = false
+}
+
+case class AnyTypeNode() extends TypeNode with PairElemTypeNode {
+  override def toPairElemTypeNode: PairElemTypeNode = this
+  override def toTypeNode: TypeNode = this
+  override def isEquivalentTo(that: TypeNode): Boolean = !that.isInstanceOf[ErrorTypeNode]
 }
