@@ -30,7 +30,7 @@ trait OrderComparisonOperationNode extends BinaryOperationNode {
 
 trait ComparisonOperationNode extends BinaryOperationNode {
   override def getType: TypeNode = {
-    val exprsAreSameType = leftExpr.getType == rightExpr.getType
+    val exprsAreSameType = leftExpr.getType.isEquivalentTo(rightExpr.getType)
     if (exprsAreSameType) {
       BoolTypeNode()
     } else {
