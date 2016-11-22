@@ -15,7 +15,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val funcChildren: IndexedSeq[FuncNode] =
       for (i <- 1 until noOfChildren - 3) yield visit(ctx.getChild(i))
         .asInstanceOf[FuncNode]
-    new ProgNode(statChild, funcChildren)
+    ProgNode(statChild, funcChildren)
   }
 
   override def visitFunc(ctx: WaccParser.FuncContext): AstNode = {
@@ -35,7 +35,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       sys.exit(100)
     }
 
-    new FuncNode(typeSignature, identChild, paramChild, statChild)
+    FuncNode(typeSignature, identChild, paramChild, statChild)
 
   }
 
@@ -58,18 +58,18 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       for (i <- 0 until noOfChildren if i % 2 == 0)
         yield visit(ctx.getChild(i)).asInstanceOf[ParamNode]
 
-    new ParamListNode(paramChildren)
+    ParamListNode(paramChildren)
   }
 
   override def visitParam(ctx: WaccParser.ParamContext): AstNode = {
     val typeChild: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
     val identChild: IdentNode = visit(ctx.getChild(1)).asInstanceOf[IdentNode]
 
-    new ParamNode(typeChild, identChild)
+    ParamNode(typeChild, identChild)
   }
 
   override def visitSkipStat(ctx: WaccParser.SkipStatContext): SkipStatNode = {
-    new SkipStatNode()
+    SkipStatNode()
   }
 
   override def visitDeclaration(ctx: WaccParser.DeclarationContext):
@@ -79,7 +79,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val rhs: AssignmentRightNode = visit(ctx.getChild(3))
       .asInstanceOf[AssignmentRightNode]
 
-    new DeclarationNode(variableType, identifier, rhs)
+    DeclarationNode(variableType, identifier, rhs)
   }
 
   override def visitAssignment(ctx: WaccParser.AssignmentContext):
@@ -89,32 +89,32 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val rhs: AssignmentRightNode = visit(ctx.getChild(2))
       .asInstanceOf[AssignmentRightNode]
 
-    new AssignmentNode(lhs, rhs)
+    AssignmentNode(lhs, rhs)
   }
 
   override def visitRead(ctx: WaccParser.ReadContext): ReadNode = {
     val variable: AssignmentLeftNode = visit(ctx.getChild(1))
       .asInstanceOf[AssignmentLeftNode]
 
-    new ReadNode(variable)
+    ReadNode(variable)
   }
 
   override def visitFree(ctx: WaccParser.FreeContext): FreeNode = {
     val variable: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new FreeNode(variable)
+    FreeNode(variable)
   }
 
   override def visitReturn(ctx: WaccParser.ReturnContext): ReturnNode = {
     val returnValue: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new ReturnNode(returnValue)
+    ReturnNode(returnValue)
   }
 
   override def visitExit(ctx: WaccParser.ExitContext): ExitNode = {
     val exitCode: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new ExitNode(exitCode)
+    ExitNode(exitCode)
   }
 
   override def visitPrint(ctx: WaccParser.PrintContext): PrintNode = {
@@ -122,7 +122,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
     val text: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new PrintNode(text)
+    PrintNode(text)
   }
 
   override def visitPrintln(ctx: WaccParser.PrintlnContext): PrintlnNode = {
@@ -130,7 +130,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
     val text: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new PrintlnNode(text)
+    PrintlnNode(text)
   }
 
   override def visitIf(ctx: WaccParser.IfContext): IfNode = {
@@ -140,7 +140,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
     val elseStat: StatNode = visit(ctx.getChild(5)).asInstanceOf[StatNode]
 
-    new IfNode(condition, thenStat, elseStat)
+    IfNode(condition, thenStat, elseStat)
   }
 
   override def visitWhile(ctx: WaccParser.WhileContext): WhileNode = {
@@ -149,7 +149,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
     val loopBody: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
 
-    new WhileNode(condition, loopBody)
+    WhileNode(condition, loopBody)
   }
 
   override def visitNewBegin(ctx: WaccParser.NewBeginContext): NewBeginNode = {
@@ -157,7 +157,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
     val body: StatNode = visit(ctx.getChild(1)).asInstanceOf[StatNode]
 
-    new NewBeginNode(body)
+    NewBeginNode(body)
   }
 
   override def visitSequence(ctx: WaccParser.SequenceContext): SequenceNode = {
@@ -166,7 +166,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val fstStat: StatNode = visit(ctx.getChild(0)).asInstanceOf[StatNode]
     val sndStat: StatNode = visit(ctx.getChild(2)).asInstanceOf[StatNode]
 
-    new SequenceNode(fstStat, sndStat)
+    SequenceNode(fstStat, sndStat)
   }
 
   override def visitIdentLHS(ctx: WaccParser.IdentLHSContext):
@@ -209,7 +209,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val fstElem: ExprNode = visit(ctx.getChild(2)).asInstanceOf[ExprNode]
     val sndElem: ExprNode = visit(ctx.getChild(4)).asInstanceOf[ExprNode]
 
-    new NewPairNode(fstElem, sndElem)
+    NewPairNode(fstElem, sndElem)
   }
 
   override def visitPairElemRHS(ctx: PairElemRHSContext): AssignmentRightNode
@@ -231,7 +231,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
         Some(visit(ctx.getChild(3)).asInstanceOf[ArgListNode])
       } else None
 
-    new CallNode(id, argList)
+    CallNode(id, argList)
   }
 
   override def visitFstElem(ctx: FstElemContext): PairElemNode = {
@@ -239,7 +239,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
     val exprChild: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new FstNode(exprChild)
+    FstNode(exprChild)
   }
 
   override def visitSndElem(ctx: SndElemContext): PairElemNode = {
@@ -247,7 +247,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
     val exprChild: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
 
-    new SndNode(exprChild)
+    SndNode(exprChild)
   }
 
   override def visitBaseType(ctx: WaccParser.BaseTypeContext): TypeNode = {
@@ -260,7 +260,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     //    println("hit " + currentMethodName())
 
     val elemType: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
-    new ArrayTypeNode(elemType)
+    ArrayTypeNode(elemType)
   }
 
   override def visitPairType(ctx: WaccParser.PairTypeContext): TypeNode = {
@@ -272,25 +272,25 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitIntType(ctx: IntTypeContext): BaseTypeNode = {
     //    println("hit " + currentMethodName())
 
-    new IntTypeNode
+    IntTypeNode()
   }
 
   override def visitBoolType(ctx: BoolTypeContext): BaseTypeNode = {
     //    println("hit " + currentMethodName())
 
-    new BoolTypeNode
+    BoolTypeNode()
   }
 
   override def visitCharType(ctx: CharTypeContext): BaseTypeNode = {
     //    println("hit " + currentMethodName())
 
-    new CharTypeNode
+    CharTypeNode()
   }
 
   override def visitStringType(ctx: StringTypeContext): BaseTypeNode = {
     //    println("hit " + currentMethodName())
 
-    new StringTypeNode
+    StringTypeNode()
   }
 
   override def visitPair_type(ctx: WaccParser.Pair_typeContext): PairTypeNode
@@ -316,13 +316,13 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   PairElemTypeNode = {
     //    println("hit " + currentMethodName())
     val elemType: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
-    new ArrayTypeNode(elemType)
+    ArrayTypeNode(elemType)
   }
 
   override def visitPairTypePairElem(ctx: PairTypePairElemContext):
   PairElemTypeNode = {
     //    println("hit " + currentMethodName())
-    new InnerPairTypeNode()
+    InnerPairTypeNode()
   }
 
 //  TODO: negative int overflow
@@ -355,7 +355,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   def negateIntLiteralNode(intNode: IntLiteralNode): IntLiteralNode = {
-    return IntLiteralNode(- intNode.value)
+    IntLiteralNode(- intNode.value)
   }
 
   override def visitPairLiteral(ctx: WaccParser.PairLiteralContext): ExprNode
@@ -412,7 +412,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     StringLiteralNode(value)
   }
 
-  // TODO: Find out why we are matching lots of non unary operations
   override def visitUnaryOperation(ctx: UnaryOperationContext): ExprNode = {
     //    println("hit " + currentMethodName())
     val argument: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
@@ -437,9 +436,9 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(1).getText
 
     operation match {
-      case "*" => new MulNode(leftExpr, rightExpr)
-      case "/" => new DivNode(leftExpr, rightExpr)
-      case "%" => new ModNode(leftExpr, rightExpr)
+      case "*" => MulNode(leftExpr, rightExpr)
+      case "/" => DivNode(leftExpr, rightExpr)
+      case "%" => ModNode(leftExpr, rightExpr)
       case _ => throw new RuntimeException("Unknown Binary Operand with " +
         "precedence 1.")
     }
@@ -453,8 +452,8 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(1).getText
 
     operation match {
-      case "+" => new PlusNode(leftExpr, rightExpr)
-      case "-" => new MinusNode(leftExpr, rightExpr)
+      case "+" => PlusNode(leftExpr, rightExpr)
+      case "-" => MinusNode(leftExpr, rightExpr)
       case _ => throw new RuntimeException("Unknown Binary Operand with " +
         "precedence 2.")
     }
@@ -469,10 +468,10 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(1).getText
 
     operation match {
-      case ">" => new GreaterThanNode(leftExpr, rightExpr)
-      case ">=" => new GreaterEqualNode(leftExpr, rightExpr)
-      case "<" => new LessThanNode(leftExpr, rightExpr)
-      case "<=" => new LessEqualNode(leftExpr, rightExpr)
+      case ">" => GreaterThanNode(leftExpr, rightExpr)
+      case ">=" => GreaterEqualNode(leftExpr, rightExpr)
+      case "<" => LessThanNode(leftExpr, rightExpr)
+      case "<=" => LessEqualNode(leftExpr, rightExpr)
       case _ => throw new RuntimeException("Unknown Binary Operand with " +
         "precedence 3.")
     }
@@ -486,8 +485,8 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(1).getText
 
     operation match {
-      case "==" => new DoubleEqualNode(leftExpr, rightExpr)
-      case "!=" => new NotEqualNode(leftExpr, rightExpr)
+      case "==" => DoubleEqualNode(leftExpr, rightExpr)
+      case "!=" => NotEqualNode(leftExpr, rightExpr)
       case _ => throw new RuntimeException("Unknown Binary Operand with " +
         "precedence 4.")
     }
@@ -501,7 +500,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(1).getText
 
     operation match {
-      case "&&" => new LogicalAndNode(leftExpr, rightExpr)
+      case "&&" => LogicalAndNode(leftExpr, rightExpr)
       case _ => throw new RuntimeException("Unknown Binary Operand with " +
         "precedence 5.")
     }
@@ -515,7 +514,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(1).getText
 
     operation match {
-      case "||" => new LogicalAndNode(leftExpr, rightExpr)
+      case "||" => LogicalAndNode(leftExpr, rightExpr)
       case _ => throw new RuntimeException("Unknown Binary Operand with " +
         "precedence 6.")
     }
@@ -535,14 +534,14 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       for (i <- 0 until noOfChildren if i % 3 == 2)
         yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]
 
-    new ArrayElemNode(identifier, indices)
+    ArrayElemNode(identifier, indices)
   }
 
   override def visitIdentifier(ctx: WaccParser.IdentifierContext): IdentNode = {
     //    println("hit " + currentMethodName())
     val name = ctx.getText
 
-    new IdentNode(name)
+    IdentNode(name)
   }
 
   override def visitArrayElemExpr(ctx: ArrayElemExprContext): ExprNode = {
@@ -573,7 +572,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       for (i <- 0 until noOfChildren if i % 2 == 0)
         yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]
 
-    new ArgListNode(exprChildren)
+    ArgListNode(exprChildren)
   }
 
 }
