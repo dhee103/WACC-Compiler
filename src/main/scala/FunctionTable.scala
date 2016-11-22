@@ -7,9 +7,11 @@ object FunctionTable {
 
   def add(func: FuncNode): Unit = {
     val identifier: IdentNode = func.identifier
-    val returnType: TypeNode = func.typeSignature
-    val paramTypes: IndexedSeq[TypeNode] = for (param <- func.paramList.params)
-      yield param.variableType
+    val returnType: TypeNode = func.returnType
+    val paramList = func.paramList
+    val paramTypes: IndexedSeq[TypeNode] =
+      for (param <- paramList.params) yield param.variableType
+
 
     if (dict.contains(identifier)) {
       val name = identifier.name
@@ -22,10 +24,6 @@ object FunctionTable {
   def getReturnType(ident: IdentNode) = lookup(ident)._1
 
   def getParamTypes(ident: IdentNode): IndexedSeq[TypeNode] = lookup(ident)._2
-
-  // def add(identifier: IdentNode, typeinfo: (TypeNode, IndexedSeq[TypeNode])): Unit
-  //   = dict += (identifier -> typeinfo)
-
 
   def lookup(identifier: IdentNode): (TypeNode, IndexedSeq[TypeNode]) = {
     dict.getOrElse(identifier, throw new RuntimeException("Variable used but not in scope"))
