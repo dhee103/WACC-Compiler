@@ -1,6 +1,6 @@
 trait TypeNode extends AstNode {
   def toPairElemTypeNode: PairElemTypeNode
-  def isEquivalentTo(that: TypeNode): Boolean = this.equals(that)
+  def isEquivalentTo(that: TypeNode): Boolean = this == that && !that.isInstanceOf[ErrorTypeNode]
 }
 
 trait BaseTypeNode extends TypeNode with PairElemTypeNode {
@@ -54,4 +54,5 @@ case class InnerPairTypeNode() extends PairElemTypeNode {
 case class ErrorTypeNode() extends TypeNode with PairElemTypeNode {
   override def toPairElemTypeNode: PairElemTypeNode = this // does this cause any problems?
   override def toTypeNode: TypeNode = this
+  override def isEquivalentTo(that: TypeNode): Boolean = false
 }
