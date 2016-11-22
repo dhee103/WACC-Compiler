@@ -7,6 +7,8 @@ object TypeChecker {
 
   def checkStatement(statement: StatNode): Unit = {
     statement match {
+      case SequenceNode(fstStat, sndStat)  => checkStatement(fstStat)
+                                              checkStatement(sndStat)
       case stat: DeclarationNode           => checkDeclaration(stat)
       case stat: AssignmentNode            => checkAssignment(stat)
       case stat: ReadNode                  => checkRead(stat)
@@ -18,9 +20,7 @@ object TypeChecker {
       case stat: IfNode                    => checkIf(stat)
       case stat: WhileNode                 => checkWhile(stat)
       case NewBeginNode(stat)              => checkStatement(stat)
-      case SequenceNode(fstStat, sndStat)  => checkStatement(fstStat);
-                                              checkStatement(sndStat)
-      case stat: SkipStatNode    =>
+      case stat: SkipStatNode              =>
     }
   }
 

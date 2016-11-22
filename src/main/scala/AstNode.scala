@@ -4,8 +4,7 @@ trait AstNode {
 case class ProgNode(val statChild: StatNode, val funcChildren: IndexedSeq[FuncNode]) extends AstNode {
 }
 
-// TODO: Change typeSignature to returnType
-case class FuncNode(val typeSignature: TypeNode, val identifier: IdentNode,
+case class FuncNode(val returnType: TypeNode, val identifier: IdentNode,
                     val paramList: ParamListNode, val statement: StatNode)
   extends AstNode {
 }
@@ -61,7 +60,7 @@ case class ArrayLiteralNode(val values: IndexedSeq[ExprNode]) extends Assignment
   // Also need to check that each ExprNode here has a nodeType of IntTypeNode
   override def getType: TypeNode = {
     if (values.isEmpty) {
-      ArrayTypeNode(null)
+      ArrayTypeNode(AnyTypeNode())
     } else {
       val elemType: TypeNode = values(0).getType
       ArrayTypeNode(elemType)
