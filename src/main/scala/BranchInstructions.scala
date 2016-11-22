@@ -1,7 +1,7 @@
-case class Jump() extends Instruction {
+case class Jump(val goToLabel: String) extends Instruction {
 
 }
 
 case class BranchEqual() extends Instruction {
-  
+
 }

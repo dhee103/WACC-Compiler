@@ -1,5 +1,5 @@
 
-object StackInstructions {
+class StackInstructions {
 
   def pushInstr(src: Register): Instruction = {
     //also generate the push instruction to do this

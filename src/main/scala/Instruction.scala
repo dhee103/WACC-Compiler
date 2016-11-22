@@ -41,7 +41,9 @@ case class Compare(val cmp1: Register, val cmp2: Operand) extends Instruction {
 }
 
 
-case class DefineFunc(val label: String) extends Instruction {
+case class Function(val label: String) extends Instruction {
+
+  var body: List[Instruction] = _
 
   //todo
 
