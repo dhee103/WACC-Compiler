@@ -1,12 +1,12 @@
 // import errorLogging.ErrorLog._
 
-  /*
-    For testing purposes we have split the compilation into two functions.
-    Compile returns the exit code as an integer as this can be tested.
-  */
+/*
+  For testing purposes we have split the compilation into two functions.
+  Compile returns the exit code as an integer as this can be tested.
+*/
 
 object Main {
-  def main(args : Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
 
     if (!args.isEmpty) {
       sys.exit(compile(args(0)))
@@ -18,8 +18,8 @@ object Main {
 
   def compile(filename: String): Int = {
 
-// maps string locations to the error message
-// can then print out nicely at the end
+    // maps string locations to the error message
+    // can then print out nicely at the end
     // var semanticErrorLog = HashMap[String, String]()
 
     // to add you can do: semanticErrorLog :+= (the string)
@@ -30,15 +30,14 @@ object Main {
     val waccParser = new WaccParser(tokens)
 
     // val diagErrL = new DiagnosticErrorListener()
-
     // waccLexer.addErrorListener(diagErrL)
     // waccParser.addErrorListener(diagErrL)
 
     val dEL = new DescriptiveErrorListener
-   waccLexer.removeErrorListeners();
-    waccLexer.addErrorListener(dEL);
-   waccParser.removeErrorListeners();
-    waccParser.addErrorListener(dEL);
+    waccLexer.removeErrorListeners
+    waccLexer.addErrorListener(dEL)
+    waccParser.removeErrorListeners
+    waccParser.addErrorListener(dEL)
 
     val tree = waccParser.prog()
 
@@ -51,26 +50,25 @@ object Main {
 
     val visitor = new WaccParserDummyVisitor()
 
-    // sort out this try catch - it returns 200 far more than it shoud; maybe there are other errors and cases to catch
-// add methods to get number of syntax errors/ semantic errors from visitor
+    // sort out this try catch - it returns 200 far more than it should; maybe there are other errors and cases to catch
+    // add methods to get number of syntax errors/ semantic errors from visitor
     try {
       // println("before visiting the tree")
       val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
       // println("visited the tree")
       Annotate.annotateAST(ast)
+      var numSemanticErrors: Int = 0
+      // println("match error")
+      TypeChecker.beginSemanticCheck(ast)
+      numSemanticErrors += Annotate.numSemanticErrors + ErrorLog.getNumErrors
+      // println(s"there are $numSemanticErrors semantic errors")
+      if (numSemanticErrors > 0) {
+        return 200
+      }
     } catch {
       case _: NullPointerException =>
       case _: NumberFormatException => return 100
-      case e : Throwable => println("Dodgy try catch"); println(e); return 200
-    }
-    // Only errors are semantic errors
-
-    var numSemanticErrors: Int = 0
-    // println("match error")
-    numSemanticErrors += Annotate.numSemanticErrors + ErrorLog.getNumErrors
-    // println(s"there are $numSemanticErrors semantic errors")
-    if (numSemanticErrors > 0) {
-     return 200
+      case e: Throwable => println("Dodgy try catch"); println(e); return 200
     }
 
     return 0
