@@ -22,6 +22,9 @@ case class CharTypeNode() extends BaseTypeNode {
 }
 
 case class StringTypeNode() extends BaseTypeNode {
+  override def isEquivalentTo(that: TypeNode): Boolean = {
+    (this == that) || (that == ArrayTypeNode(CharTypeNode()))
+  }
 }
 
 case class ArrayTypeNode(val elemType: TypeNode) extends PairElemTypeNode with TypeNode {
@@ -31,7 +34,8 @@ case class ArrayTypeNode(val elemType: TypeNode) extends PairElemTypeNode with T
   override def isEquivalentTo(that: TypeNode): Boolean = {
     this match {
       case ArrayTypeNode(AnyTypeNode()) => that.isInstanceOf[ArrayTypeNode]
-      case _ => this == that  || that == ArrayTypeNode(AnyTypeNode())
+      case ArrayTypeNode(CharTypeNode()) => (this == that) || (that == StringTypeNode())
+      case _ => (this == that) || that == ArrayTypeNode(AnyTypeNode())
     }
   }
 }

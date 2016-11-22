@@ -51,6 +51,7 @@ case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNo
   override def getType: TypeNode = {
     identifier.getType match {
       case ArrayTypeNode(elemType) => elemType
+      case StringTypeNode() => if (exprs.length == 1) CharTypeNode() else SemanticErrorLog.add(s"[Semantic Error] $identifier is not an array"); ErrorTypeNode()
       case _ => SemanticErrorLog.add(s"[Semantic Error] $identifier is not an array"); ErrorTypeNode()
     }
   }

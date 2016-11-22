@@ -16,7 +16,8 @@ case class CallNode(val id: IdentNode, val argList: Option[ArgListNode]) extends
 
     val argListMatchesParamList: Boolean = argList match {
       case Some(list) => list.exprs.length == paramTypeList.length &&
-        ((list.exprs, paramTypeList).zipped map(_ == _)).forall(identity)
+        (list.exprs, paramTypeList).zipped.map(_.getType.isEquivalentTo(_)).forall(identity)
+
       case None => paramTypeList.isEmpty
     }
 
