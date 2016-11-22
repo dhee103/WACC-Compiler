@@ -8,7 +8,7 @@ class SymbolTable(val encTable: Option[SymbolTable]) {
     = dict += (identifier -> typeinfo)
 
   def lookup(identifier: IdentNode): TypeNode = {
-    dict.getOrElse(identifier, throw new RuntimeException("Variable used but not in scope"))
+    dict.getOrElse(identifier, ErrorTypeNode())
   }
 
   def lookupAll(identifier: IdentNode): TypeNode = {
@@ -21,12 +21,7 @@ class SymbolTable(val encTable: Option[SymbolTable]) {
   }
 
   def doesContain(identifier: IdentNode): Boolean = {
-    try {
-      lookup(identifier)
-      true
-    } catch {
-      case _: Throwable => false
-    }
+      lookup(identifier) != ErrorTypeNode()
   }
 
 }
