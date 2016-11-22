@@ -47,7 +47,7 @@ case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNo
   override def getType: TypeNode = {
     identifier.getType match {
       case ArrayTypeNode(elemType) => elemType
-      case _ => throw new RuntimeException("Semantic Error: ")
+      case _ => ErrorLog.add(s"[Semantic Error] $identifier is not an array"); ErrorTypeNode()
     }
   }
 }
