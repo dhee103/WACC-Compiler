@@ -1,7 +1,5 @@
 object Annotate {
 
-  var numSemanticErrors: Int = 0
-
   def annotateAST(ast: ProgNode): Unit = {
     annotateProgNode(ast, new SymbolTable(None))
   }
@@ -18,8 +16,10 @@ object Annotate {
 
   def annotateFuncNode(function: FuncNode, currentScopeSymbolTable: SymbolTable): Unit = {
     // go through parameters and add all to symbol table
-    for (param <- function.paramList.params) {
-      currentScopeSymbolTable.add(param.identifier, param.variableType)
+    if (function.paramList != null) {
+      for (param <- function.paramList.params) {
+        currentScopeSymbolTable.add(param.identifier, param.variableType)
+      }
     }
     annotateStatNode(function.statement, currentScopeSymbolTable)
   }
