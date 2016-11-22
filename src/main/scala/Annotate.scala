@@ -39,7 +39,7 @@ object Annotate {
       case stat: NewBeginNode    => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)))
       case stat: SequenceNode    => annotateSequenceNode(stat, currentScopeSymbolTable)
       case stat: SkipStatNode    =>
-      case _: Any                => println("error"); numSemanticErrors += 1
+//      case _: Any                => println("error"); numSemanticErrors += 1
     }
   }
 
