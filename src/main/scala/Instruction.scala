@@ -41,9 +41,11 @@ case class Compare(val cmp1: Register, val cmp2: Operand) extends Instruction {
 }
 
 
-case class Function(val label: String) extends Instruction {
+class Function(val label: String, var body: List[Instruction]) {
 
-  var body: List[Instruction] = _
+  val initialPush: Push = new Push(new StackPointer)
+
+  val finalPop: Pop = new Pop(new ProgramCounter())
 
   //todo
 
