@@ -23,7 +23,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     val noOfChildren = ctx.getChildCount
     val typeSignature: TypeNode = visit(ctx.getChild(0)).asInstanceOf[TypeNode]
     val identChild: IdentNode = visit(ctx.getChild(1)).asInstanceOf[IdentNode]
-    var paramChild: ParamListNode = null
+    var paramChild: ParamListNode = ParamListNode(IndexedSeq())
     if (noOfChildren == 8) {
       paramChild = visit(ctx.getChild(2)).asInstanceOf[ParamListNode]
     }
@@ -349,7 +349,9 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       val value = Integer.parseInt(ctx.getText)
       IntLiteralNode(value)
     } catch {
-      case _: NumberFormatException => sys.exit(100)
+      case _: NumberFormatException =>
+        SyntaxErrorLog.add("[Syntax Error] Integer is too large/small to store in 32 bits.")
+        IntLiteralNode(null)
     }
 
   }
