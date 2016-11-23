@@ -42,7 +42,7 @@ object CodeGen {
       case expr: BinaryOperationNode  => null
       case IntLiteralNode(value)      => Move(r0, ImmNum(value)) :: Nil
       case BoolLiteralNode(value)     => Move(r0, ImmNum(if (value) 1 else 0 )) :: Nil
-      case CharLiteralNode(value)     => null
+      case CharLiteralNode(value)     => Move(r0, ImmNum(value)) :: Nil
       case StringLiteralNode(value)   => null
       case expr: PairLiteralNode      => null
       case _                          => null
