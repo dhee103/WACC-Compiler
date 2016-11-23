@@ -1,0 +1,8 @@
+# !/bin/bash
+
+DIR=$(dirname $0)
+
+scala -cp "$DIR/target/scala-2.11/wacccompiler_2.11-1.0.jar:$DIR/lib/antlr-4.5.3-complete.jar" \
+src/main/scala/Main2.scala $@
+
+exit $?
