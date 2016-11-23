@@ -44,7 +44,8 @@ object Annotate {
   def annotateDeclarationNode(statement: DeclarationNode, currentST: SymbolTable): Unit = {
     val ident: IdentNode = statement.identifier
     if (currentST.doesContain(ident)) {
-      SemanticErrorLog.add(s"[Semantic Error]: Attempted to redeclare variable $ident")
+      val varName = ident.name
+      SemanticErrorLog.add(s"[Semantic Error] Attempted to redeclare variable $varName")
     } else {
       ident.identType = Some(statement.variableType)
       currentST.add(ident, ident.getType)
@@ -86,8 +87,8 @@ object Annotate {
 
   def annotateIfNode(statement: IfNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
-    annotateStatNode(statement.thenStat, currentST, isInMain)
-    annotateStatNode(statement.elseStat, currentST, isInMain)
+    annotateStatNode(statement.thenStat, new SymbolTable(Some(currentST)), isInMain)
+    annotateStatNode(statement.elseStat, new SymbolTable(Some(currentST)), isInMain)
   }
 
   def annotateWhileNode(statement: WhileNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
@@ -184,7 +185,8 @@ object Annotate {
   def annotateIdentNode(identifier: IdentNode, currentST: SymbolTable): Unit = {
     val identType = currentST.lookupAll(identifier)
     if (identType == ErrorTypeNode()) {
-      SemanticErrorLog.add(s"[Semantic Error]: Variable $identifier doesn't exist")
+      val varName = identifier.name
+      SemanticErrorLog.add(s"[Semantic Error] Variable $varName doesn't exist")
     } else {
       identifier.identType = Some(currentST.lookupAll(identifier))
     }
