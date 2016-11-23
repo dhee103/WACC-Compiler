@@ -25,10 +25,11 @@ object CodeGen {
 
     statement match {
 
-      case stat: DeclarationNode => generateDeclaration(stat)
-      case stat: AssignmentNode  => generateAssignment(stat)
-      case stat: SkipStatNode    => Nil
-      case stat: ExitNode        => generateExit(stat)
+      case stat: DeclarationNode          => generateDeclaration(stat)
+      case stat: AssignmentNode           => generateAssignment(stat)
+      case stat: SkipStatNode             => Nil
+      case stat: ExitNode                 => generateExit(stat)
+      case SequenceNode(fstStat, sndStat) => generateStatement(fstStat) + generateStatement(sndStat)
 
     }
   }
