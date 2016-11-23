@@ -24,12 +24,17 @@ object CodeGen {
     statement match {
 
       case stat: DeclarationNode => generateDeclaration(stat)
-      case skip: SkipStatNode    => Nil
+      case stat: AssignmentNode  => generateAssignment(stat)
+      case stat: SkipStatNode    => Nil
 
     }
   }
 
   def generateDeclaration(decl: DeclarationNode): List[Instruction] = {
+    null
+  }
+
+  def generateAssignment(assignment: AssignmentNode): List[Instruction] = {
     null
   }
 }
