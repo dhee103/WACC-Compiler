@@ -1,11 +1,11 @@
 object CodeGen {
 
-  val lr: LinkRegister = new LinkRegister()
-  val r0: ResultRegister = new ResultRegister()
-  val pc: ProgramCounter = new ProgramCounter()
-  val zero: ImmNum = new ImmNum(0)
-  val pushlr = new Push(lr)
-  val poppc = new Pop(pc)
+  val lr: LinkRegister = LinkRegister()
+  val r0: ResultRegister = ResultRegister()
+  val pc: ProgramCounter = ProgramCounter()
+  val zero: ImmNum = ImmNum(0)
+  val pushlr = Push(lr)
+  val poppc = Pop(pc)
 
 
   def generateProgramCode(prog: ProgNode): List[Instruction] = {
@@ -13,8 +13,8 @@ object CodeGen {
     val statement: StatNode = prog.statChild
 
 
-    (new Directive(".text")) :: (new Directive(".global main")) ::
-    (new Label("main")) :: pushlr :: generateStatement(statement) ++ (new Move(r0, zero) ::
+    (Directive(".text")) :: (Directive(".global main")) ::
+    (Label("main")) :: pushlr :: generateStatement(statement) ++ (Move(r0, zero) ::
     poppc :: Nil)
 
   }

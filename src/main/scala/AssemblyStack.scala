@@ -20,14 +20,14 @@ class AssemblyStack {
   //use pushTracker so know where to put next variable
 
   val sp = new StackPointer()
-  val bp = new BasePointer()
+  //val bp = new BasePointer()
 
 
   def subStackNewScope(spaceAlloc: Int): Instruction = {
 
     pushTracker = 0
 
-    virtualStackPointer = virtualStackPointer + spaceAlloc
+    virtualStackPointer += spaceAlloc
 
     dicts += new HashMap[IdentNode, Int]()
     stackSectionSizes += spaceAlloc
@@ -82,7 +82,7 @@ class AssemblyStack {
 
     println("ERROR")
 
-    5
+    throw new RuntimeException("Fatal error")
 
   }
 

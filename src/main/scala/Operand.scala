@@ -6,6 +6,8 @@ case class StackReference(val offset: Int) extends Operand {
 
   override def toString() = "[sp, #" + offset + "]"
 
+  //todo offsett zero
+
 }
 
 case class DataCall(val label: String) extends Operand {
