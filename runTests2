@@ -1,0 +1,24 @@
+#!/usr/bin/ruby
+
+dir = ARGV[0]
+
+files = `find #{dir} -name *.wacc`.split("\n")
+
+def count
+  @count ||= -1
+  @count += 1
+end
+
+def outputMessage(file)
+  puts "#{file}"
+  exitCode = system("./compile2 #{file}")
+  puts "\n\n"
+end
+
+initTime = Time.now
+
+files.map { |file| outputMessage(file)  }
+
+puts "There are #{count}/#{files.length} errors in #{dir}"
+
+puts "Time taken to run compile on all files: #{Time.now - initTime}"
