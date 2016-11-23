@@ -8,9 +8,10 @@ case class StackPointer() extends Register {
 
 }
 
+// TODO: Change to frame pointer
 case class BasePointer() extends Register {
 
-  override def toString() = "R11"
+  override def toString() = "r11"
 
 }
 
@@ -28,6 +29,6 @@ case class ProgramCounter() extends Register {
 
 case class ResultRegister() extends Register {
 
-  override def toString() = "R0"
+  override def toString() = "r0"
 
 }

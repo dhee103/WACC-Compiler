@@ -7,6 +7,8 @@ object CodeGen {
   val pushlr = Push(lr)
   val poppc = Pop(pc)
 
+  var stack = new AssemblyStack()
+
 
   def generateProgramCode(prog: ProgNode): List[Instruction] = {
 
@@ -26,6 +28,7 @@ object CodeGen {
       case stat: DeclarationNode => generateDeclaration(stat)
       case stat: AssignmentNode  => generateAssignment(stat)
       case stat: SkipStatNode    => Nil
+      case stat: ExitNode        => generateExit(stat)
 
     }
   }
@@ -36,5 +39,14 @@ object CodeGen {
 
   def generateAssignment(assignment: AssignmentNode): List[Instruction] = {
     null
+  }
+
+  def generateExit(exit: ExitNode): List[Instruction] = {
+    val exitCode: Operand = exit.exitCode match {
+      case IntLiteralNode(value) => ImmNum(value)
+      case _ => throw new UnsupportedOperationException("anything that could go to an int")
+    }
+
+    List[Instruction](Load(ResultRegister(), exitCode), Jump("exit"))
   }
 }

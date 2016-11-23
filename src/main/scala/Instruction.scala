@@ -4,13 +4,13 @@ trait Instruction {
 
 case class Push(val src: Register) extends Instruction {
 
-  override def toString() = "PUSH " + src.toString()
+  override def toString() = "PUSH " + "{" + src.toString() + "}"
 
 }
 
 case class Pop(val dst: Register) extends Instruction {
 
-  override def toString() = "POP " + dst.toString()
+  override def toString() = "POP " + "{" + dst.toString() + "}"
 
 }
 
