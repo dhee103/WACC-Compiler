@@ -41,7 +41,7 @@ case class Store(val src: Register, val dst: Operand) extends Instruction {
 
 case class Move(val dst: Register, val src: Operand) extends Instruction {
 
-  override def toString() = "MOV " + src.toString() + ", " + dst.toString()
+  override def toString() = "MOV " + dst.toString() + ", " + src.toString()
 
   //todo do we need movlt and movge
 
@@ -56,6 +56,18 @@ case class SMull(val dst1: Register, dst2: Register, val src1: Register, val src
 case class Compare(val cmp1: Register, val cmp2: Operand) extends Instruction {
 
   override def toString() = "CMP " + cmp1.toString() + ", " + cmp2.toString()
+
+}
+
+case class Directive(val name: String) extends Instruction {
+
+  override def toString() = name
+
+}
+
+case class Label(val name: String) extends Instruction {
+
+  override def toString() = name + ":"
 
 }
 
