@@ -1,14 +1,13 @@
 object CodeGen {
 
-  val lr: LinkRegister = LinkRegister()
-  val r0: ResultRegister = ResultRegister()
-  val pc: ProgramCounter = ProgramCounter()
-  val zero: ImmNum = ImmNum(0)
+  val lr = LinkRegister()
+  val r0  = ResultRegister()
+  val pc  = ProgramCounter()
+  val zero = ImmNum(0)
   val pushlr = Push(lr)
   val poppc = Pop(pc)
 
   var stack = new AssemblyStack()
-
 
   def generateProgramCode(prog: ProgNode): List[Instruction] = {
 
@@ -41,13 +40,14 @@ object CodeGen {
       case expr: ArrayElemNode        => null
       case expr: UnaryOperationNode   => null
       case expr: BinaryOperationNode  => null
-      case expr: IntLiteralNode       => null
-      case expr: BoolLiteralNode      => null
-      case expr: CharLiteralNode      => null
-      case expr: StringLiteralNode    => null
+      case IntLiteralNode(value)      => Move(r0, ImmNum(value)) :: Nil
+      case BoolLiteralNode(value)     => Move(r0, ImmNum(if (value) 1 else 0 )) :: Nil
+      case CharLiteralNode(value)     => null
+      case StringLiteralNode(value)   => null
       case expr: PairLiteralNode      => null
       case _                          => null
     }
+
 
 
   }
