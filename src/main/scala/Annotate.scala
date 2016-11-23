@@ -32,7 +32,7 @@ object Annotate {
       case stat: ExitNode => annotateExitNode(stat, currentScopeSymbolTable)
       case stat: PrintNode => annotatePrintNode(stat, currentScopeSymbolTable)
       case stat: PrintlnNode => annotatePrintlnNode(stat, currentScopeSymbolTable)
-      case stat: IfNode => annotateIfNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
+      case stat: IfNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
       case stat: WhileNode => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       case stat: NewBeginNode => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       case stat: SequenceNode => annotateSequenceNode(stat, currentScopeSymbolTable, isInMain)
