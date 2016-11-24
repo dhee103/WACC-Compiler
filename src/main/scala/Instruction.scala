@@ -88,6 +88,20 @@ case class Label(val name: String) extends Instruction {
 
 }
 
+case class And(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
+
+  override def toString() = "AND" + cond + " " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
+
+
+}
+
+case class Orr(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
+
+  override def toString() = "ORR" + cond + " " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
+
+
+}
+
 
 class Function(val label: String, var body: List[Instruction]) {
 

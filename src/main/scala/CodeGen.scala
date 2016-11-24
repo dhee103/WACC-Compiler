@@ -88,13 +88,11 @@ object CodeGen {
       case LogicalNotNode(argument) =>  (generateExpression(argument)) ::: ((Compare(r0, zero))
                                         :: (Load(r0, loadZero, NE)) :: (Load(r0, LoadImmNum(1), EQ)) :: Nil)
       case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero) :: Nil)
-      case LenNode(argument)        =>
-      case OrdNode(argument)        => //donothing
-      case ChrNode(argument)        => //donothing
+      case LenNode(argument)        => null// To do?
+      case OrdNode(argument)        => Nil
+      case ChrNode(argument)        => Nil
 
     }
-
-    null
 
   }
 
@@ -107,8 +105,6 @@ object CodeGen {
       case binOp: ComparisonOperationNode       => generateComparisonOperation(binOp)
       case binOp: BooleanBinaryOperationNode    => generateBooleanBinaryOperation(binOp)
     }
-
-    null
 
   }
 
@@ -161,11 +157,18 @@ object CodeGen {
 
   def generateBooleanBinaryOperation(boolOp: BooleanBinaryOperationNode): List[Instruction] = {
 
-    boolOp match {
+    val mainInstructions: List[Instruction] = boolOp match {
 
-      case boolBin: LogicalAndNode => null
-      case boolBin: LogicalOrNode => null
+      case boolBin: LogicalAndNode => And(r0, r0, spReference) :: Nil
+
+      case boolBin: LogicalOrNode => Orr(r0, r0, spReference) :: Nil
     }
+
+    (generateExpression(boolOp.leftExpr)) :::
+                                (Push(r0) :: Nil) ::: generateExpression(boolOp.rightExpr) :::
+                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
+
+                                //todo is this enough??
   }
 
 

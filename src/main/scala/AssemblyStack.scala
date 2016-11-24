@@ -20,8 +20,6 @@ class AssemblyStack {
   //use pushTracker so know where to put next variable
 
   val sp = new StackPointer()
-  //val bp = new BasePointer()
-
 
   def subStackNewScope(spaceAlloc: Int): Instruction = {
 
@@ -34,7 +32,7 @@ class AssemblyStack {
     originalSpLocations += virtualStackPointer
     new Sub(sp, sp, new ImmNum(spaceAlloc))
 
-    //on the stack we grow ddown
+    //on the stack we grow down
     //here we will grow up
 
     //scope is not changing so do not need another mapping
@@ -50,10 +48,6 @@ class AssemblyStack {
 
     new Add(sp, sp, new ImmNum(spaceReturn))
 
-    //pushTracker = 0
-
-    //what happens to pushteacker??
-
   }
 
   def getOffsetForIdentifier(identifier: IdentNode): Int  = {
@@ -64,9 +58,11 @@ class AssemblyStack {
     //add it to offset of current sp to sp at start
 
 
-    for (i: Int <- 0 to 4){
+    for (i: Int <- 0 to dicts.length - 1){
 
       val currentIndex: Int = dicts.length - i - 1
+
+      //this is so we can go backwards because the latest added HashMap is at the end
 
       val currentMap: HashMap[IdentNode, Int] = dicts(currentIndex)
 
@@ -90,11 +86,10 @@ class AssemblyStack {
 
     //add a variable with offset relative to current sp
     //so e.g first variable in section goes 4 above st?
-    //then modify pushTracker#
+    //then modify pushTracker
 
     dicts.last += (identifier -> (stackSectionSizes.last - pushTracker))
 
-    // + or minus? cause we are growing up>??
     pushTracker = pushTracker + 4
 
   }
