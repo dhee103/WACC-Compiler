@@ -16,7 +16,7 @@ object Main2 {
 
     if (!args.isEmpty) {
       val input = args(0)
-      val file =  input.substring(0, input.lastIndexOf('.'))
+      val file =  input.substring(input.lastIndexOf('/') + 1, input.lastIndexOf('.'))
       val exitCode = compile(input)
       val pw = new PrintWriter(new File(s"$file.s" ))
       pw.write(outputString)

@@ -4,6 +4,10 @@ dir = ARGV[0]
 
 files = `find #{dir} -name *.wacc`.split("\n")
 
+def removePath(file)
+  return file[file.rindex('/') + 1, file.rindex('.')]
+end
+
 def count
   @count ||= -1
   @count += 1
@@ -11,7 +15,9 @@ end
 
 def outputMessage(file)
   puts "#{file}"
-  exitCode = system("./compile2 #{file}")
+  system("./compile2 #{file}")
+  `arm-linux-gnueabi-gcc -o #{removePath(file)} -mcpu=arm1176jzf-s #{removePath(file)}.s`
+  # emulator
   puts "\n\n"
 end
 

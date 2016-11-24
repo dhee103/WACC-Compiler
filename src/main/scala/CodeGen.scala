@@ -9,6 +9,7 @@ object CodeGen {
   val loadZero = LoadImmNum(0)
   val pushlr = Push(lr)
   val poppc = Pop(pc)
+  val ltorg = Ltorg()
 
   var stack = new AssemblyStack()
 
@@ -17,9 +18,9 @@ object CodeGen {
     val statement: StatNode = prog.statChild
 
 
-    (Directive(".text")) :: (Directive(".global main")) ::
-    (Label("main")) :: pushlr :: generateStatement(statement) ++ (Move(r0, zero) ::
-    poppc :: Nil)
+    (Directive(".text") :: Directive("\n.global main") ::
+    (Label("main")) :: pushlr :: generateStatement(statement)) ::: (Move(r0, zero) ::
+    poppc :: ltorg ::  Nil)
 
   }
 
@@ -78,7 +79,7 @@ object CodeGen {
 
       case LogicalNotNode(argument) =>  (generateExpression(argument)) ::: ((Compare(r0, zero))
                                         :: (Load(r0, loadZero, NE)) :: (Load(r0, LoadImmNum(1), EQ)) :: Nil)
-      case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero))
+      case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero) :: Nil)
       case unOp : LenNode           =>
       case unOp : OrdNode           =>
       case unOp : ChrNode           =>

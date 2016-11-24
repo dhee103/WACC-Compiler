@@ -81,6 +81,10 @@ case class Label(val name: String) extends Instruction {
 
 }
 
+case class Ltorg() extends Instruction {
+  override def  toString() = ".ltorg"
+}
+
 
 class Function(val label: String, var body: List[Instruction]) {
 
