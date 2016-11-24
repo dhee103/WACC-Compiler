@@ -26,8 +26,13 @@ case class Add(val dst: Register, val src1: Register, val src2: Operand, overrid
 
 case class Sub(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "SUB" + cond + " " +dst.toString() + ", " + src1.toString() + ", " + src2.toString()
+  override def toString() = "SUB" + cond + " " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
 
+}
+
+case class ReverseSubNoCarry(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
+
+  override def toString() = "RSB" + cond + " " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
 
 }
 
