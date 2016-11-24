@@ -4,7 +4,16 @@ object CodeGen {
 
   val lr = LinkRegister()
   val r0  = ResultRegister()
+  val r1 = R1()
   val pc  = ProgramCounter()
+
+
+  val sp = StackPointer()
+  //use the above e.g when pushing sp or subbing from the stack to make space
+
+  val spReference = StackReference(0)
+  //use when doing stuff with things on the stack e.g addition with a value on the stack
+
   val zero = ImmNum(0)
   val loadZero = LoadImmNum(0)
   val pushlr = Push(lr)
@@ -59,7 +68,7 @@ object CodeGen {
       case expr: IdentNode            => Move(r0, StackReference(stack.getOffsetForIdentifier(expr))) :: Nil
       case expr: ArrayElemNode        => null
       case expr: UnaryOperationNode   => generateUnaryOperation(expr)
-      case expr: BinaryOperationNode  => null
+      case expr: BinaryOperationNode  => generateBinaryOperation(expr)
       case IntLiteralNode(value)      => Move(r0, ImmNum(value)) :: Nil
       case BoolLiteralNode(value)     => Move(r0, ImmNum(if (value) 1 else 0 )) :: Nil
       case CharLiteralNode(value)     => Move(r0, ImmNum(value)) :: Nil
@@ -78,15 +87,75 @@ object CodeGen {
 
       case LogicalNotNode(argument) =>  (generateExpression(argument)) ::: ((Compare(r0, zero))
                                         :: (Load(r0, loadZero, NE)) :: (Load(r0, LoadImmNum(1), EQ)) :: Nil)
-      case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero))
-      case unOp : LenNode           =>
-      case unOp : OrdNode           =>
-      case unOp : ChrNode           =>
+      case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero) :: Nil)
+      case LenNode(argument)        =>
+      case OrdNode(argument)        => //donothing
+      case ChrNode(argument)        => //donothing
 
     }
 
     null
 
+  }
+
+  def generateBinaryOperation(binOpNode: BinaryOperationNode): List[Instruction] = {
+
+    binOpNode match {
+
+      case binOp: ArithmeticBinaryOperationNode => generateArithmeticBinaryOperation(binOp)
+      case binOp: OrderComparisonOperationNode  => generateOrderComparisonOperation(binOp)
+      case binOp: ComparisonOperationNode       => generateComparisonOperation(binOp)
+      case binOp: BooleanBinaryOperationNode    => generateBooleanBinaryOperation(binOp)
+    }
+
+    null
+
+  }
+
+  def generateArithmeticBinaryOperation(arithBinOp: ArithmeticBinaryOperationNode): List[Instruction] = {
+
+    val mainInstructions: List[Instruction] = arithBinOp match {
+      case arithBin: MulNode =>  Move(r1, spReference) :: SMull(r0, r1, r0, r1) :: Nil
+      case arithBin: DivNode => Move (r1, spReference) :: SDiv(r0, r0, r1) :: Nil
+      case arithBin: ModNode => null
+      case arithBin: PlusNode => Add(r0, r0, spReference) :: Nil
+      case arithBin: MinusNode => Sub(r0, r0, spReference) :: Nil
+    }
+
+    (generateExpression(arithBinOp.leftExpr)) :::
+                                (Push(r0) :: Nil) ::: generateExpression(arithBinOp.rightExpr) :::
+                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
+  }
+
+  def generateOrderComparisonOperation(orderOp: OrderComparisonOperationNode): List[Instruction] = {
+
+    orderOp match {
+
+    case orderBin: GreaterThanNode => null
+    case orderBin: GreaterEqualNode => null
+    case orderBin: LessThanNode => null
+    case orderBin: LessEqualNode => null
+
+    }
+  }
+
+  def generateComparisonOperation(compOp: ComparisonOperationNode): List[Instruction] = {
+
+    compOp match {
+
+      case compBin: DoubleEqualNode => null
+      case compBin: NotEqualNode => null
+    }
+
+  }
+
+  def generateBooleanBinaryOperation(boolOp: BooleanBinaryOperationNode): List[Instruction] = {
+
+    boolOp match {
+
+      case boolBin: LogicalAndNode => null
+      case boolBin: LogicalOrNode => null
+    }
   }
 
 

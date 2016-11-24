@@ -32,3 +32,8 @@ case class ResultRegister() extends Register {
   override def toString() = "r0"
 
 }
+
+case class R1() extends Register {
+
+  override def toString() = "r1"
+}
