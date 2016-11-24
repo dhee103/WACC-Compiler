@@ -1,38 +1,18 @@
 
+import Condition._
+
 trait Branch extends Instruction {
 
   val goToLabel: String
 
-}
-
-case class Jump(override val goToLabel: String) extends Branch {
-
-  override def toString() = "BL " + goToLabel
+  override def toString() = cond + goToLabel
 
 }
 
-case class BranchEqual(override val goToLabel: String) extends Branch {
-
-  override def toString() = "BEQ " + goToLabel
-
+case class StandardBranch(override val goToLabel: String, override val cond: Condition = AL) extends Branch {
 
 }
 
-case class NotEqual(override val goToLabel: String) extends Branch {
+case class BranchLink(override val goToLabel: String, override val cond: Condition = AL) extends Branch {
 
-  override def toString() = "NE " + goToLabel
 }
-
-case class GreaterEqual(override val goToLabel: String) extends Branch {
-
-  override def toString() = "BGE " + goToLabel
-}
-
-case class LessEqual(override val goToLabel: String) extends Branch {
-
-  override def toString() = "BLE " + goToLabel
-}
-
-
-
-//branches with a condition
