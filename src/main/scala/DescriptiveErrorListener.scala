@@ -15,6 +15,6 @@ class DescriptiveErrorListener extends BaseErrorListener {
     // if (!sourceName.isEmpty) {
     //   sourceName = "%s:%d:%d: ".format(sourceName, line, charPositionInLine)
     // }
-    System.err.println("[SyntaxError] line " + line + ":" + charPositionInLine + " " + msg)
+    System.err.println("[Syntax Error] line " + line + ":" + charPositionInLine + " " + msg)
   }
 }
