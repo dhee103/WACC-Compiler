@@ -19,6 +19,7 @@ object TypeChecker {
       case stat: IfNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
         checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
       case stat: NewBeginNode => checkFunctionReturnStatement(stat.body, correctType, functionName)
+      case _ =>
     }
   }
 
