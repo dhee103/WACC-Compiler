@@ -18,8 +18,8 @@ def outputMessage(file)
   puts "#{file}\n\n"
   puts terminalOutput = `./compile2 #{file}`
   `arm-linux-gnueabi-gcc -o #{removePath(file)} -mcpu=arm1176jzf-s #{removePath(file)}.s`
-  puts system("qemu-arm -L /usr/arm-linux-gnueabi/ #{removePath(file)}")
-  # change system so we get the exit code
+  `qemu-arm -L /usr/arm-linux-gnueabi/ #{removePath(file)}`
+  puts "exitCode: #{$?.exitstatus}"
   puts "\n\n"
 end
 
