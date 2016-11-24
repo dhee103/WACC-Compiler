@@ -4,51 +4,49 @@ trait Instruction {
 
   val cond: Condition = AL
 
-  def prefix: String = if(cond == AL) " " else cond + " "
-
 }
 
 case class Push(val src: Register, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "PUSH" + prefix + "{" + src.toString() + "}"
+  override def toString() = "PUSH" + cond + " {" + src.toString() + "}"
 
 }
 
 case class Pop(val dst: Register, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "POP" + prefix + "{" + dst.toString() + "}"
+  override def toString() = "POP" + cond + " {" + dst.toString() + "}"
 
 }
 
 case class Add(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "ADD" + prefix + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
+  override def toString() = "ADD" + cond + " " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
 
 }
 
 case class Sub(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "SUB" + prefix + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
+  override def toString() = "SUB" + cond + " " +dst.toString() + ", " + src1.toString() + ", " + src2.toString()
 
 
 }
 
 case class Load(val dst: Register, val src: Operand, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "LDR" + prefix + dst.toString() + ", " + src.toString()
+  override def toString() = "LDR" + cond + " " + dst.toString() + ", " + src.toString()
 
 }
 
 
 case class Store(val src: Register, val dst: Operand, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "STR" + prefix + src.toString() + ", " + dst.toString()
+  override def toString() = "STR" + cond + " " + src.toString() + ", " + dst.toString()
 
 }
 
 case class Move(val dst: Register, val src: Operand, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "MOV" + prefix + dst.toString() + ", " + src.toString()
+  override def toString() = "MOV" + cond + " " +dst.toString() + ", " + src.toString()
 
   //todo do we need movlt and movge
 
@@ -56,13 +54,13 @@ case class Move(val dst: Register, val src: Operand, override val cond: Conditio
 
 case class SMull(val dst1: Register, dst2: Register, val src1: Register, val src2: Register, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "SMULL" + prefix + dst1.toString() + ", " + dst2.toString() + ", " + src1.toString() + ", " + src2.toString()
+  override def toString() = "SMULL" + cond + " " +dst1.toString() + ", " + dst2.toString() + ", " + src1.toString() + ", " + src2.toString()
 
 }
 
 case class Compare(val cmp1: Register, val cmp2: Operand, override val cond: Condition = AL) extends Instruction {
 
-  override def toString() = "CMP" + prefix + cmp1.toString() + ", " + cmp2.toString()
+  override def toString() = "CMP" + cond + " " +cmp1.toString() + ", " + cmp2.toString()
 
 }
 
