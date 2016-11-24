@@ -154,7 +154,7 @@ object CodeGen {
     }
 
     (generateExpression(compOp.leftExpr)) :::
-                                (Push(r0) :: Nil) ::: generateExpression(compOp.rightExpr) :::
+                                (Push(r0) :: Nil) ::: generateExpression(compOp.rightExpr) ::: (Compare(r0, spReference) :: Nil)
                                 mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
 
   }
