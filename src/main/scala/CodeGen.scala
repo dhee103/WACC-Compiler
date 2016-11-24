@@ -56,7 +56,7 @@ object CodeGen {
 
   def generateExit(exit: ExitNode): List[Instruction] = {
     val exitCode: Operand = exit.exitCode match {
-      case IntLiteralNode(value) => ImmNum(value)
+      case IntLiteralNode(value) => LoadImmNum(value)
       case _ => throw new UnsupportedOperationException("anything that could go to an int")
     }
 
@@ -117,7 +117,7 @@ object CodeGen {
 
     val mainInstructions: List[Instruction] = arithBinOp match {
       case arithBin: MulNode =>  Move(r1, spReference) :: SMull(r0, r1, r0, r1) :: Nil
-      case arithBin: DivNode => Move (r1, spReference) :: SDiv(r0, r0, r1) :: Nil
+      case arithBin: DivNode => Move (r1, spReference) :: SDiv(r0, r1, r0) :: Nil
       case arithBin: ModNode => null
       case arithBin: PlusNode => Add(r0, r0, spReference) :: Nil
       case arithBin: MinusNode => Sub(r0, r0, spReference) :: Nil
