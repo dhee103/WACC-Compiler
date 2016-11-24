@@ -31,8 +31,8 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       .asInstanceOf[StatNode]
 
     if (!endsInReturnStatement(statChild)) {
-      println("[Syntax Error] Unreachable code!")
-      sys.exit(100)
+      val funcName = identChild.name
+      SyntaxErrorLog.add(s"Function $funcName does not end in return or exit statement.")
     }
 
     FuncNode(returnType, identChild, paramChild, statChild)
