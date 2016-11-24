@@ -325,9 +325,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     InnerPairTypeNode()
   }
 
-//  TODO: negative int overflow
   override def visitIntLiteral(ctx: IntLiteralContext): ExprNode = {
-    //    println("hit " + currentMethodName())
     val noOfChildren = ctx.getChildCount
     if (noOfChildren == 1) {
       visit(ctx.getChild(0)).asInstanceOf[IntLiteralNode]
@@ -344,7 +342,6 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitInt_liter(ctx: WaccParser.Int_literContext):
   IntLiteralNode = {
-    //    println("hit " + currentMethodName())
     try {
       val value = Integer.parseInt(ctx.getText)
       IntLiteralNode(value)

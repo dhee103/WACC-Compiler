@@ -56,6 +56,10 @@ object Main {
 
     // println("before visiting the tree")
     val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
+    if (SyntaxErrorLog.getNumErrors > 0) {
+      SyntaxErrorLog.printErrors()
+      return 100
+    }
     // println("visited the tree")
     Annotate.annotateAST(ast)
     if (SyntaxErrorLog.getNumErrors > 0) {
