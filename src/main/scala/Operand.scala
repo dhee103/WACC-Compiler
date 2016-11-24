@@ -22,3 +22,10 @@ case class ImmNum(value: Int) extends Operand {
 
   //todo =num for load??
 }
+
+case class LoadImmNum(value: Int) extends Operand {
+
+  override def toString() = "=" + value
+
+  //todo =num for load??
+}
