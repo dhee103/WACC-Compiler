@@ -9,17 +9,20 @@ import java.io._
 
 object Main2 {
 
+  var outputString: String = null
+
 
   def main(args: Array[String]): Unit = {
 
     if (!args.isEmpty) {
       val input = args(0)
       val file =  input.substring(0, input.lastIndexOf('.'))
-      val output = compile(input)
+      val exitCode = compile(input)
       val pw = new PrintWriter(new File(s"$file.s" ))
-      pw.write(output)
+      pw.write(outputString)
       pw.close
-      println(output)
+      println(outputString)
+      sys.exit(exitCode)
     }
     else {
       sys.error("No filename passed")
@@ -29,7 +32,7 @@ object Main2 {
   //    should check https://www.safaribooksonline.com/library/view/scala-cookbook/9781449340292/ch12s03.html
 
 
-  def compile(in: String): String = {
+  def compile(filename: String): Int = {
 
     // maps string locations to the error message
     // can then print out nicely at the end
@@ -37,60 +40,62 @@ object Main2 {
 
     // to add you can do: semanticErrorLog :+= (the string)
 
-    val filename = in
     val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
     val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLexer)
 
     val waccParser = new WaccParser(tokens)
 
-
-
     // val diagErrL = new DiagnosticErrorListener()
-
-
     // waccLexer.addErrorListener(diagErrL)
     // waccParser.addErrorListener(diagErrL)
 
     val dEL = new DescriptiveErrorListener
-    waccLexer.removeErrorListeners();
-    waccLexer.addErrorListener(dEL);
-    waccParser.removeErrorListeners();
-    waccParser.addErrorListener(dEL);
+    waccLexer.removeErrorListeners
+    waccLexer.addErrorListener(dEL)
+    waccParser.removeErrorListeners
+    waccParser.addErrorListener(dEL)
 
     val tree = waccParser.prog()
 
     val numSyntaxErrs = waccParser.getNumberOfSyntaxErrors
-
-    var ast: ProgNode = null
     // println(s"there are $numSyntaxErrs syntax errors")
 
-    //if (numSyntaxErrs > 0) {
-    //return 100
-    //}
+    if (SyntaxErrorLog.getNumErrors > 0) {
+      SyntaxErrorLog.printErrors()
+      return 100
+    }
 
     val visitor = new WaccParserDummyVisitor()
-    val funcTable: FunctionTable = new FunctionTable()
 
-    // sort out this try catch - it returns 200 far more than it shoud; maybe there are other errors and cases to catch
+    // sort out this try catch - it returns 200 far more than it should; maybe there are other errors and cases to catch
     // add methods to get number of syntax errors/ semantic errors from visitor
-    try {
-      // println("before visiting the tree")
-      ast = visitor.visit(tree).asInstanceOf[ProgNode]
-      // println("visited the tree")
-      Annotate.annotateAST(ast)
-    } catch {
-      case _: NullPointerException =>
-      //case _: NumberFormatException => return 100
-      //case e : Throwable => println("Dodgy try catch"); println(e); return 200
+
+    // println("before visiting the tree")
+    val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
+    if (SyntaxErrorLog.getNumErrors > 0) {
+      SyntaxErrorLog.printErrors()
+      return 100
     }
-    // Only errors are semantic errors
-
-    var numSemanticErrors: Int = 0
+    // println("visited the tree")
+    Annotate.annotateAST(ast)
+    if (SyntaxErrorLog.getNumErrors > 0) {
+      SyntaxErrorLog.printErrors()
+      return 100
+    }
+    if (SemanticErrorLog.getNumErrors > 0) {
+      SemanticErrorLog.printErrors()
+      return 200
+    }
     // println("match error")
-    numSemanticErrors += Annotate.numSemanticErrors + ErrorLog.getNumErrors
+    TypeChecker.beginSemanticCheck(ast)
     // println(s"there are $numSemanticErrors semantic errors")
+    if (SemanticErrorLog.getNumErrors > 0) {
+      SemanticErrorLog.printErrors()
+      return 200
+    }
 
+    outputString = InstructionConverter.translate(CodeGen.generateProgramCode(ast))
 
-    InstructionConverter.translate(CodeGen.generateProgramCode(ast))
+    return 0
   }
 }
