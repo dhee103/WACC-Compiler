@@ -9,7 +9,7 @@ trait ArithmeticBinaryOperationNode extends BinaryOperationNode {
     if (bothExprsInts) {
       IntTypeNode()
     } else {
-      SemanticErrorLog.add("[Semantic Error] Argument of int type expected in arithmetic binary operation.")
+      SemanticErrorLog.add("Argument of int type expected in arithmetic binary operation.")
       ErrorTypeNode()
     }
   }
@@ -22,7 +22,7 @@ trait OrderComparisonOperationNode extends BinaryOperationNode {
     if (bothExprsInts || bothExprsChars) {
       BoolTypeNode()
     } else {
-      SemanticErrorLog.add("[Semantic Error] Argument of wrong type in arithmetic binary operation.")
+      SemanticErrorLog.add("Argument of wrong type in arithmetic binary operation.")
       ErrorTypeNode()
     }
   }
@@ -34,7 +34,7 @@ trait ComparisonOperationNode extends BinaryOperationNode {
     if (exprsAreSameType) {
       BoolTypeNode()
     } else {
-      SemanticErrorLog.add("[Semantic Error] Argument of non-matching types in comparison operation.")
+      SemanticErrorLog.add("Argument of non-matching types in comparison operation.")
       ErrorTypeNode()
     }
   }
@@ -47,7 +47,7 @@ trait BooleanBinaryOperationNode extends BinaryOperationNode {
     if (bothExprsBools) {
       BoolTypeNode()
     } else {
-      SemanticErrorLog.add("[Semantic Error] Argument of boolean type expected in logical binary operation.")
+      SemanticErrorLog.add("Argument of boolean type expected in logical binary operation.")
       ErrorTypeNode()
     }
   }

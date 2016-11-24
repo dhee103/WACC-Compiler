@@ -1,41 +1,26 @@
 // package errorLogging
 
-object SemanticErrorLog {
-  var semanticErrorLog = Seq[String]()
+trait ErrorLog {
+  val errorType: String
+  var log = Seq[String]()
 
   def add(s: String): Unit = {
-    semanticErrorLog = semanticErrorLog :+ s
+    log = log :+ s
   }
 
   def getNumErrors: Int = {
-    semanticErrorLog.size
-  }
-
-  def getErrors: Seq[String] = {
-    semanticErrorLog
+    log.size
   }
 
   def printErrors(): Unit = {
-    semanticErrorLog map (println _)
+    log.map(Console.RED ++ Console.BOLD ++ s"[$errorType Error] " ++ Console.RESET ++ _).map(println _)
   }
 }
 
-object SyntaxErrorLog {
-  var syntaxErrorLog = Seq[String]()
+object SemanticErrorLog extends ErrorLog {
+  override val errorType = "Semantic"
+}
 
-  def add(s: String): Unit = {
-    syntaxErrorLog = syntaxErrorLog :+ s
-  }
-
-  def getNumErrors: Int = {
-    syntaxErrorLog.size
-  }
-
-  def getErrors: Seq[String] = {
-    syntaxErrorLog
-  }
-
-  def printErrors(): Unit = {
-    syntaxErrorLog map (println _)
-  }
+object SyntaxErrorLog extends ErrorLog {
+  override val errorType = "Syntax"
 }

@@ -15,7 +15,7 @@ object FunctionTable {
 
     if (dict.contains(identifier)) {
       val name = identifier.name
-      SemanticErrorLog.add(s"[Semantic Error] Attempted to redefine function $name.")
+      SemanticErrorLog.add(s"Attempted to redefine function $name.")
     } else {
       dict += (identifier -> (returnType, paramTypes))
     }

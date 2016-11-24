@@ -14,11 +14,12 @@ object TypeChecker {
     statement match {
       case ReturnNode(expr) => val foundType = expr.getType
         if (!foundType.isEquivalentTo(correctType))
-        SemanticErrorLog.add(s"[Semantic Error] Function $functionName expected return type $correctType. Found $foundType)")
+        SemanticErrorLog.add(s"Function $functionName expected return type $correctType. Found $foundType)")
       case stat: SequenceNode => checkFunctionReturnStatement(stat.sndStat, correctType, functionName)
       case stat: IfNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
         checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
       case stat: NewBeginNode => checkFunctionReturnStatement(stat.body, correctType, functionName)
+      case _ =>
     }
   }
 
@@ -46,7 +47,7 @@ object TypeChecker {
     val rhs = declarationNode.rhs
 
     if (!isArrayLiteralValid(rhs)) {
-      SemanticErrorLog.add("[Semantic Error] Array literal in declaration contains expressions of differing types.")
+      SemanticErrorLog.add("Array literal in declaration contains expressions of differing types.")
       return
     }
 
@@ -54,7 +55,7 @@ object TypeChecker {
     val rhsType: TypeNode = rhs.getType
 
     if (!rhsType.isEquivalentTo(identType)) {
-      SemanticErrorLog.add("[Semantic Error] Type mismatch in declaration statement.")
+      SemanticErrorLog.add("Type mismatch in declaration statement.")
     }
   }
 
@@ -63,7 +64,7 @@ object TypeChecker {
     val rhs = assignmentNode.rhs
 
     if (!isArrayLiteralValid(rhs)) {
-      SemanticErrorLog.add("[Semantic Error] Array literal in assignment contains expressions of differing types.")
+      SemanticErrorLog.add("Array literal in assignment contains expressions of differing types.")
       return
     }
 
@@ -71,7 +72,7 @@ object TypeChecker {
     val rhsType: TypeNode = rhs.getType
 
     if (!rhsType.isEquivalentTo(lhsType)) {
-      SemanticErrorLog.add("[Semantic Error] Type mismatch in assignment statement.")
+      SemanticErrorLog.add("Type mismatch in assignment statement.")
     }
 
   }
@@ -83,7 +84,7 @@ object TypeChecker {
     val targetIsInt = targetType.isEquivalentTo(IntTypeNode())
 
     if (!(targetIsInt || targetIsChar)) {
-      SemanticErrorLog.add("[Semantic Error] Read statement expects integer or character target.")
+      SemanticErrorLog.add("Read statement expects integer or character target.")
     }
   }
 
@@ -94,7 +95,7 @@ object TypeChecker {
     val varIsArray = varType.isInstanceOf[ArrayTypeNode]
 
     if (!(varIsPair || varIsArray)) {
-      SemanticErrorLog.add("[Semantic Error] Free statement expects pair or array target.")
+      SemanticErrorLog.add("Free statement expects pair or array target.")
     }
   }
 
@@ -104,7 +105,7 @@ object TypeChecker {
     val exitCodeIsInt = exitCodeType.isEquivalentTo(IntTypeNode())
 
     if (!exitCodeIsInt) {
-      SemanticErrorLog.add("[Semantic Error] Exit statement expects integer argument.")
+      SemanticErrorLog.add("Exit statement expects integer argument.")
     }
   }
 
@@ -115,7 +116,7 @@ object TypeChecker {
     val condType = ifNode.condition.getType
     val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
     if (!condIsBoolean) {
-      SemanticErrorLog.add("[Semantic Error] If statement expects boolean condition.")
+      SemanticErrorLog.add("If statement expects boolean condition.")
     }
   }
 
@@ -125,7 +126,7 @@ object TypeChecker {
     val condType = whileNode.condition.getType
     val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
     if (!condIsBoolean) {
-      SemanticErrorLog.add("[Semantic Error] While statement expects boolean condition.")
+      SemanticErrorLog.add("While statement expects boolean condition.")
     }
   }
 

@@ -31,8 +31,8 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
       .asInstanceOf[StatNode]
 
     if (!endsInReturnStatement(statChild)) {
-      println("[Syntax Error] Unreachable code!")
-      sys.exit(100)
+      val funcName = identChild.name
+      SyntaxErrorLog.add(s"Function $funcName does not end in return or exit statement.")
     }
 
     FuncNode(returnType, identChild, paramChild, statChild)
@@ -325,9 +325,7 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
     InnerPairTypeNode()
   }
 
-//  TODO: negative int overflow
   override def visitIntLiteral(ctx: IntLiteralContext): ExprNode = {
-    //    println("hit " + currentMethodName())
     val noOfChildren = ctx.getChildCount
     if (noOfChildren == 1) {
       visit(ctx.getChild(0)).asInstanceOf[IntLiteralNode]
@@ -344,13 +342,12 @@ class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
 
   override def visitInt_liter(ctx: WaccParser.Int_literContext):
   IntLiteralNode = {
-    //    println("hit " + currentMethodName())
     try {
       val value = Integer.parseInt(ctx.getText)
       IntLiteralNode(value)
     } catch {
       case _: NumberFormatException =>
-        SyntaxErrorLog.add("[Syntax Error] Integer is too large/small to store in 32 bits.")
+        SyntaxErrorLog.add("Integer is too large/small to store in 32 bits.")
         IntLiteralNode(-1)
     }
 
