@@ -5,7 +5,8 @@ dir = ARGV[0]
 files = `find #{dir} -name *.wacc`.split("\n")
 
 def removePath(file)
-  return file[file.rindex('/') + 1, file.rindex('.')]
+  file = file[file.rindex('/') + 1, file.size]
+  return file[0..file.size - 6]
 end
 
 def count
@@ -14,10 +15,11 @@ def count
 end
 
 def outputMessage(file)
-  puts "#{file}"
-  system("./compile2 #{file}")
+  puts "#{file}\n\n"
+  puts terminalOutput = `./compile2 #{file}`
   `arm-linux-gnueabi-gcc -o #{removePath(file)} -mcpu=arm1176jzf-s #{removePath(file)}.s`
-  # emulator
+  puts system("qemu-arm -L /usr/arm-linux-gnueabi/ #{removePath(file)}")
+  # change system so we get the exit code
   puts "\n\n"
 end
 
