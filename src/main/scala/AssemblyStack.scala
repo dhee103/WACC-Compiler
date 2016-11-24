@@ -86,8 +86,6 @@ class AssemblyStack {
 
   }
 
-
-
   def addVariable(identifier: IdentNode): Unit = {
 
     //add a variable with offset relative to current sp
@@ -100,7 +98,5 @@ class AssemblyStack {
     pushTracker = pushTracker + 4
 
   }
-
-
 
 }

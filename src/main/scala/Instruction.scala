@@ -63,6 +63,13 @@ case class SMull(val dst1: Register, dst2: Register, val src1: Register, val src
 
 }
 
+case class SDiv(val dst1: Register, val src1: Register, val src2: Register, override val cond: Condition = AL) extends Instruction{
+
+  override def toString() = "SDIV" + cond + " " +dst1.toString() + ", " + src1.toString() + ", " + src2.toString()
+
+
+}
+
 case class Compare(val cmp1: Register, val cmp2: Operand, override val cond: Condition = AL) extends Instruction {
 
   override def toString() = "CMP" + cond + " " +cmp1.toString() + ", " + cmp2.toString()
