@@ -1,9 +1,12 @@
+import Condition._
+
 object CodeGen {
 
   val lr = LinkRegister()
   val r0  = ResultRegister()
   val pc  = ProgramCounter()
   val zero = ImmNum(0)
+  val loadZero = LoadImmNum(0)
   val pushlr = Push(lr)
   val poppc = Pop(pc)
 
@@ -33,25 +36,6 @@ object CodeGen {
     }
   }
 
-  def generateExpression(expr: ExprNode): List[Instruction] = {
-
-    expr match {
-      case expr: IdentNode            => Move(r0, StackReference(stack.getOffsetForIdentifier(expr))) :: Nil
-      case expr: ArrayElemNode        => null
-      case expr: UnaryOperationNode   => null
-      case expr: BinaryOperationNode  => null
-      case IntLiteralNode(value)      => Move(r0, ImmNum(value)) :: Nil
-      case BoolLiteralNode(value)     => Move(r0, ImmNum(if (value) 1 else 0 )) :: Nil
-      case CharLiteralNode(value)     => Move(r0, ImmNum(value)) :: Nil
-      case StringLiteralNode(value)   => Labels.addMessageLabel(value); Load(r0, DataCall(Labels.getMessageLabel)) :: Nil
-      case expr: PairLiteralNode      => null
-      case _                          => null
-    }
-
-
-
-  }
-
   def generateDeclaration(decl: DeclarationNode): List[Instruction] = {
     null
   }
@@ -66,6 +50,44 @@ object CodeGen {
       case _ => throw new UnsupportedOperationException("anything that could go to an int")
     }
 
-    List[Instruction](Load(r0, exitCode), Jump("exit"))
+    List[Instruction](Load(r0, exitCode), BranchLink("exit"))
   }
+
+  def generateExpression(expr: ExprNode): List[Instruction] = {
+
+    expr match {
+      case expr: IdentNode            => Move(r0, StackReference(stack.getOffsetForIdentifier(expr))) :: Nil
+      case expr: ArrayElemNode        => null
+      case expr: UnaryOperationNode   => generateUnaryOperation(expr)
+      case expr: BinaryOperationNode  => null
+      case IntLiteralNode(value)      => Move(r0, ImmNum(value)) :: Nil
+      case BoolLiteralNode(value)     => Move(r0, ImmNum(if (value) 1 else 0 )) :: Nil
+      case CharLiteralNode(value)     => Move(r0, ImmNum(value)) :: Nil
+      case StringLiteralNode(value)   => Labels.addMessageLabel(value); Load(r0, DataCall(Labels.getMessageLabel)) :: Nil
+      case expr: PairLiteralNode      => null
+      case _                          => null
+    }
+
+  }
+
+  def generateUnaryOperation(unOpNode: UnaryOperationNode): List[Instruction] = {
+
+    //todo for arithmetic instructions, check for overflow / underflow
+
+    unOpNode match {
+
+      case LogicalNotNode(argument) =>  (generateExpression(argument)) ::: ((Compare(r0, zero))
+                                        :: (Load(r0, loadZero, NE)) :: (Load(r0, LoadImmNum(1), EQ)) :: Nil)
+      case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero))
+      case unOp : LenNode           =>
+      case unOp : OrdNode           =>
+      case unOp : ChrNode           =>
+
+    }
+
+    null
+
+  }
+
+
 }
