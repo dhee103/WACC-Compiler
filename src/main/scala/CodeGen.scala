@@ -117,7 +117,7 @@ object CodeGen {
     val mainInstructions: List[Instruction] = arithBinOp match {
       case arithBin: MulNode =>  Move(r1, spReference) :: SMull(r0, r1, r0, r1) :: Nil
       case arithBin: DivNode => Move (r1, spReference) :: SDiv(r0, r1, r0) :: Nil
-      case arithBin: ModNode => null
+      case arithBin: ModNode => null //todo read up of ref compiler and copy
       case arithBin: PlusNode => Add(r0, r0, spReference) :: Nil
       case arithBin: MinusNode => Sub(r0, r0, spReference) :: Nil
     }
@@ -129,23 +129,33 @@ object CodeGen {
 
   def generateOrderComparisonOperation(orderOp: OrderComparisonOperationNode): List[Instruction] = {
 
-    orderOp match {
+    val mainInstructions: List[Instruction] = orderOp match {
 
-    case orderBin: GreaterThanNode => null
-    case orderBin: GreaterEqualNode => null
-    case orderBin: LessThanNode => null
-    case orderBin: LessEqualNode => null
+    case orderBin: GreaterThanNode =>  Load(r0, LoadImmNum(1), GT) :: Load(r0, loadZero, LE) :: Nil
+    case orderBin: GreaterEqualNode =>  Load(r0, LoadImmNum(1), GE) :: Load(r0, loadZero, LT) :: Nil
+    case orderBin: LessThanNode =>  Load(r0, LoadImmNum(1), LT) :: Load(r0, loadZero, GE) :: Nil
+    case orderBin: LessEqualNode =>  Load(r0, LoadImmNum(1), LE) :: Load(r0, loadZero, GT) :: Nil
 
     }
+
+    (generateExpression(orderOp.rightExpr)) :::
+                                (Push(r0) :: Nil) ::: generateExpression(orderOp.leftExpr) ::: (Compare(r0, spReference) :: Nil)
+                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
+
+
   }
 
   def generateComparisonOperation(compOp: ComparisonOperationNode): List[Instruction] = {
 
-    compOp match {
+    val mainInstructions: List[Instruction] = compOp match {
 
-      case compBin: DoubleEqualNode => null
-      case compBin: NotEqualNode => null
+      case compBin: DoubleEqualNode => Load(r0, LoadImmNum(1), EQ) :: Load(r0, loadZero, NE) :: Nil
+      case compBin: NotEqualNode => Load(r0, LoadImmNum(1), NE) :: Load(r0, loadZero, EQ) :: Nil
     }
+
+    (generateExpression(compOp.leftExpr)) :::
+                                (Push(r0) :: Nil) ::: generateExpression(compOp.rightExpr) :::
+                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
 
   }
 

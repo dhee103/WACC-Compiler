@@ -4,7 +4,7 @@ trait Operand {
 
 case class StackReference(val offset: Int) extends Operand {
 
-  override def toString() = "[sp, #" + offset + "]"
+  override def toString() = if (offset == 0) "[sp]" else ("[sp, #" + offset + "]")
 
   //todo offsett zero
 
