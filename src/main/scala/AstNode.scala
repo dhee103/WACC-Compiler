@@ -30,14 +30,14 @@ trait PairElemNode extends AssignmentLeftNode with AssignmentRightNode {
 case class FstNode(override val exprChild: ExprNode) extends PairElemNode {
   override def getType: TypeNode = exprChild.getType match {
     case PairTypeNode(fstElemType, _) => fstElemType.toTypeNode
-    case _ => SemanticErrorLog.add("[Semantic Error] Identifier in fst expression is not a pair."); ErrorTypeNode()
+    case _ => SemanticErrorLog.add("Identifier in fst expression is not a pair."); ErrorTypeNode()
   }
 }
 
 case class SndNode(override val exprChild: ExprNode) extends PairElemNode {
   override def getType: TypeNode = exprChild.getType match {
     case PairTypeNode(_, sndElemType) => sndElemType.toTypeNode
-    case _ => SemanticErrorLog.add("[Semantic Error] Identifier in snd expression is not a pair."); ErrorTypeNode()
+    case _ => SemanticErrorLog.add("Identifier in snd expression is not a pair."); ErrorTypeNode()
   }
 }
 
@@ -51,8 +51,8 @@ case class ArrayElemNode(val identifier: IdentNode, val exprs: IndexedSeq[ExprNo
   override def getType: TypeNode = {
     identifier.getType match {
       case ArrayTypeNode(elemType) => elemType
-      case StringTypeNode() => if (exprs.length == 1) CharTypeNode() else {SemanticErrorLog.add(s"[Semantic Error] $identifier is not an array"); ErrorTypeNode()}
-      case _ => SemanticErrorLog.add(s"[Semantic Error] $identifier is not an array"); ErrorTypeNode()
+      case StringTypeNode() => if (exprs.length == 1) CharTypeNode() else {SemanticErrorLog.add(s"$identifier is not an array"); ErrorTypeNode()}
+      case _ => SemanticErrorLog.add(s"$identifier is not an array"); ErrorTypeNode()
     }
   }
 }

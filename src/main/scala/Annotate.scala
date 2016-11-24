@@ -45,7 +45,7 @@ object Annotate {
     val ident: IdentNode = statement.identifier
     if (currentST.doesContain(ident)) {
       val varName = ident.name
-      SemanticErrorLog.add(s"[Semantic Error] Attempted to redeclare variable $varName")
+      SemanticErrorLog.add(s"Attempted to redeclare variable $varName")
     } else {
       ident.identType = Some(statement.variableType)
       currentST.add(ident, ident.getType)
@@ -69,7 +69,7 @@ object Annotate {
   def annotateReturnNode(statement: ReturnNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.returnValue, currentST)
 
-    if (isInMain) SemanticErrorLog.add("[Semantic Error] Return statement used outside of function definition.")
+    if (isInMain) SemanticErrorLog.add("Return statement used outside of function definition.")
   }
 
   def annotateExitNode(statement: ExitNode, currentST: SymbolTable): Unit = {
@@ -186,7 +186,7 @@ object Annotate {
     val identType = currentST.lookupAll(identifier)
     if (identType == ErrorTypeNode()) {
       val varName = identifier.name
-      SemanticErrorLog.add(s"[Semantic Error] Variable $varName doesn't exist")
+      SemanticErrorLog.add(s"Variable $varName doesn't exist")
     } else {
       identifier.identType = Some(currentST.lookupAll(identifier))
     }

@@ -16,7 +16,7 @@ object SemanticErrorLog {
   }
 
   def printErrors(): Unit = {
-    semanticErrorLog map (println _)
+    semanticErrorLog.map(Console.RED ++ Console.BOLD ++ "[Semantic Error] " ++ Console.RESET ++ _).map(println _)
   }
 }
 
@@ -36,6 +36,6 @@ object SyntaxErrorLog {
   }
 
   def printErrors(): Unit = {
-    syntaxErrorLog map (println _)
+    syntaxErrorLog.map(Console.RED ++ Console.BOLD ++ "[Syntax Error] " ++ Console.RESET ++ _).map(println _)
   }
 }
