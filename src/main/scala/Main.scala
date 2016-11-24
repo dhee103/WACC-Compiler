@@ -44,7 +44,8 @@ object Main {
     val numSyntaxErrs = waccParser.getNumberOfSyntaxErrors
     // println(s"there are $numSyntaxErrs syntax errors")
 
-    if (numSyntaxErrs > 0) {
+    if (SyntaxErrorLog.getNumErrors > 0) {
+      SyntaxErrorLog.printErrors()
       return 100
     }
 
