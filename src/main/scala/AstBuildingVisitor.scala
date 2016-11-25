@@ -1,6 +1,6 @@
 import WaccParser._
 
-class WaccParserDummyVisitor extends WaccParserBaseVisitor[AstNode] {
+class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 
   // for testing
   def currentMethodName(): String = Thread.currentThread().getStackTrace()(2)

@@ -65,7 +65,7 @@ object Main2 {
       return 100
     }
 
-    val visitor = new WaccParserDummyVisitor()
+    val visitor = new AstBuildingVisitor()
 
     // sort out this try catch - it returns 200 far more than it should; maybe there are other errors and cases to catch
     // add methods to get number of syntax errors/ semantic errors from visitor

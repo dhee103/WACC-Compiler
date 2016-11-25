@@ -41,15 +41,12 @@ object Main {
 
     val tree = waccParser.prog()
 
-    val numSyntaxErrs = waccParser.getNumberOfSyntaxErrors
-    // println(s"there are $numSyntaxErrs syntax errors")
-
     if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
 
-    val visitor = new WaccParserDummyVisitor()
+    val visitor = new AstBuildingVisitor()
 
     // sort out this try catch - it returns 200 far more than it should; maybe there are other errors and cases to catch
     // add methods to get number of syntax errors/ semantic errors from visitor
