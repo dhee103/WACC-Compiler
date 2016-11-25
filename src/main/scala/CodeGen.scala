@@ -35,7 +35,7 @@ object CodeGen {
     val statGeneration = generateStatement(statement)
 
     val output = Labels.printDataMsgMap() :::
-    Directive(".text") :: Directive("\n.global main") ::
+    Directive("text\n") :: Directive("global main") ::
     Label("main") :: pushlr :: statGeneration ::: (Move(r0, zero) ::
     poppc :: ltorg ::  Nil)
 
