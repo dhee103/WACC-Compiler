@@ -139,9 +139,10 @@ object CodeGen {
       case arithBin: MinusNode => Sub(r0, r0, spReference) :: Nil
     }
 
-    (generateExpression(arithBinOp.leftExpr)) :::
+    generateExpression(arithBinOp.leftExpr) :::
                                 (Push(r0) :: Nil) ::: generateExpression(arithBinOp.rightExpr) :::
-                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
+                                mainInstructions ::: (Add(sp, sp, ImmNum(4))
+      :: BranchLink("p_throw_overflow_error", VS) :: Nil)
   }
 
   def generateOrderComparisonOperation(orderOp: OrderComparisonOperationNode): List[Instruction] = {
