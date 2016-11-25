@@ -48,16 +48,12 @@ object Main {
 
     val visitor = new AstBuildingVisitor()
 
-    // sort out this try catch - it returns 200 far more than it should; maybe there are other errors and cases to catch
-    // add methods to get number of syntax errors/ semantic errors from visitor
-
-    // println("before visiting the tree")
     val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
     if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
-    // println("visited the tree")
+
     Annotate.annotateAST(ast)
     if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
@@ -67,9 +63,8 @@ object Main {
       SemanticErrorLog.printErrors()
       return 200
     }
-    // println("match error")
+
     TypeChecker.beginSemanticCheck(ast)
-    // println(s"there are $numSemanticErrors semantic errors")
     if (SemanticErrorLog.getNumErrors > 0) {
       SemanticErrorLog.printErrors()
       return 200
