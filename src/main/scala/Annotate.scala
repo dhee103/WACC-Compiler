@@ -21,7 +21,7 @@ object Annotate {
     }
     val noOfParameters = currentScopeSymbolTable.size
     annotateStatNode(function.statement, currentScopeSymbolTable, false)
-    val noOfLocalVariables = currentScopeSymbolTable.size - noOfParameters
+    function.noOfLocalVars = currentScopeSymbolTable.size - noOfParameters
     // TO DO: Check where to store noOfLocalVariables, callNode or funcNode
   }
 
@@ -152,6 +152,7 @@ object Annotate {
       case Some(args) => annotateArgListNode(args, currentST)
     }
 
+    call.scopeSizes += FunctionTable.getNoOfLocalVars(identifier)
   }
 
   def annotateArgListNode(argList: ArgListNode, currentST: SymbolTable): Unit = {

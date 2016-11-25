@@ -1,4 +1,4 @@
-import scala.collection.mutable._
+import scala.collection.mutable.MutableList
 
 trait AstNode {
 }
@@ -11,7 +11,7 @@ case class ProgNode(val statChild: StatNode, val funcChildren: IndexedSeq[FuncNo
 }
 
 case class FuncNode(val returnType: TypeNode, val identifier: IdentNode,
-                    val paramList: ParamListNode, val statement: StatNode)
+                    val paramList: ParamListNode, val statement: StatNode, var noOfLocalVars: Int = 0)
   extends AstNode {
 }
 

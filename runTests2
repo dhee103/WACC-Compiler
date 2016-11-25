@@ -17,7 +17,10 @@ end
 
 initTime = Time.now
 
-files.map { |file| outputMessage(file)  }
+files.map { |file| 
+  outputMessage(file)
+  puts Time.now  
+}
 
 puts "There are #{count}/#{files.length} errors in #{dir}"
 

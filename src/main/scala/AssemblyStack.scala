@@ -1,5 +1,5 @@
 import collection.mutable.HashMap
-import scala.collection.mutable._
+import scala.collection.mutable.MutableList
 
 class AssemblyStack {
 
