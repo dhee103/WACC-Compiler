@@ -113,11 +113,8 @@ case class Orr(dst: Register, src1: Register, src2: Operand, override val cond: 
 }
 
 case class LabelData(val name: String) extends Instruction {
-  override def toString() = name
-}
-
-case class Ltorg() extends Instruction {
-  override def  toString() = ".ltorg"
+  override def toString = name
+  override val main = name
 }
 
 

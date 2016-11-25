@@ -3,17 +3,17 @@ import scala.collection.mutable._
 
 class AssemblyStack2 {
 
-  var states: MutableList[StackState] = MutableList[StackState]
+  var states = MutableList[StackState]()
 
   var virtualStackPointer = 0
-  val sp = new StackPointer()
+  val sp = StackPointer()
   //we use sp when we want to write instructions to move the actual stack pointer
 
   def subStackNewScope(spaceAlloc: Int): Instruction = {
 
     virtualStackPointer += spaceAlloc
-    states += (new StackState(spaceAlloc, virtualStackPointer))
-    new Sub(sp, sp, new ImmNum(spaceAlloc))
+    states += new StackState(spaceAlloc, virtualStackPointer)
+    Sub(sp, sp, ImmNum(spaceAlloc))
 
     //on the actual stack we grow down
     //here we will grow up
@@ -28,21 +28,19 @@ class AssemblyStack2 {
     //todo or is it dropleft
     //todo nah i think its dropright
 
-    new Add(sp, sp, new ImmNum(spaceReturn))
+    Add(sp, sp, ImmNum(spaceReturn))
 
   }
 
   def getOffsetForIdentifier(identifier: IdentNode): Int  = {
 
-    for (i: Int <- 0 to states.length - 1){
-
-      val currentIndex: Int = states.length - i - 1
+    for (currentIndex <- states.indices.reverse ) {
 
       //this is so we can go backwards because the latest added HashMap is at the end
 
       val currentState: StackState = states(currentIndex)
 
-      if(currentState.dictContainsIdent(identifier)){
+      if (currentState.dictContainsIdent(identifier)) {
 
         //currentMap(identifier)  + (virtualStackPointer - originalSpLocations(currentIndex))
         currentState.getOffsetForIdentifier(identifier, virtualStackPointer)
@@ -53,7 +51,7 @@ class AssemblyStack2 {
 
     }
 
-    //if we get heee then we never found the variable
+    //if we get here then we never found the variable
 
     println("ERROR")
 
@@ -63,7 +61,7 @@ class AssemblyStack2 {
 
   def addVariable(identifier: IdentNode): Unit = {
 
-    states.last.getOffsetForIdentifier(identifier)
+    states.last.getOffsetForIdentifier(identifier, virtualStackPointer)
 
     //todo add a check to see if there is actually any states in the list
     //todo e.g when you do main you actually need to do a scope for mapping

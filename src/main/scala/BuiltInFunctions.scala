@@ -12,7 +12,7 @@ object BuiltInFunctions {
   val loadZero = LoadImmNum(0)
   val pushlr = Push(lr)
   val poppc = Pop(pc)
-  val ltorg = Ltorg()
+  val ltorg = Directive("ltorg")
 
   var printFlag: Boolean = false
 
