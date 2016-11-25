@@ -4,8 +4,8 @@ class SymbolTable(val encTable: Option[SymbolTable]) {
 
   val dict: HashMap[IdentNode, TypeNode] = new HashMap[IdentNode, TypeNode]()
 
-  def add(identifier: IdentNode, typeinfo: TypeNode): Unit
-    = dict += (identifier -> typeinfo)
+  def add(identifier: IdentNode, typeInfo: TypeNode): Unit
+    = dict += (identifier -> typeInfo)
 
   def lookup(identifier: IdentNode): TypeNode = {
     dict.getOrElse(identifier, ErrorTypeNode())
@@ -22,6 +22,10 @@ class SymbolTable(val encTable: Option[SymbolTable]) {
 
   def doesContain(identifier: IdentNode): Boolean = {
       lookup(identifier) != ErrorTypeNode()
+  }
+
+  def size: Int = {
+    dict.size
   }
 
 }
