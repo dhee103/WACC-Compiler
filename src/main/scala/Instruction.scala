@@ -2,90 +2,95 @@ import Condition._
 
 trait Instruction {
 
+  val label: Option[String] = None
   val cond: Condition = AL
 
 }
 
-case class Push(val src: Register, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "PUSH" + cond + " {" + src.toString() + "}"
-
-}
-
-case class Pop(val dst: Register, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "POP" + cond + " {" + dst.toString() + "}"
+case class Push(src: Register, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(src: Register, label: Option[String]) = this(src, AL, label)
+  def this(src: Register, cond: Condition) = this(src, cond, None)
+  override def toString = label.getOrElse("") + "PUSH" + cond + " {" + src.toString + "}"
 
 }
 
-case class Add(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "ADD" + cond + " " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
-
-}
-
-case class Sub(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "SUB" + cond + " " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
+case class Pop(dst: Register, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(dst: Register, label: Option[String]) = this(dst, AL, label)
+  def this(dst: Register, cond: Condition) = this(dst, cond, None)
+  override def toString = "POP" + cond + " {" + dst.toString + "}"
 
 }
 
-case class ReverseSubNoCarry(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "RSB" + cond + " " + dst.toString() + ", " + src1.toString() + ", " + src2.toString()
-
-}
-
-case class Load(val dst: Register, val src: Operand, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "LDR" + cond + " " + dst.toString() + ", " + src.toString()
+case class Add(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(dst: Register, src1: Register, src2: Operand, label: Option[String]) = this(dst, src1, src2, AL, label)
+  def this(dst: Register, src1: Register, src2: Operand, cond: Condition) = this(dst, src1, src2, cond, None)
+  override def toString = "ADD" + cond + " " + dst.toString + ", " + src1.toString + ", " + src2.toString
 
 }
 
+case class Sub(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(dst: Register, src1: Register, src2: Operand, label: Option[String]) = this(dst, src1, src2, AL, label)
+  def this(dst: Register, src1: Register, src2: Operand, cond: Condition) = this(dst, src1, src2, cond, None)
+  override def toString = "SUB" + cond + " " + dst.toString + ", " + src1.toString + ", " + src2.toString
 
-case class Store(val src: Register, val dst: Operand, override val cond: Condition = AL) extends Instruction {
+}
 
+case class ReverseSubNoCarry(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(dst: Register, src1: Register, src2: Operand, label: Option[String]) = this(dst, src1, src2, AL, label)
+  def this(dst: Register, src1: Register, src2: Operand, cond: Condition) = this(dst, src1, src2, cond, None)
+  override def toString = "RSB" + cond + " " + dst.toString + ", " + src1.toString + ", " + src2.toString
+
+}
+
+case class Load(dst: Register, src: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(dst: Register, src: Operand, label: Option[String]) = this(dst, src, AL, label)
+  def this(dst: Register, src: Operand, cond: Condition) = this(dst, src, cond, None)
+  override def toString = "LDR" + cond + " " + dst.toString + ", " + src.toString
+
+}
+
+
+case class Store(src: Register, dst: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(src: Register, dst: Operand, label: Option[String]) = this(src, dst, AL, label)
+  def this(src: Register, dst: Operand, cond: Condition) = this(src, dst, cond, None)
   override def toString() = "STR" + cond + " " + src.toString() + ", " + dst.toString()
 
 }
 
-case class Move(val dst: Register, val src: Operand, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "MOV" + cond + " " +dst.toString() + ", " + src.toString()
-
-  //todo do we need movlt and movge
-
-}
-
-case class SMull(val dst1: Register, dst2: Register, val src1: Register, val src2: Register, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "SMULL" + cond + " " +dst1.toString() + ", " + dst2.toString() + ", " + src1.toString() + ", " + src2.toString()
+case class Move(dst: Register, src: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(dst: Register, src: Operand, label: Option[String]) = this(dst, src, AL, label)
+  def this(dst: Register, src: Operand, cond: Condition) = this(dst, src, cond, None)
+  override def toString = "MOV" + cond + " " + dst.toString + ", " + src.toString
 
 }
 
-case class SDiv(val dst1: Register, val src1: Register, val src2: Register, override val cond: Condition = AL) extends Instruction{
-
-  override def toString() = "SDIV" + cond + " " +dst1.toString() + ", " + src1.toString() + ", " + src2.toString()
-
-
-}
-
-case class Compare(val cmp1: Register, val cmp2: Operand, override val cond: Condition = AL) extends Instruction {
-
-  override def toString() = "CMP" + cond + " " +cmp1.toString() + ", " + cmp2.toString()
+case class SMull(dst1: Register, dst2: Register, src1: Register, src2: Register, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(dst1: Register, dst2: Register, src1: Register, src2: Register, label: Option[String]) = this(dst1, dst2, src1, src2, AL, label)
+  def this(dst1: Register, dst2: Register, src1: Register, src2: Register, cond: Condition) = this(dst1, dst2, src1, src2, cond, None)
+  override def toString = "SMULL" + cond + " " + dst1.toString + ", " + dst2.toString + ", " + src1.toString + ", " + src2.toString
 
 }
 
-case class Directive(val name: String) extends Instruction {
-
-  override def toString() = name
+case class SDiv(dst: Register, src1: Register, src2: Register, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(dst: Register, src1: Register, src2: Register, label: Option[String]) = this(dst, src1, src2, AL, label)
+  def this(dst: Register, src1: Register, src2: Register, cond: Condition) = this(dst, src1, src2, cond, None)
+  override def toString = "SDIV" + cond + " " + dst.toString + ", " + src1.toString+ ", " + src2.toString
 
 }
 
-case class Label(val name: String) extends Instruction {
+case class Compare(cmp1: Register, cmp2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  def this(cmp1: Register, cmp2: Operand, label: Option[String]) = this(cmp1, cmp2, AL, label)
+  def this(cmp1: Register, cmp2: Operand, cond: Condition) = this(cmp1, cmp2, cond, None)
+  override def toString= "CMP" + cond + " " + cmp1.toString + ", " + cmp2.toString
 
-  override def toString() = name + ":"
+}
 
+case class Directive(name: String, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  override def toString = "." + name
+}
+
+case class Label(name: String, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
+  override def toString = name + ":"
 }
 
 case class And(val dst: Register, val src1: Register, val src2: Operand, override val cond: Condition = AL) extends Instruction {

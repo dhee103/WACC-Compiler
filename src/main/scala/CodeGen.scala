@@ -26,9 +26,9 @@ object CodeGen {
     val statement: StatNode = prog.statChild
 
 
-    (Directive(".text")) :: (Directive(".global main")) ::
-    (Label("main")) :: pushlr :: generateStatement(statement) ++ (Move(r0, zero) ::
-    poppc :: Nil)
+    Directive("text") :: Directive("global main") ::
+    Label("main") :: pushlr :: generateStatement(statement) :::
+    (Move(r0, zero) :: poppc :: Nil)
 
   }
 
