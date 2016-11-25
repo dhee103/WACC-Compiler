@@ -45,9 +45,14 @@ object BuiltInFunctions {
       poppc :: Nil
   }
 
+  def printOverflowError(): List[Instruction] = {
+    Label("p_throw_overflow_error") ::
+      Load(r0, LabelOp("p_throw_overflow_error")) :: BranchLink("p_throw_runtime_error") :: Nil
+  }
 
-
-
-
+  def printRuntimeError(): List[Instruction] = {
+    Label("p_throw_runtime_error") ::
+    Move(r0, ImmNum(-1)) :: BranchLink("exit") :: Nil
+  }
 
 }

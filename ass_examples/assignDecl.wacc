@@ -1,0 +1,6 @@
+begin
+  int i = 0;
+  i = 100;
+  int x = 1;
+  x = 200
+end
