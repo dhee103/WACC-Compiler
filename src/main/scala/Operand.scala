@@ -40,5 +40,4 @@ case class LabelOp(value: String) extends Operand {
 
   override def toString() = "=" + value
 
-
 }

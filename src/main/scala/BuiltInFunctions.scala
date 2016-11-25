@@ -31,12 +31,19 @@ object BuiltInFunctions {
 
   def printInt(): List[Instruction] = {
     Labels.addDataMsgLabel("%d\\0", "printInt")
-    Nil
+    pushlr :: Move(r1, r0) :: Load(r0, LabelOp("printInt")) ::
+    Add(r0, r0, ImmNum(4)) :: BranchLink("printf") :: Move(r0, ImmNum(0)) ::
+    BranchLink("fflush") :: poppc :: Nil
   }
 
   def printString(): List[Instruction] = {
     Labels.addDataMsgLabel("%.*s\\0", "printString")
+//     pushlr :: Move(r1, r0) :: Load(r1, [r0]) :: Add(r2, r0, ImmNum(4)) Load(r0, LabelOp("printString")) ::
+//     Add(r0, r0, ImmNum(4)) :: BranchLink("printf") :: Move(r0, ImmNum(0)) ::
+//     BranchLink("fflush") :: poppc :: Nil
+// // 57		LDR r1, [r0]
     Nil
+
   }
 
   // p_print_int:
