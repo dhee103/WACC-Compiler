@@ -28,13 +28,13 @@ case class PrintNode(val text: ExprNode) extends StatNode {
 case class PrintlnNode(val text: ExprNode) extends StatNode {
 }
 
-case class IfNode (val condition: ExprNode, val thenStat: StatNode, val elseStat: StatNode) extends StatNode {
+case class IfNode(condition: ExprNode, thenStat: StatNode, elseStat: StatNode) extends StatNode with ScopeExtender {
 }
 
-case class WhileNode(val condition: ExprNode, val loopBody: StatNode) extends StatNode {
+case class WhileNode(val condition: ExprNode, val loopBody: StatNode) extends StatNode with ScopeExtender {
 }
 
-case class NewBeginNode(val body: StatNode) extends StatNode {
+case class NewBeginNode(val body: StatNode) extends StatNode with ScopeExtender {
 }
 
 case class SequenceNode(val fstStat: StatNode, val sndStat: StatNode) extends StatNode {

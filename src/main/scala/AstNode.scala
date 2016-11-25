@@ -1,6 +1,10 @@
 trait AstNode {
 }
 
+trait ScopeExtender {
+  val scopeSizes: IndexedSeq[Int] = IndexedSeq[Int]()
+}
+
 case class ProgNode(val statChild: StatNode, val funcChildren: IndexedSeq[FuncNode]) extends AstNode {
 }
 
