@@ -35,3 +35,11 @@ case class ImmNumChar(value: Char) extends Operand {
   override def toString() = "+" + value
 
 }
+
+// to string should
+case class LabelOp(value: String) extends Operand {
+
+  override def toString() = "=" + value
+
+
+}
