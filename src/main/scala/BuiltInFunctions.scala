@@ -21,10 +21,12 @@ object BuiltInFunctions {
 // use lookup - allows it to not have lots of the same label
 
 
+
   def println(): List[Instruction] = {
     Labels.addDataMsgLabel("\\0", "println")
-    // pushlr :: Move(r1, r0) :: Load(r0, )
-    Nil
+    pushlr :: Move(r1, r0) :: Load(r0, LabelOp("println")) ::
+    Add(r0, r0, ImmNum(4)) :: BranchLink("puts") :: Move(r0, ImmNum(0)) ::
+    BranchLink("fflush") :: poppc :: Nil
   }
 
   def printInt(): List[Instruction] = {
@@ -40,19 +42,12 @@ object BuiltInFunctions {
   // p_print_int:
 	// 	PUSH {lr}
 	// 	MOV r1, r0
-	// 	LDR r0, =msg_0 Load(r0, Labels.getDataMsgLabel)
+	// 	LDR r0, =msg_0 Load(r0, Labels.getDataMsgLabel())
 	// 	ADD r0, r0, #4
 	// 	BL printf
 	// 	MOV r0, #0
 	// 	BL fflush
 	// 	POP {pc}
-	// p_print_ln:
-	// 	PUSH {lr}
-	// 	LDR r0, =msg_1
-  // 	ADD r0, r0, #4
-	// 	BL puts
-	// 	MOV r0, #0
-	// 	BL fflush
-	// 	POP {pc}
+
 
 }
