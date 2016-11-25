@@ -24,6 +24,12 @@ object CodeGen {
 
   def generateProgramCode(prog: ProgNode): List[Instruction] = {
 
+//    Initialise labels with builtin functions
+    Labels.addDataMsgLabel("OverflowError: the result is too small/large to " +
+      "store in a 4-byte signed-integer.", "p_throw_overflow_error")
+
+
+
     val statement: StatNode = prog.statChild
 
     val statGeneration = generateStatement(statement)
@@ -102,8 +108,8 @@ object CodeGen {
 
     unOpNode match {
 
-      case LogicalNotNode(argument) =>  (generateExpression(argument)) ::: ((Compare(r0, zero))
-                                        :: (Load(r0, loadZero, NE)) :: (Load(r0, LoadImmNum(1), EQ)) :: Nil)
+      case LogicalNotNode(argument) =>  generateExpression(argument) ::: (Compare(r0, zero)
+                                        :: Load(r0, loadZero, NE) :: (Load(r0, LoadImmNum(1), EQ)) :: Nil)
       case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero) :: Nil)
       case LenNode(argument)        =>
       case OrdNode(argument)        => //donothing
