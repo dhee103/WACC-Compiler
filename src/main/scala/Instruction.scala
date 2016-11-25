@@ -115,9 +115,9 @@ case class Orr(dst: Register, src1: Register, src2: Operand, override val cond: 
 
 class Function(val label: String, var body: List[Instruction]) {
 
-  val initialPush: Push = new Push(new StackPointer)
+  val initialPush: Push = Push(StackPointer())
 
-  val finalPop: Pop = new Pop(new ProgramCounter())
+  val finalPop: Pop = Pop(ProgramCounter())
 
   //todo
 
