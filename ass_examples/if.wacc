@@ -1,0 +1,10 @@
+begin
+  int i = 0;
+  if i == 0
+  then
+    i = 100
+  else
+    i = 200
+  fi 
+ ; i = 1000
+end

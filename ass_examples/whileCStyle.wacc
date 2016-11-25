@@ -1,0 +1,9 @@
+begin
+  int i = 5;
+  while (i < 10) do
+    i = i + 1;
+    int x = 3;
+    x = x + 1;
+    println(i)	
+  done
+end
