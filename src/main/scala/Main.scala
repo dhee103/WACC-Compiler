@@ -1,4 +1,4 @@
-// import errorLogging.ErrorLog._
+import java.io.{File, PrintWriter}
 
 /*
   For testing purposes we have split the compilation into two functions.
@@ -6,9 +6,18 @@
 */
 
 object Main {
+
+  var outputString: String = ""
+
   def main(args: Array[String]): Unit = {
 
     if (!args.isEmpty) {
+      val input = args(0)
+      val file =  input.substring(input.lastIndexOf('/') + 1, input.lastIndexOf('.'))
+      val exitCode = compile(input)
+      val pw = new PrintWriter(new File(s"$file.s" ))
+      pw.write(outputString)
+      pw.close
       sys.exit(compile(args(0)))
     }
     else {
@@ -70,6 +79,10 @@ object Main {
       return 200
     }
 
+    outputString = InstructionConverter.translate(CodeGen.generateProgramCode(ast))
+
     return 0
   }
+
+
 }
