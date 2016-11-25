@@ -65,6 +65,9 @@ class AssemblyStack2 {
 
     states.last.getOffsetForIdentifier(identifier)
 
+    //todo add a check to see if there is actually any states in the list
+    //todo e.g when you do main you actually need to do a scope for mapping
+
     //so add all the variables after you have alloced the space with the new scope
     //add in the correct order on the stack
 
