@@ -28,12 +28,18 @@ object BuiltInFunctions {
 
 
   def println(): List[Instruction] = {
-    // generate label
+    Labels.addDataMsgLabel("\\0", "pritntln")
     // pushlr :: Move(r1, r0) :: Load(r0, )
     Nil
   }
 
   def printInt(): List[Instruction] = {
+    Labels.addDataMsgLabel("%d\\0", "printInt")
+    Nil
+  }
+
+  def printString(): List[Instruction] = {
+    Labels.addDataMsgLabel("%.*s\\0", "printString")
     Nil
   }
 

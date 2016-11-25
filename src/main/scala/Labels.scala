@@ -17,7 +17,6 @@ object Labels {
     (str ++ head.toString() ++ "start ", str ++ head.toString() ++ "end")
   }
 
-// TODO: Add parameter for name
   def addMessageLabel(str: String): Unit = {
     msgMap += ("msg_" + str ->
       MutableList[String](".word " + str.size, ".ascii \"" + str + "\""))
