@@ -23,9 +23,19 @@ def outputMessage(file)
   puts "\n\n"
 end
 
+# def getRefOutput(file)
+#   puts "Reference compiler ouptut for #{file}\n\n"
+#   output = `./refCompile -a -S #{file}`
+#   # usin -x flag will execute but it hangs on user input
+#   output = output.split("Printing Assembly...")
+#   puts output[1]
+# end
+
 initTime = Time.now
 
 files.map { |file| outputMessage(file)  }
+
+# files.map { |file| getRefOutput(file)  }
 
 puts "There are #{count}/#{files.length} errors in #{dir}"
 
