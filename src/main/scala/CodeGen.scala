@@ -26,7 +26,7 @@ object CodeGen {
 
     val statement: StatNode = prog.statChild
 
-
+    Labels.printDataMsgMap() :::
     (Directive(".text") :: Directive("\n.global main") ::
     (Label("main")) :: pushlr :: generateStatement(statement)) ::: (Move(r0, zero) ::
     poppc :: ltorg ::  Nil)
@@ -42,6 +42,8 @@ object CodeGen {
       case stat: SkipStatNode             => Nil
       case stat: ExitNode                 => generateExit(stat)
       case SequenceNode(fstStat, sndStat) => generateStatement(fstStat) ::: generateStatement(sndStat)
+      // case PrintNode(value)
+      // case PrintlnNode(value)
 
     }
   }
