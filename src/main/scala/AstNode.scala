@@ -1,8 +1,10 @@
+import scala.collection.mutable._
+
 trait AstNode {
 }
 
 trait ScopeExtender {
-  val scopeSizes: IndexedSeq[Int] = IndexedSeq[Int]()
+  val scopeSizes: MutableList[Int] = MutableList[Int]()
 }
 
 case class ProgNode(val statChild: StatNode, val funcChildren: IndexedSeq[FuncNode]) extends AstNode {

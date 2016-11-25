@@ -19,7 +19,10 @@ object Annotate {
     for (param <- function.paramList.params) {
       currentScopeSymbolTable.add(param.identifier, param.variableType)
     }
+    val noOfParameters = currentScopeSymbolTable.size
     annotateStatNode(function.statement, currentScopeSymbolTable, false)
+    val noOfLocalVariables = currentScopeSymbolTable.size - noOfParameters
+    // TO DO: Check where to store noOfLocalVariables, callNode or funcNode
   }
 
   def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable, isInMain: Boolean): Unit = {
@@ -87,18 +90,24 @@ object Annotate {
 
   def annotateIfNode(statement: IfNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
-    annotateStatNode(statement.thenStat, new SymbolTable(Some(currentST)), isInMain)
-    annotateStatNode(statement.elseStat, new SymbolTable(Some(currentST)), isInMain)
+    val thenBranchST = new SymbolTable(Some(currentST))
+    val elseBranchST: SymbolTable = new SymbolTable(Some(currentST))
+    annotateStatNode(statement.thenStat, thenBranchST, isInMain)
+    annotateStatNode(statement.elseStat, elseBranchST, isInMain)
+    statement.scopeSizes += thenBranchST.size
+    statement.scopeSizes += elseBranchST.size
   }
 
   def annotateWhileNode(statement: WhileNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
     annotateStatNode(statement.loopBody, currentST, isInMain)
+    statement.scopeSizes += currentST.size
   }
 
   def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable, isInMain: Boolean):
   Unit = {
     annotateStatNode(statement.body, currentST, isInMain)
+    statement.scopeSizes += currentST.size
   }
 
   def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable, isInMain: Boolean):
