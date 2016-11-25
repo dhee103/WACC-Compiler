@@ -16,6 +16,7 @@ trait Instruction {
 }
 
 case class Push(src: Register, override val cond: Condition.Condition = Condition.AL, override val label: Option[String] = None) extends Instruction {
+//  what do these things do?
   def this(src: Register, label: Option[String]) = this(src, Condition.AL, label)
   def this(src: Register, cond: Condition.Condition) = this(src, cond, None)
   override val main = "PUSH" + cond + " {" + src + "}"

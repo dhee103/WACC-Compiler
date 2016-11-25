@@ -45,7 +45,7 @@ object Labels {
     // TODO: make sure str is below n characters
   }
 
-  def getDataMsgLabel(): String = {
+  def getDataMsgLabel: String = {
     dataMsgMap.last._1
   }
 
@@ -59,7 +59,7 @@ object Labels {
     if (dataMsgMap.isEmpty) {
       Nil
     } else {
-      Directive(".data\n") :: LabelData(dataMsgMap.map(pair => pair._1 + ":\n" +
+      Directive("data\n") :: LabelData(dataMsgMap.map(pair => pair._1 + ":\n" +
         pair._2.map(_ + "\n").mkString + "\n").mkString) :: Nil
     }
   }

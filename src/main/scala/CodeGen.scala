@@ -34,16 +34,23 @@ object CodeGen {
 
     val statGeneration = generateStatement(statement)
 
-    val output = Labels.printDataMsgMap() :::
+    var output = Labels.printDataMsgMap() :::
     Directive("text\n") :: Directive("global main") ::
     Label("main") :: pushlr :: statGeneration ::: (Move(r0, zero) ::
     poppc :: ltorg ::  Nil)
 
     if (BuiltInFunctions.printFlag) {
-      output ::: LabelData("\n") :: BuiltInFunctions.printInt() ::: LabelData("\n") :: BuiltInFunctions.println()
-    } else {
-      output
+      output = output ::: LabelData("\n") :: BuiltInFunctions.printInt() :::
+        LabelData("\n") :: BuiltInFunctions.println()
     }
+
+    if (BuiltInFunctions.arithmeticFlag) {
+      output = output ::: LabelData("\n") ::
+        BuiltInFunctions.printOverflowError() ::: LabelData("\n")::
+        BuiltInFunctions.printRuntimeError()
+    }
+
+    output
 
   }
 
@@ -64,16 +71,17 @@ object CodeGen {
         Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
         Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
 //        add in all labels
-        BranchLink("p_print_int") :: BranchLink("p_print_ln") :: Nil
+        generateExpression(value) ::: (BranchLink("p_print_int") ::
+          BranchLink("p_print_ln") :: Nil)
     }
   }
 
   def generateDeclaration(decl: DeclarationNode): List[Instruction] = {
-    null
+    throw new UnsupportedOperationException("generate Declaration")
   }
 
   def generateAssignment(assignment: AssignmentNode): List[Instruction] = {
-    null
+    throw new UnsupportedOperationException("generate assignment")
   }
 
   def generateExit(exit: ExitNode): List[Instruction] = {
@@ -89,15 +97,19 @@ object CodeGen {
 
     expr match {
       case expr: IdentNode            => Move(r0, StackReference(stack.getOffsetForIdentifier(expr))) :: Nil
-      case expr: ArrayElemNode        => null
+      case expr: ArrayElemNode        =>     throw new
+          UnsupportedOperationException("Generate ArrayElemnode")
       case expr: UnaryOperationNode   => generateUnaryOperation(expr)
       case expr: BinaryOperationNode  => generateBinaryOperation(expr)
-      case IntLiteralNode(value)      => Move(r0, ImmNum(value)) :: Nil
+      case IntLiteralNode(value)      => Load(r0, LoadImmNum(value)) :: Nil
       case BoolLiteralNode(value)     => Move(r0, ImmNum(if (value) 1 else 0 )) :: Nil
       case CharLiteralNode(value)     => Move(r0, ImmNum(value)) :: Nil
       case StringLiteralNode(value)   => Labels.addMessageLabel(value); Load(r0, DataCall(Labels.getMessageLabel)) :: Nil
-      case expr: PairLiteralNode      => null
-      case _                          => null
+      case expr: PairLiteralNode      =>     throw new
+          UnsupportedOperationException("generate pair literal node")
+      case _                          =>     throw new
+          UnsupportedOperationException("generate expr catch all")
+
     }
 
   }
@@ -111,13 +123,14 @@ object CodeGen {
       case LogicalNotNode(argument) =>  generateExpression(argument) ::: (Compare(r0, zero)
                                         :: Load(r0, loadZero, NE) :: (Load(r0, LoadImmNum(1), EQ)) :: Nil)
       case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero) :: Nil)
-      case LenNode(argument)        =>
-      case OrdNode(argument)        => //donothing
-      case ChrNode(argument)        => //donothing
+      case LenNode(argument)        =>     throw new
+          UnsupportedOperationException("generate len")
+      case OrdNode(argument)        => Nil
+      case ChrNode(argument)        => Nil
 
     }
 
-    null
+
 
   }
 
@@ -131,39 +144,50 @@ object CodeGen {
       case binOp: BooleanBinaryOperationNode    => generateBooleanBinaryOperation(binOp)
     }
 
-    null
-
   }
 
   def generateArithmeticBinaryOperation(arithBinOp: ArithmeticBinaryOperationNode): List[Instruction] = {
-
+    BuiltInFunctions.arithmeticFlag = true
     val mainInstructions: List[Instruction] = arithBinOp match {
-      case arithBin: MulNode =>  Move(r1, spReference) :: SMull(r0, r1, r0, r1) :: Nil
-      case arithBin: DivNode => Move (r1, spReference) :: SDiv(r0, r1, r0) :: Nil
-      case arithBin: ModNode => null
-      case arithBin: PlusNode => Add(r0, r0, spReference) :: Nil
-      case arithBin: MinusNode => Sub(r0, r0, spReference) :: Nil
+      case arithBin: MulNode =>  Pop(r1) ::
+        SMull(r0, r1, r0, r1) :: Nil
+      case arithBin: DivNode => Pop(r1) ::
+        SDiv(r0, r0, r1) :: Nil
+      case arithBin: ModNode => throw new UnsupportedOperationException("generate mod")
+
+      case arithBin: PlusNode => Pop(r1) ::
+        Add(r0, r0, r1) :: Nil
+      case arithBin: MinusNode => Pop(r1) ::
+        Sub(r0, r0, r1) :: Nil
     }
 
-    generateExpression(arithBinOp.leftExpr) :::
-                                (Push(r0) :: Nil) ::: generateExpression(arithBinOp.rightExpr) :::
-                                mainInstructions ::: (Add(sp, sp, ImmNum(4))
-      :: BranchLink("p_throw_overflow_error", VS) :: Nil)
+    generateExpression(arithBinOp.rightExpr) :::
+     (Push(r0) :: Nil) :::
+     generateExpression(arithBinOp.leftExpr) :::
+     mainInstructions :::
+     BranchLink("p_throw_overflow_error", VS) :: Nil
+//    TODO: maybe add back (Add(sp, sp, ImmNum(4))
   }
 
   def generateOrderComparisonOperation(orderOp: OrderComparisonOperationNode): List[Instruction] = {
 
     orderOp match {
 
-    case orderBin: GreaterThanNode => null
-    case orderBin: GreaterEqualNode => null
-    case orderBin: LessThanNode => null
-    case orderBin: LessEqualNode => null
+    case orderBin: GreaterThanNode =>     throw new
+        UnsupportedOperationException("generate gt")
+    case orderBin: GreaterEqualNode =>     throw new
+        UnsupportedOperationException("generate ge")
+    case orderBin: LessThanNode =>     throw new
+        UnsupportedOperationException("generate less than")
+    case orderBin: LessEqualNode =>     throw new
+        UnsupportedOperationException("generate less equal")
 
     }
   }
 
   def generateComparisonOperation(compOp: ComparisonOperationNode): List[Instruction] = {
+
+    throw new UnsupportedOperationException("generate comparison")
 
     compOp match {
 
@@ -174,6 +198,8 @@ object CodeGen {
   }
 
   def generateBooleanBinaryOperation(boolOp: BooleanBinaryOperationNode): List[Instruction] = {
+
+    throw new UnsupportedOperationException("generate boolean binary")
 
     boolOp match {
 

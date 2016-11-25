@@ -16,6 +16,8 @@ object BuiltInFunctions {
 
   var printFlag: Boolean = false
 
+  var arithmeticFlag: Boolean = false
+
   def println(): List[Instruction] = {
     Label("p_print_ln") ::
       pushlr :: Move(r1, r0) :: Load(r0, LabelOp("msg_p_print_ln")) ::
