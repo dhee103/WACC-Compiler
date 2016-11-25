@@ -16,19 +16,13 @@ object BuiltInFunctions {
 // make a hashmap of all the built in messages
 // generate label from "Labels.scala" as appropriate within functions
 
-  // msg_1:
-	// 	.word 3
-	// 	.ascii	"%d\0"
-	// msg_2:
-	// .word 1
-	// 	.ascii	"\0"
-	// msg_3:
-	// 	.word 5
-	// 	.ascii	"%.*s\0"
+
+// add all labels to hashmap
+// use lookup - allows it to not have lots of the same label
 
 
   def println(): List[Instruction] = {
-    Labels.addDataMsgLabel("\\0", "pritntln")
+    Labels.addDataMsgLabel("\\0", "println")
     // pushlr :: Move(r1, r0) :: Load(r0, )
     Nil
   }
@@ -46,7 +40,7 @@ object BuiltInFunctions {
   // p_print_int:
 	// 	PUSH {lr}
 	// 	MOV r1, r0
-	// 	LDR r0, =msg_0
+	// 	LDR r0, =msg_0 Load(r0, Labels.getDataMsgLabel)
 	// 	ADD r0, r0, #4
 	// 	BL printf
 	// 	MOV r0, #0

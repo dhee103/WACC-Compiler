@@ -5,7 +5,6 @@ object Labels {
   var stream: Stream[Int] = Stream.from(1)
 
   val msgMap = LinkedHashMap[String, MutableList[String]]()
-  // val msgs = MutableList[String]()
 
   val dataMsgMap = LinkedHashMap[String, MutableList[String]]()
 
@@ -29,6 +28,10 @@ object Labels {
 
   def getMessageLabel(): String = {
     msgMap.last._1
+  }
+
+  def getMessageLabel(str: String): MutableList[String] = {
+    msgMap.getOrElse(str, throw new RuntimeException(s"$str is not a message"))
   }
 
   def addDataMsgLabel(str: String): Unit = {
