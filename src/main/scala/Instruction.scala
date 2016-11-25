@@ -88,6 +88,10 @@ case class Label(val name: String) extends Instruction {
 
 }
 
+case class LabelData(val name: String) extends Instruction {
+  override def toString() = name
+}
+
 case class Ltorg() extends Instruction {
   override def  toString() = ".ltorg"
 }

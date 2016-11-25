@@ -26,10 +26,18 @@ object CodeGen {
 
     val statement: StatNode = prog.statChild
 
-    Labels.printDataMsgMap() :::
-    (Directive(".text") :: Directive("\n.global main") ::
-    (Label("main")) :: pushlr :: generateStatement(statement)) ::: (Move(r0, zero) ::
+    val statGeneration = generateStatement(statement)
+
+    val output = Labels.printDataMsgMap() :::
+    Directive(".text") :: Directive("\n.global main") ::
+    Label("main") :: pushlr :: statGeneration ::: (Move(r0, zero) ::
     poppc :: ltorg ::  Nil)
+
+    if (BuiltInFunctions.printFlag) {
+      output ::: LabelData("\n") :: BuiltInFunctions.printInt() ::: LabelData("\n") :: BuiltInFunctions.println()
+    } else {
+      output
+    }
 
   }
 
@@ -43,8 +51,14 @@ object CodeGen {
       case stat: ExitNode                 => generateExit(stat)
       case SequenceNode(fstStat, sndStat) => generateStatement(fstStat) ::: generateStatement(sndStat)
       // case PrintNode(value)
-      // case PrintlnNode(value)
-
+      case PrintlnNode(value)  =>
+        BuiltInFunctions.printFlag = true
+        Labels.addDataMsgLabel("\\0", "p_print_ln")
+        Labels.addDataMsgLabel("%d\\0", "p_print_int")
+        Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
+        Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
+//        add in all labels
+        BranchLink("p_print_int") :: BranchLink("p_print_ln") :: Nil
     }
   }
 
