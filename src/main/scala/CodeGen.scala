@@ -18,6 +18,7 @@ object CodeGen {
   val loadZero = LoadImmNum(0)
   val pushlr = Push(lr)
   val poppc = Pop(pc)
+  val ltorg = Ltorg()
 
   var stack = new AssemblyStack()
 
@@ -25,10 +26,18 @@ object CodeGen {
 
     val statement: StatNode = prog.statChild
 
+    val statGeneration = generateStatement(statement)
 
-    Directive("text") :: Directive("global main") ::
-    Label("main") :: pushlr :: generateStatement(statement) :::
-    (Move(r0, zero) :: poppc :: Nil)
+    val output = Labels.printDataMsgMap() :::
+    Directive(".text") :: Directive("\n.global main") ::
+    Label("main") :: pushlr :: statGeneration ::: (Move(r0, zero) ::
+    poppc :: ltorg ::  Nil)
+
+    if (BuiltInFunctions.printFlag) {
+      output ::: LabelData("\n") :: BuiltInFunctions.printInt() ::: LabelData("\n") :: BuiltInFunctions.println()
+    } else {
+      output
+    }
 
   }
 
@@ -41,7 +50,15 @@ object CodeGen {
       case stat: SkipStatNode             => Nil
       case stat: ExitNode                 => generateExit(stat)
       case SequenceNode(fstStat, sndStat) => generateStatement(fstStat) ::: generateStatement(sndStat)
-
+      // case PrintNode(value)
+      case PrintlnNode(value)  =>
+        BuiltInFunctions.printFlag = true
+        Labels.addDataMsgLabel("\\0", "p_print_ln")
+        Labels.addDataMsgLabel("%d\\0", "p_print_int")
+        Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
+        Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
+//        add in all labels
+        BranchLink("p_print_int") :: BranchLink("p_print_ln") :: Nil
     }
   }
 
@@ -88,11 +105,13 @@ object CodeGen {
       case LogicalNotNode(argument) =>  (generateExpression(argument)) ::: ((Compare(r0, zero))
                                         :: (Load(r0, loadZero, NE)) :: (Load(r0, LoadImmNum(1), EQ)) :: Nil)
       case NegationNode(argument)   => (generateExpression(argument)) ::: (ReverseSubNoCarry(r0, r0, zero) :: Nil)
-      case LenNode(argument)        => null// To do?
-      case OrdNode(argument)        => Nil
-      case ChrNode(argument)        => Nil
+      case LenNode(argument)        =>
+      case OrdNode(argument)        => //donothing
+      case ChrNode(argument)        => //donothing
 
     }
+
+    null
 
   }
 
@@ -106,6 +125,8 @@ object CodeGen {
       case binOp: BooleanBinaryOperationNode    => generateBooleanBinaryOperation(binOp)
     }
 
+    null
+
   }
 
   def generateArithmeticBinaryOperation(arithBinOp: ArithmeticBinaryOperationNode): List[Instruction] = {
@@ -113,62 +134,46 @@ object CodeGen {
     val mainInstructions: List[Instruction] = arithBinOp match {
       case arithBin: MulNode =>  Move(r1, spReference) :: SMull(r0, r1, r0, r1) :: Nil
       case arithBin: DivNode => Move (r1, spReference) :: SDiv(r0, r1, r0) :: Nil
-      case arithBin: ModNode => null //todo read up of ref compiler and copy
+      case arithBin: ModNode => null
       case arithBin: PlusNode => Add(r0, r0, spReference) :: Nil
       case arithBin: MinusNode => Sub(r0, r0, spReference) :: Nil
     }
 
-    (generateExpression(arithBinOp.leftExpr)) :::
+    generateExpression(arithBinOp.leftExpr) :::
                                 (Push(r0) :: Nil) ::: generateExpression(arithBinOp.rightExpr) :::
-                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
+                                mainInstructions ::: (Add(sp, sp, ImmNum(4))
+      :: BranchLink("p_throw_overflow_error", VS) :: Nil)
   }
 
   def generateOrderComparisonOperation(orderOp: OrderComparisonOperationNode): List[Instruction] = {
 
-    val mainInstructions: List[Instruction] = orderOp match {
+    orderOp match {
 
-    case orderBin: GreaterThanNode =>  Load(r0, LoadImmNum(1), GT) :: Load(r0, loadZero, LE) :: Nil
-    case orderBin: GreaterEqualNode =>  Load(r0, LoadImmNum(1), GE) :: Load(r0, loadZero, LT) :: Nil
-    case orderBin: LessThanNode =>  Load(r0, LoadImmNum(1), LT) :: Load(r0, loadZero, GE) :: Nil
-    case orderBin: LessEqualNode =>  Load(r0, LoadImmNum(1), LE) :: Load(r0, loadZero, GT) :: Nil
+    case orderBin: GreaterThanNode => null
+    case orderBin: GreaterEqualNode => null
+    case orderBin: LessThanNode => null
+    case orderBin: LessEqualNode => null
 
     }
-
-    (generateExpression(orderOp.rightExpr)) :::
-                                (Push(r0) :: Nil) ::: generateExpression(orderOp.leftExpr) ::: (Compare(r0, spReference) :: Nil)
-                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
-
-
   }
 
   def generateComparisonOperation(compOp: ComparisonOperationNode): List[Instruction] = {
 
-    val mainInstructions: List[Instruction] = compOp match {
+    compOp match {
 
-      case compBin: DoubleEqualNode => Load(r0, LoadImmNum(1), EQ) :: Load(r0, loadZero, NE) :: Nil
-      case compBin: NotEqualNode => Load(r0, LoadImmNum(1), NE) :: Load(r0, loadZero, EQ) :: Nil
+      case compBin: DoubleEqualNode => null
+      case compBin: NotEqualNode => null
     }
-
-    (generateExpression(compOp.leftExpr)) :::
-                                (Push(r0) :: Nil) ::: generateExpression(compOp.rightExpr) ::: (Compare(r0, spReference) :: Nil)
-                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
 
   }
 
   def generateBooleanBinaryOperation(boolOp: BooleanBinaryOperationNode): List[Instruction] = {
 
-    val mainInstructions: List[Instruction] = boolOp match {
+    boolOp match {
 
-      case boolBin: LogicalAndNode => And(r0, r0, spReference) :: Nil
-
-      case boolBin: LogicalOrNode => Orr(r0, r0, spReference) :: Nil
+      case boolBin: LogicalAndNode => null
+      case boolBin: LogicalOrNode => null
     }
-
-    (generateExpression(boolOp.leftExpr)) :::
-                                (Push(r0) :: Nil) ::: generateExpression(boolOp.rightExpr) :::
-                                mainInstructions ::: (Add(sp, sp, ImmNum(4)) :: Nil)
-
-                                //todo is this enough??
   }
 
 

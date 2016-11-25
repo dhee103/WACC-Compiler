@@ -4,22 +4,39 @@ dir = ARGV[0]
 
 files = `find #{dir} -name *.wacc`.split("\n")
 
+def removePath(file)
+  file = file[file.rindex('/') + 1, file.size]
+  return file[0..file.size - 6]
+end
+
 def count
   @count ||= -1
   @count += 1
 end
 
 def outputMessage(file)
-  puts "#{file}"
-  exitCode = system("./compile2 #{file}")
+  puts "#{file}\n\n"
+  puts terminalOutput = `./compile2 #{file}`
+  `arm-linux-gnueabi-gcc -o #{removePath(file)} -mcpu=arm1176jzf-s #{removePath(file)}.s`
+  `qemu-arm -L /usr/arm-linux-gnueabi/ #{removePath(file)}`
+  puts "exitCode: #{$?.exitstatus}"
   puts "\n\n"
 end
+
+ def getRefOutput(file)
+   puts "Reference compiler ouptut for #{file}\n\n"
+   puts output = `./refCompile -a -S -x #{file}`
+   # using -x flag will execute but it hangs on user input
+   # output = output.split("Printing Assembly...")
+   # puts output[1]
+ end
 
 initTime = Time.now
 
 files.map { |file| 
-  outputMessage(file)
-  puts Time.now  
+  outputMessage(file) 
+  puts "\n\n\n"
+  getRefOutput(file)
 }
 
 puts "There are #{count}/#{files.length} errors in #{dir}"

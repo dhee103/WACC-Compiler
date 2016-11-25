@@ -112,6 +112,14 @@ case class Orr(dst: Register, src1: Register, src2: Operand, override val cond: 
   override val main = "ORR" + cond + " " + dst.toString + ", " + src1.toString + ", " + src2.toString
 }
 
+case class LabelData(val name: String) extends Instruction {
+  override def toString() = name
+}
+
+case class Ltorg() extends Instruction {
+  override def  toString() = ".ltorg"
+}
+
 
 class Function(val label: String, var body: List[Instruction]) {
 

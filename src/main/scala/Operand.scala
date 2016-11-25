@@ -10,6 +10,16 @@ case class StackReference(val offset: Int) extends Operand {
 
 }
 
+case class StackReferenceRegister(register: Register) extends Operand {
+
+  override def toString() = "[sp, #" + register.toString + "]"
+
+  //todo offsett zero
+
+}
+
+
+
 case class DataCall(val label: String) extends Operand {
 
   override def toString() = label
@@ -33,5 +43,11 @@ case class LoadImmNum(value: Int) extends Operand {
 case class ImmNumChar(value: Char) extends Operand {
 
   override def toString() = "+" + value
+
+}
+
+case class LabelOp(value: String) extends Operand {
+
+  override def toString() = "=" + value
 
 }

@@ -30,6 +30,7 @@ rules:
 
 clean:
 	$(RM) rules $(OUTPUT_DIR)
+	$(RM) *.s 
 	sbt clean
 
 .PHONY: all rules clean
