@@ -50,6 +50,10 @@ object Labels {
     dataMsgMap.last._1
   }
 
+  def getDataMsgLabel(str: String): MutableList[String] = {
+    dataMsgMap.getOrElse(str, throw new RuntimeException(s"$str is not a data message"))
+  }
+
   def printDataMsgMap(): List[Instruction] = {
     if (dataMsgMap.isEmpty) {
       Nil
