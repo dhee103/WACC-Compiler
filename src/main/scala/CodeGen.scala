@@ -20,7 +20,7 @@ object CodeGen {
   val poppc = Pop(pc)
   val ltorg = Directive("ltorg")
 
-  var stack = new AssemblyStack()
+//  var stack = new AssemblyStack()
 
   def generateProgramCode(prog: ProgNode): List[Instruction] = {
 
@@ -77,11 +77,26 @@ object CodeGen {
   }
 
   def generateDeclaration(decl: DeclarationNode): List[Instruction] = {
-    throw new UnsupportedOperationException("generate Declaration")
+    val ident = decl.identifier
+    val rhs = decl.rhs
+
+    AssemblyStack2.addVariable(ident)
+    val offset = AssemblyStack2.getOffsetForIdentifier(ident)
+
+    generateAssignmentRHS(rhs) ::: Store(r0, StackReference(offset)) :: Nil
   }
 
   def generateAssignment(assignment: AssignmentNode): List[Instruction] = {
-    throw new UnsupportedOperationException("generate assignment")
+    val lhs = assignment.lhs
+    val rhs = assignment.rhs
+
+    lhs match {
+      case id: IdentNode => val offset = AssemblyStack2.getOffsetForIdentifier(id)
+        generateAssignmentRHS(rhs) ::: Store(r0, StackReference(offset)) :: Nil
+      case _ => throw new UnsupportedOperationException("generateAssignment")
+
+
+    }
   }
 
   def generateExit(exit: ExitNode): List[Instruction] = {
@@ -93,10 +108,17 @@ object CodeGen {
     List[Instruction](Load(r0, exitCode), BranchLink("exit"))
   }
 
+  def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
+    rhs match {
+      case rhs: ExprNode => generateExpression(rhs)
+      case _ => throw new UnsupportedOperationException("generate Assignment right")
+    }
+  }
+
   def generateExpression(expr: ExprNode): List[Instruction] = {
 
     expr match {
-      case expr: IdentNode            => Move(r0, StackReference(stack.getOffsetForIdentifier(expr))) :: Nil
+      case expr: IdentNode            => Move(r0, StackReference(AssemblyStack2.getOffsetForIdentifier(expr))) :: Nil
       case expr: ArrayElemNode        =>     throw new
           UnsupportedOperationException("Generate ArrayElemnode")
       case expr: UnaryOperationNode   => generateUnaryOperation(expr)
