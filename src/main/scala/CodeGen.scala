@@ -158,8 +158,8 @@ object CodeGen {
         (ReverseSubNoCarry(r0, r0, zero) :: Nil)
       case LenNode(argument) => throw new
           UnsupportedOperationException("generate len")
-      case OrdNode(argument) => Nil
-      case ChrNode(argument) => Nil
+      case OrdNode(argument) => Nil // Don't need to do anything
+      case ChrNode(argument) => Nil // Don't need to do anything
 
     }
 
