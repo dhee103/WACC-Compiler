@@ -1,3 +1,6 @@
+
+//Classified
+
 import scala.collection.mutable._
 
 object Labels {
@@ -17,13 +20,12 @@ object Labels {
   }
 
   def addMessageLabel(str: String): Unit = {
-    msgMap += ("msg_" + str ->
-      MutableList[String](".word " + str.size, ".ascii \"" + str + "\""))
+    addMessageLabel(str, stream.head.toString)
   }
 
   def addMessageLabel(str: String, name: String): Unit = {
     msgMap += ("msg_" + name ->
-      MutableList[String](".word " + str.size, ".ascii \"" + str + "\""))
+      MutableList[String](s".word ${getSize(str) - 2}", s".ascii $str"))
   }
 
   def getMessageLabel(): String = {
@@ -41,7 +43,7 @@ object Labels {
 
   def addDataMsgLabel(str: String, name: String): Unit = {
     dataMsgMap += ("msg_" + name ->
-      MutableList[String](".word " + str.size, ".ascii \"" + str + "\""))
+      MutableList[String](".word " + getSize(str), ".ascii \"" + str + "\""))
     // TODO: make sure str is below n characters
   }
 
@@ -54,14 +56,33 @@ object Labels {
       s" message"))
   }
 
+  def printMsgMap(): List[Instruction] = {
+
+    if (msgMap.isEmpty) {
+      Nil
+    } else {
+      LabelData(msgMap.map(pair => pair._1 + ":\n" +
+        pair._2.map(_ + "\n").mkString + "\n").mkString) :: Nil
+    }
+  }
+
   def printDataMsgMap(): List[Instruction] = {
 
     if (dataMsgMap.isEmpty) {
       Nil
     } else {
-      Directive("data\n") :: LabelData(dataMsgMap.map(pair => pair._1 + ":\n" +
+      LabelData(dataMsgMap.map(pair => pair._1 + ":\n" +
         pair._2.map(_ + "\n").mkString + "\n").mkString) :: Nil
     }
   }
+
+  def getSize(str: String): Int = {
+    var count: Int = 0
+    for (s <- str.toCharArray) {
+      if (s != '\\') count += 1
+    }
+    count
+  }
+
 
 }
