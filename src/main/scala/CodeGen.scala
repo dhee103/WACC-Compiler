@@ -29,19 +29,21 @@ object CodeGen {
     Labels.addDataMsgLabel("OverflowError: the result is too small/large to " +
       "store in a 4-byte signed-integer.", "p_throw_overflow_error")
 
-
-
     val statement: StatNode = prog.statChild
 
     val statGeneration = generateStatement(statement)
 
-    var output = Labels.printDataMsgMap() :::
+    var output = (Directive("data\n") :: Nil) :::
+      Labels.printMsgMap() :::
+      Labels.printDataMsgMap() :::
       Directive("text\n") :: Directive("global main") ::
       Label("main") :: pushlr :: statGeneration ::: (Move(r0, zero) ::
       poppc :: ltorg :: Nil)
 
     if (BuiltInFunctions.printFlag) {
-      output = output ::: LabelData("\n") :: BuiltInFunctions.printInt() :::
+      output = output ::: LabelData("\n") ::
+        BuiltInFunctions.printString() ::: LabelData("\n") ::
+        BuiltInFunctions.printInt() :::
         LabelData("\n") :: BuiltInFunctions.println()
     }
 
@@ -72,9 +74,17 @@ object CodeGen {
         Labels.addDataMsgLabel("%d\\0", "p_print_int")
         Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
         Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
+        Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
         //        add in all labels
-        generateExpression(value) ::: (BranchLink("p_print_int") ::
-          BranchLink("p_print_ln") :: Nil)
+
+        val printLink =
+          if (value.getType.isEquivalentTo(IntTypeNode())) {
+            BranchLink("p_print_int")
+          } else BranchLink("p_print_string")
+
+        generateExpression(value) ::: (printLink :: BranchLink("p_print_ln")
+          :: Nil)
+
     }
   }
 
@@ -103,13 +113,7 @@ object CodeGen {
   }
 
   def generateExit(exit: ExitNode): List[Instruction] = {
-    val exitCode: Operand = exit.exitCode match {
-      case IntLiteralNode(value) => LoadImmNum(value)
-      case _ => throw new UnsupportedOperationException("anything that could " +
-        "go to an int")
-    }
-
-    List[Instruction](Load(r0, exitCode), BranchLink("exit"))
+    generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
@@ -133,7 +137,7 @@ object CodeGen {
       case BoolLiteralNode(value) => Move(r0, ImmNum(if (value) 1 else 0)) ::
         Nil
       case CharLiteralNode(value) => Move(r0, ImmNum(value)) :: Nil
-      case StringLiteralNode(value) => Labels.addMessageLabel(value); Load(r0, DataCall(Labels.getMessageLabel)) :: Nil
+      case StringLiteralNode(value) => Labels.addMessageLabel(value); Load(r0, LabelOp(Labels.getMessageLabel)) :: Nil
       case expr: PairLiteralNode => throw new
           UnsupportedOperationException("generate pair literal node")
       case _ => throw new
