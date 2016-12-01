@@ -1,13 +1,13 @@
-import collection.mutable.HashMap
-import scala.collection.mutable._
+import scala.collection.mutable.MutableList
 
-class AssemblyStack2 {
+object AssemblyStack2 {
 
-  var states = MutableList[StackState]()
+  var states = MutableList[StackState](new StackState(0, 0))
 
   var virtualStackPointer = 0
   val sp = StackPointer()
-  //we use sp when we want to write instructions to move the actual stack pointer
+  //we use sp when we want to write instructions to move the actual stack
+  // pointer
 
   def subStackNewScope(spaceAlloc: Int): Instruction = {
 
@@ -32,31 +32,27 @@ class AssemblyStack2 {
 
   }
 
-  def getOffsetForIdentifier(identifier: IdentNode): Int  = {
+  def getOffsetForIdentifier(identifier: IdentNode): Int = {
 
-    for (currentIndex <- states.indices.reverse ) {
+    for (currentState <- states.reverse) {
 
-      //this is so we can go backwards because the latest added HashMap is at the end
-
-      val currentState: StackState = states(currentIndex)
 
       if (currentState.dictContainsIdent(identifier)) {
 
-        //currentMap(identifier)  + (virtualStackPointer - originalSpLocations(currentIndex))
-        currentState.getOffsetForIdentifier(identifier, virtualStackPointer)
+        //currentMap(identifier)  + (virtualStackPointer -
+        // originalSpLocations(currentIndex))
+        return currentState.getOffsetForIdentifier(identifier,
+          virtualStackPointer)
         //you pass in the current stack pointer so it can
-        //work out the difference between that and the origin pointer of the state
+        //work out the difference between that and the origin pointer of the
+        // state
 
       }
-
     }
 
-    //if we get here then we never found the variable
-
-    println("ERROR")
-
-    throw new RuntimeException("Fatal error")
-
+    // Should be impossible to get here
+    // Semantic checking ensures that variables are in scope
+    throw new RuntimeException("Fatal error: Variable not in scope.")
   }
 
   def addVariable(identifier: IdentNode): Unit = {
@@ -66,7 +62,8 @@ class AssemblyStack2 {
     //todo add a check to see if there is actually any states in the list
     //todo e.g when you do main you actually need to do a scope for mapping
 
-    //so add all the variables after you have alloced the space with the new scope
+    //so add all the variables after you have alloced the space with the
+    // new scope
     //add in the correct order on the stack
 
   }
