@@ -2,7 +2,8 @@ import scala.collection.mutable.MutableList
 
 object AssemblyStack2 {
 
-  var states = MutableList[StackState](new StackState(0, 0))
+  var states = MutableList[StackState]()
+  //todo instead of 0,0 should be it be the space
 
   var virtualStackPointer = 0
   val sp = StackPointer()
@@ -61,11 +62,22 @@ object AssemblyStack2 {
 
     //todo add a check to see if there is actually any states in the list
     //todo e.g when you do main you actually need to do a scope for mapping
+    //todo is this not neeed as there is always a state nw in the list?
+    //todo so dont need to substack for the mainstate
+    //todo but wait how do you know how much space you need fo the variables declared there
 
     //so add all the variables after you have alloced the space with the
     // new scope
     //add in the correct order on the stack
 
+  }
+
+  def subStackAddVirtual(spaceAlloc: Int): Unit = {
+    virtualStackPointer += spaceAlloc
+  }
+
+  def addStackSubVirtual(spaceReturn: Int): Unit = {
+    virtualStackPointer -= spaceReturn
   }
 
 }
