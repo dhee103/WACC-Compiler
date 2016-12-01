@@ -57,7 +57,7 @@ object AssemblyStack2 {
 
   def addVariable(identifier: IdentNode): Unit = {
 
-    states.last.getOffsetForIdentifier(identifier, virtualStackPointer)
+    states.last.addVariable(identifier)
 
     //todo add a check to see if there is actually any states in the list
     //todo e.g when you do main you actually need to do a scope for mapping
