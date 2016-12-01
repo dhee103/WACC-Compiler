@@ -18,7 +18,7 @@ object Main {
       val pw = new PrintWriter(new File(s"$file.s" ))
       pw.write(outputString)
       pw.close
-      sys.exit(compile(args(0)))
+      sys.exit(exitCode)
     }
     else {
       sys.error("No filename passed")
