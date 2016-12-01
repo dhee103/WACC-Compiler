@@ -11,8 +11,9 @@ case class StackReference(val offset: Int) extends Operand {
 }
 
 case class StackReferenceRegister(register: Register) extends Operand {
+  // E.g. StackreferenceRegister(r0) Would be [r0] in assembly
 
-  override def toString() = "[sp, #" + register.toString + "]"
+  override def toString() = s"[${register.toString}]"
 
   //todo offsett zero
 
