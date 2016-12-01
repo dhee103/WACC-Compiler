@@ -16,7 +16,7 @@ end
 
 def outputMessage(file)
   puts "#{file}\n\n"
-  puts terminalOutput = `./compile2 #{file}`
+  puts terminalOutput = `./compile #{file}`
   `arm-linux-gnueabi-gcc -o #{removePath(file)} -mcpu=arm1176jzf-s #{removePath(file)}.s`
   `qemu-arm -L /usr/arm-linux-gnueabi/ #{removePath(file)}`
   puts "exitCode: #{$?.exitstatus}"
