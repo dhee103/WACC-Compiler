@@ -249,13 +249,20 @@ object CodeGen {
   def generateBooleanBinaryOperation(boolOp: BooleanBinaryOperationNode):
   List[Instruction] = {
 
-    throw new UnsupportedOperationException("generate boolean binary")
-
     boolOp match {
+      case boolBin: LogicalAndNode =>
+        generateExpression(LogicalNotNode(
+          LogicalOrNode(
+            LogicalNotNode(boolOp.leftExpr), LogicalNotNode(boolOp.rightExpr)
+          ))) // deMorgans Law
 
-      case boolBin: LogicalAndNode => null
-      case boolBin: LogicalOrNode => null
+      case boolBin: LogicalOrNode =>
+        generateExpression(boolOp.rightExpr) :::
+          (Push(r0) :: Nil) :::
+          generateExpression(boolOp.leftExpr) :::
+          (Pop(r1) :: Nil) :::(Orr(r0, r0, r1) :: Nil)
     }
+
   }
 
 
