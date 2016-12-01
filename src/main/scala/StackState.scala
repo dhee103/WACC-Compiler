@@ -11,6 +11,9 @@ class StackState(var stackSectionSize: Int, var originPointer: Int) {
     dict += (identifier -> (stackSectionSize - pushTracker))
 
     pushTracker += 4
+
+    //todo should only be able to add variables within the allocate space, not too many
+    //todo add a check for this?
   }
 
   def getOffsetForIdentifier(identifier: IdentNode, currentSP: Int): Int = {
