@@ -34,9 +34,13 @@ object BuiltInFunctions {
 
   def printString(): List[Instruction] = {
     Label("p_print_string") ::
-      pushlr :: Move(r1, r0) :: Load(r1, StackReferenceRegister(r0)) ::
-      Add(r2, r0, ImmNum(4)) :: Load(r0, LabelOp("msg_p_print_string")) ::
-      Add(r0, r0, ImmNum(4)) :: BranchLink("printf") :: Move(r0, ImmNum(0)) ::
+      pushlr ::
+      Load(r1, StackReferenceRegister(r0)) ::
+      Add(r2, r0, ImmNum(4)) ::
+      Load(r0, LabelOp("msg_p_print_string")) ::
+      Add(r0, r0, ImmNum(4)) ::
+      BranchLink("printf") ::
+      Move(r0, ImmNum(0)) ::
       BranchLink("fflush") :: poppc :: Nil
   }
 
