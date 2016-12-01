@@ -2,7 +2,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 //Ruby generated test suite. To check WACCVisitor.
 //Created at: 10/11/2016 19:12.
-class WACCVisTest extends FlatSpec with Matchers {
+class SyntaxErrorTest extends FlatSpec with Matchers {
   " testbadLookup01()" should "work" in {
     val str: String = "wacc_examples/invalid/syntaxErr/pairs/badLookup01.wacc"
     assert(Main.compile(str) === 100)
