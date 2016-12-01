@@ -231,15 +231,18 @@ object CodeGen {
   def generateComparisonOperation(compOp: ComparisonOperationNode):
   List[Instruction] = {
 
-    throw new UnsupportedOperationException("generate comparison")
+    val comparisonInstrs: List[Instruction] = compOp match {
 
-    compOp match {
-
-      case compBin: DoubleEqualNode => null
-      case compBin: NotEqualNode => null
+      case compBin: DoubleEqualNode =>
+        Load(r0, LoadImmNum(1), EQ) :: Load(r0, LoadImmNum(0), NE) :: Nil
+      case compBin: NotEqualNode =>
+        Load(r0, LoadImmNum(1), NE) :: Load(r0, LoadImmNum(0), EQ) :: Nil
     }
 
-
+    generateExpression(compOp.rightExpr) ::: (Push(r0) :: Nil) :::
+      generateExpression(compOp.leftExpr) :::
+      (Pop(r1) :: Compare(r0, r1) :: Nil) :::
+      comparisonInstrs
 
   }
 
