@@ -2,7 +2,7 @@ import scala.collection.mutable.MutableList
 
 object AssemblyStack2 {
 
-  var states = MutableList[StackState]()
+  var states = MutableList[StackFrame]()
   //todo instead of 0,0 should be it be the space
 
   var virtualStackPointer = 0
@@ -13,7 +13,7 @@ object AssemblyStack2 {
   def subStackNewScope(spaceAlloc: Int): Instruction = {
 
     virtualStackPointer += spaceAlloc
-    states += new StackState(spaceAlloc, virtualStackPointer)
+    states += new StackFrame(spaceAlloc, virtualStackPointer)
     Sub(sp, sp, ImmNum(spaceAlloc))
 
     //on the actual stack we grow down
