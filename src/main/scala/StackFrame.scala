@@ -39,7 +39,7 @@ class StackFrame2(private val identifiers: List[IdentNode]) {
         "getOffsetFor. Semantic checking should prevent this."))
   }
 
-  def doesContain(ident: IdentNode): Boolean = {
+  def contains(ident: IdentNode): Boolean = {
     offsetMap.isDefinedAt(ident)
   }
 
