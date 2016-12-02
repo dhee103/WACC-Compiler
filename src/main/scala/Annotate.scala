@@ -20,9 +20,12 @@ object Annotate {
       currentScopeSymbolTable.add(param.identifier, param.variableType)
     }
     val noOfParameters = currentScopeSymbolTable.size
+    val parameters = currentScopeSymbolTable.symbols
+
     annotateStatNode(function.statement, currentScopeSymbolTable, false)
+
     function.noOfLocalVars = currentScopeSymbolTable.size - noOfParameters
-    // TO DO: Check where to store noOfLocalVariables, callNode or funcNode
+    function.localVars = currentScopeSymbolTable.symbols.filterNot(parameters.toSet)
   }
 
   def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable, isInMain: Boolean): Unit = {
@@ -94,20 +97,29 @@ object Annotate {
     val elseBranchST: SymbolTable = new SymbolTable(Some(currentST))
     annotateStatNode(statement.thenStat, thenBranchST, isInMain)
     annotateStatNode(statement.elseStat, elseBranchST, isInMain)
+
+    // New scopes introduced in IfNode
     statement.scopeSizes += thenBranchST.size
     statement.scopeSizes += elseBranchST.size
+    statement.symbols = List(thenBranchST.symbols, elseBranchST.symbols)
   }
 
   def annotateWhileNode(statement: WhileNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
     annotateStatNode(statement.loopBody, currentST, isInMain)
+
+    // New scope introduced in WhileNode
     statement.scopeSizes += currentST.size
+    statement.symbols = List(currentST.symbols)
   }
 
   def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable, isInMain: Boolean):
   Unit = {
     annotateStatNode(statement.body, currentST, isInMain)
+
+    // New scope introduced in NewBeginNode
     statement.scopeSizes += currentST.size
+    statement.symbols = List(currentST.symbols)
   }
 
   def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable, isInMain: Boolean):
@@ -153,6 +165,7 @@ object Annotate {
     }
 
     call.scopeSizes += FunctionTable.getNoOfLocalVars(identifier)
+    call.symbols = List(FunctionTable.getLocalVars(identifier))
   }
 
   def annotateArgListNode(argList: ArgListNode, currentST: SymbolTable): Unit = {
