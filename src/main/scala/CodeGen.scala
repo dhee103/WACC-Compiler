@@ -130,6 +130,14 @@ object CodeGen {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
+  def generateNewBeginNode(begin: NewBeginNode): List[Instruction] = {
+    val setUpStack = AssemblyStack3.createNewScope(begin.symbols.head)
+    val statOutput = generateStatement(begin.body)
+    val closeScope = AssemblyStack3.destroyScope()
+
+    setUpStack ::: statOutput ::: closeScope
+  }
+
 
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
     rhs match {
