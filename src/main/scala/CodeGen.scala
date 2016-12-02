@@ -76,7 +76,7 @@ object CodeGen {
       case stat: WhileNode =>
         throw new UnsupportedOperationException("generateWhileNode not implemented.")
       case stat: NewBeginNode =>
-        throw new UnsupportedOperationException("generateNewBeginNode not implemented.")
+        generateNewBegin(stat)
       case SequenceNode(fstStat, sndStat) =>
         generateStatement(fstStat) ::: generateStatement(sndStat)
     }
@@ -130,7 +130,7 @@ object CodeGen {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
-  def generateNewBeginNode(begin: NewBeginNode): List[Instruction] = {
+  def generateNewBegin(begin: NewBeginNode): List[Instruction] = {
     val setUpStack = AssemblyStack3.createNewScope(begin.symbols.head)
     val statOutput = generateStatement(begin.body)
     val closeScope = AssemblyStack3.destroyScope()
