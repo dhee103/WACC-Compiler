@@ -1,25 +1,13 @@
 import Condition._
+import Constants._
 
 object CodeGen {
 
-  val lr = LinkRegister()
-  val r0 = ResultRegister()
-  val r1 = R1()
-  val pc = ProgramCounter()
-
-
-  val sp = StackPointer()
   //use the above e.g when pushing sp or subbing from the stack to make space
 
-  val spReference = StackReference(0)
+  val spReference = StackPointerReference(0)
   //use when doing stuff with things on the stack e.g addition with a value
   // on the stack
-
-  val zero = ImmNum(0)
-  val loadZero = LoadImmNum(0)
-  val pushlr = Push(lr)
-  val poppc = Pop(pc)
-  val ltorg = Directive("ltorg")
 
   //  var stack = new AssemblyStack()
 
@@ -29,6 +17,7 @@ object CodeGen {
     Labels.addDataMsgLabel("OverflowError: the result is too small/large to " +
       "store in a 4-byte signed-integer.", "p_throw_overflow_error")
 
+    AssemblyStack3.createNewScope(prog.symbols.head)
     val statement: StatNode = prog.statChild
 
     val statGeneration = generateStatement(statement)
@@ -93,10 +82,11 @@ object CodeGen {
     val ident = decl.identifier
     val rhs = decl.rhs
 
-    AssemblyStack2.addVariable(ident)
-    val offset = AssemblyStack2.getOffsetForIdentifier(ident)
+    val offset = AssemblyStack3.getOffsetFor(ident)
 
-    generateAssignmentRHS(rhs) ::: Store(r0, StackReference(offset)) :: Nil
+    generateAssignmentRHS(rhs) :::
+      Store(r0, FramePointerReference(offset)) ::
+      Nil
   }
 
   def generateAssignment(assignment: AssignmentNode): List[Instruction] = {
@@ -104,9 +94,11 @@ object CodeGen {
     val rhs = assignment.rhs
 
     lhs match {
-      case id: IdentNode => val offset = AssemblyStack2
-        .getOffsetForIdentifier(id)
-        generateAssignmentRHS(rhs) ::: Store(r0, StackReference(offset)) :: Nil
+      case id: IdentNode =>
+        val offset = AssemblyStack3.getOffsetFor(id)
+        generateAssignmentRHS(rhs) :::
+          Store(r0, FramePointerReference(offset)) ::
+          Nil
       case _ => throw new UnsupportedOperationException("generateAssignment")
 
 
@@ -128,7 +120,7 @@ object CodeGen {
   def generateExpression(expr: ExprNode): List[Instruction] = {
 
     expr match {
-      case expr: IdentNode => Move(r0, StackReference(AssemblyStack2
+      case expr: IdentNode => Move(r0, StackPointerReference(AssemblyStack2
         .getOffsetForIdentifier(expr))) :: Nil
       case expr: ArrayElemNode => throw new
           UnsupportedOperationException("Generate ArrayElemnode")

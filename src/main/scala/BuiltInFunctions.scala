@@ -35,7 +35,7 @@ object BuiltInFunctions {
   def printString(): List[Instruction] = {
     Label("p_print_string") ::
       pushlr ::
-      Load(r1, StackReferenceRegister(r0)) ::
+      Load(r1, RegisterStackReference(r0)) ::
       Add(r2, r0, ImmNum(4)) ::
       Load(r0, LabelOp("msg_p_print_string")) ::
       Add(r0, r0, ImmNum(4)) ::
