@@ -2,15 +2,29 @@ trait Operand {
 
 }
 
-case class StackReference(val offset: Int) extends Operand {
+case class StackPointerReference(val offset: Int) extends Operand {
 
-  override def toString() = if (offset == 0) "[sp]" else ("[sp, #" + offset + "]")
+  override def toString() = {
+    if (offset > 0) s"[sp + $offset]"
+    else {
+      if (offset == 0) "[sp]" else s"[sp - ${-offset}]"
+    }
+  }
 
   //todo offsett zero
 
 }
 
-case class StackReferenceRegister(register: Register) extends Operand {
+case class FramePointerReference(offset: Int) extends Operand {
+  override def toString() = {
+    if (offset > 0) s"[fp + $offset]"
+    else {
+      if (offset == 0) "[fp]" else s"[fp - ${-offset}]"
+    }
+  }
+}
+
+case class RegisterStackReference(register: Register) extends Operand {
   // E.g. StackreferenceRegister(r0) Would be [r0] in assembly
 
   override def toString() = s"[${register.toString}]"
