@@ -25,8 +25,13 @@ object CodeGen {
     var output = (Directive("data\n") :: Nil) :::
       Labels.printMsgMap() :::
       Labels.printDataMsgMap() :::
-      Directive("text\n") :: Directive("global main") ::
-      Label("main") :: pushlr :: statGeneration ::: (Move(r0, zero) ::
+      Directive("text\n") ::
+      Directive("global main") ::
+      Label("main") ::
+      pushlr ::
+      Sub(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
+      statGeneration :::
+      (Move(r0, zero) ::
       poppc :: ltorg :: Nil)
 
     if (BuiltInFunctions.printFlag) {
@@ -124,6 +129,7 @@ object CodeGen {
   def generateExit(exit: ExitNode): List[Instruction] = {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
+
 
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
     rhs match {
