@@ -12,7 +12,7 @@ case class NewPairNode(val fstElem: ExprNode, val sndElem: ExprNode) extends Ass
 
 case class CallNode(val id: IdentNode, val argList: Option[ArgListNode]) extends AssignmentRightNode with ScopeExtender {
   override def getType: TypeNode = {
-    val paramTypeList: IndexedSeq[TypeNode] = FunctionTable.getParamTypes(id)
+    val paramTypeList: List[TypeNode] = FunctionTable.getParamTypes(id)
 
     val argListMatchesParamList: Boolean = argList match {
       case Some(list) => list.exprs.length == paramTypeList.length &&
