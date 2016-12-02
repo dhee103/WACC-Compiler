@@ -80,6 +80,8 @@ object Labels {
     var count: Int = 0
     for (s <- str.toCharArray) {
       if (s != '\\') count += 1
+      // todo: this won't work when we have escaped backslashes in the string?
+      // todo: fix this
     }
     count
   }
