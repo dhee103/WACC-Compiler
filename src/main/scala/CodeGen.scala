@@ -49,15 +49,31 @@ object CodeGen {
   def generateStatement(statement: StatNode): List[Instruction] = {
 
     statement match {
-
-      case stat: DeclarationNode => generateDeclaration(stat)
-      case stat: AssignmentNode => generateAssignment(stat)
       case stat: SkipStatNode => Nil
-      case stat: ExitNode => generateExit(stat)
+      case stat: DeclarationNode =>
+        generateDeclaration(stat)
+      case stat: AssignmentNode =>
+        generateAssignment(stat)
+      case stat: ReadNode =>
+        throw new UnsupportedOperationException("generateReadNode not implemented")
+      case stat: FreeNode =>
+        throw new UnsupportedOperationException("generateFreeNode not implemented")
+      case stat: ReturnNode =>
+        throw new UnsupportedOperationException("generateReturnNode not implemented")
+      case stat: ExitNode =>
+        generateExit(stat)
+      case PrintNode(value) =>
+        genericPrint(value, lnFlag = false)
+      case PrintlnNode(value) =>
+        genericPrint(value, lnFlag = true)
+      case stat: IfNode =>
+        throw new UnsupportedOperationException("generateIfNode not implemented.")
+      case stat: WhileNode =>
+        throw new UnsupportedOperationException("generateWhileNode not implemented.")
+      case stat: NewBeginNode =>
+        throw new UnsupportedOperationException("generateNewBeginNode not implemented.")
       case SequenceNode(fstStat, sndStat) =>
         generateStatement(fstStat) ::: generateStatement(sndStat)
-      case PrintNode(value) => genericPrint(value, lnFlag = false)
-      case PrintlnNode(value) => genericPrint(value, lnFlag = true)
     }
   }
 
@@ -171,7 +187,8 @@ object CodeGen {
         generateArithmeticBinaryOperation(binOp)
       case binOp: OrderComparisonOperationNode =>
         generateOrderComparisonOperation(binOp)
-      case binOp: ComparisonOperationNode => generateComparisonOperation(binOp)
+      case binOp: ComparisonOperationNode =>
+        generateComparisonOperation(binOp)
       case binOp: BooleanBinaryOperationNode =>
         generateBooleanBinaryOperation(binOp)
     }
