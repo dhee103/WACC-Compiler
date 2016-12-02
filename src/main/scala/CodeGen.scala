@@ -65,42 +65,28 @@ object CodeGen {
       case stat: AssignmentNode => generateAssignment(stat)
       case stat: SkipStatNode => Nil
       case stat: ExitNode => generateExit(stat)
-      case SequenceNode(fstStat, sndStat) => generateStatement(fstStat) :::
-        generateStatement(sndStat)
-
-      case PrintNode(value) =>
-        BuiltInFunctions.printFlag = true
-        Labels.addDataMsgLabel("\\0", "p_print_ln")
-        Labels.addDataMsgLabel("%d\\0", "p_print_int")
-        Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
-        Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
-        Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
-        //        add in all labels
-
-        val printLink =
-          if (value.getType.isEquivalentTo(IntTypeNode())) {
-            BranchLink("p_print_int")
-          } else BranchLink("p_print_string")
-
-        generateExpression(value) ::: (printLink :: Nil)  
-
-      case PrintlnNode(value) =>
-        BuiltInFunctions.printFlag = true
-        Labels.addDataMsgLabel("\\0", "p_print_ln")
-        Labels.addDataMsgLabel("%d\\0", "p_print_int")
-        Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
-        Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
-        Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
-
-        val printLink =
-          if (value.getType.isEquivalentTo(IntTypeNode())) {
-            BranchLink("p_print_int")
-          } else BranchLink("p_print_string")
-
-        generateExpression(value) ::: (printLink :: BranchLink("p_print_ln")
-          :: Nil)
-
+      case SequenceNode(fstStat, sndStat) =>
+        generateStatement(fstStat) ::: generateStatement(sndStat)
+      case PrintNode(value) => genericPrint(value, lnFlag = false)
+      case PrintlnNode(value) => genericPrint(value, lnFlag = true)
     }
+  }
+
+  def genericPrint(value: ExprNode, lnFlag: Boolean): List[Instruction] = {
+    BuiltInFunctions.printFlag = true
+    Labels.addDataMsgLabel("\\0", "p_print_ln")
+    Labels.addDataMsgLabel("%d\\0", "p_print_int")
+    Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
+    Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
+    Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
+
+    val printLink =
+      if (value.getType.isEquivalentTo(IntTypeNode())) {
+        BranchLink("p_print_int")
+      } else BranchLink("p_print_string")
+
+    generateExpression(value) ::: (printLink ::
+      (if (lnFlag) BranchLink("p_print_ln") :: Nil else Nil))
   }
 
   def generateDeclaration(decl: DeclarationNode): List[Instruction] = {
