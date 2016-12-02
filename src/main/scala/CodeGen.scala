@@ -67,8 +67,8 @@ object CodeGen {
       case stat: ExitNode => generateExit(stat)
       case SequenceNode(fstStat, sndStat) => generateStatement(fstStat) :::
         generateStatement(sndStat)
-      // case PrintNode(value)
-      case PrintlnNode(value) =>
+
+      case PrintNode(value) =>
         BuiltInFunctions.printFlag = true
         Labels.addDataMsgLabel("\\0", "p_print_ln")
         Labels.addDataMsgLabel("%d\\0", "p_print_int")
@@ -76,6 +76,21 @@ object CodeGen {
         Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
         Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
         //        add in all labels
+
+        val printLink =
+          if (value.getType.isEquivalentTo(IntTypeNode())) {
+            BranchLink("p_print_int")
+          } else BranchLink("p_print_string")
+
+        generateExpression(value) ::: (printLink :: Nil)  
+
+      case PrintlnNode(value) =>
+        BuiltInFunctions.printFlag = true
+        Labels.addDataMsgLabel("\\0", "p_print_ln")
+        Labels.addDataMsgLabel("%d\\0", "p_print_int")
+        Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
+        Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
+        Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
 
         val printLink =
           if (value.getType.isEquivalentTo(IntTypeNode())) {
