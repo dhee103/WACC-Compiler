@@ -8,7 +8,7 @@ trait ScopeExtender {
   var symbols: List[List[IdentNode]] = _
 }
 
-case class ProgNode(val statChild: StatNode, val funcChildren: IndexedSeq[FuncNode]) extends AstNode {
+case class ProgNode(val statChild: StatNode, val funcChildren: IndexedSeq[FuncNode]) extends AstNode with ScopeExtender {
 }
 
 case class FuncNode(val returnType: TypeNode, val identifier: IdentNode,

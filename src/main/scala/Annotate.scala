@@ -12,6 +12,8 @@ object Annotate {
       annotateFuncNode(f, new SymbolTable(Some(topSymbolTable)))
     }
     annotateStatNode(prog.statChild, topSymbolTable, true)
+    prog.symbols = List(topSymbolTable.symbols)
+    prog.scopeSizes += topSymbolTable.size
   }
 
   def annotateFuncNode(function: FuncNode, currentScopeSymbolTable: SymbolTable): Unit = {
