@@ -41,7 +41,8 @@ object CodeGen {
     if (BuiltInFunctions.printFlag) {
       output = output ::: LabelData("\n") ::
         BuiltInFunctions.printString() ::: LabelData("\n") ::
-        BuiltInFunctions.printInt() :::
+        BuiltInFunctions.printInt() ::: LabelData("\n") ::
+        BuiltInFunctions.printBool() :::
         LabelData("\n") :: BuiltInFunctions.println()
     }
 
@@ -97,6 +98,7 @@ object CodeGen {
     val printLink = value.getType match {
       case t if t.isEquivalentTo(IntTypeNode()) => BranchLink("p_print_int")
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
+      case t if t.isEquivalentTo(BoolTypeNode()) => BranchLink("p_print_bool")
 
 
     }
