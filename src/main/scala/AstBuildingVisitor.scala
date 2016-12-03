@@ -392,7 +392,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitChar_liter(ctx: WaccParser.Char_literContext):
   CharLiteralNode = {
     //    println("hit " + currentMethodName())
-    val value = ctx.getText.charAt(0)
+    val value = ctx.getText.charAt(1)
 
     CharLiteralNode(value)
   }
@@ -406,7 +406,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitStr_liter(ctx: WaccParser.Str_literContext):
   StringLiteralNode = {
     //    println("hit " + currentMethodName())
-    val value = ctx.getText
+    val value = ctx.getText.tail.init
 
     StringLiteralNode(value)
   }
