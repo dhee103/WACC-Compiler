@@ -147,7 +147,7 @@ object CodeGen {
     val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
     val thenBranch = generateStatement(ifStat.thenStat)
     val closeThenFrame = AssemblyStack3.destroyNewestScope()
-    val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols(2))
+    val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols(1))
     val elseBranch = generateStatement(ifStat.elseStat)
     val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
@@ -232,16 +232,14 @@ object CodeGen {
 
     expr match {
       case expr: IdentNode =>
-        Move(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
+        Load(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
       case expr: ArrayElemNode => throw new
           UnsupportedOperationException("Generate ArrayElemnode")
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
       case expr: BinaryOperationNode => generateBinaryOperation(expr)
       case IntLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
-      case BoolLiteralNode(value) => Move(r0, ImmNum(if (value) 1 else 0)) ::
-        Nil
-      case CharLiteralNode(value) =>
-        Load(r0, LoadImmNum(value)) :: Nil
+      case BoolLiteralNode(value) => Move(r0, ImmNum(if (value) 1 else 0)) :: Nil
+      case CharLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
       case StringLiteralNode(value) => Labels.addMessageLabel(value); Load(r0, LabelOp(Labels.getMessageLabel)) :: Nil
       case expr: PairLiteralNode => throw new
           UnsupportedOperationException("generate pair literal node")
@@ -252,8 +250,7 @@ object CodeGen {
 
   }
 
-  def generateUnaryOperation(unOpNode: UnaryOperationNode): List[Instruction]
-  = {
+  def generateUnaryOperation(unOpNode: UnaryOperationNode): List[Instruction] = {
 
     //todo for arithmetic instructions, check for overflow / underflow
 
