@@ -130,6 +130,31 @@ object CodeGen {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
+  def generateIf(ifStat: IfNode): List[Instruction] = {
+    val condition = generateExpression(ifStat.condition)
+    val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
+    val thenBranch = generateStatement(ifStat.thenStat)
+    val closeThenFrame = AssemblyStack3.destroyNewestScope()
+    val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols(2))
+    val elseBranch = generateStatement(ifStat.elseStat)
+    val closeElseFrame = AssemblyStack3.destroyNewestScope()
+
+    val (elseBranchLabel, endIfLabel) = Labels.getLabel("L")
+
+    condition :::
+    Compare(r0, ImmNum(0)) ::
+    StandardBranch(elseBranchLabel, EQ) ::
+    setUpThenFrame :::
+    thenBranch :::
+    closeThenFrame :::
+    StandardBranch(endIfLabel) ::
+    setUpElseFrame :::
+    elseBranch ::: // need the elseBranchLabel here
+    closeElseFrame
+    // need the endIfLabel here
+
+  }
+
   def generateNewBegin(begin: NewBeginNode): List[Instruction] = {
     val setUpStack = AssemblyStack3.createNewScope(begin.symbols.head)
     val statOutput = generateStatement(begin.body)
@@ -176,18 +201,20 @@ object CodeGen {
     //todo for arithmetic instructions, check for overflow / underflow
 
     unOpNode match {
-
-      case LogicalNotNode(argument) => generateExpression(argument) :::
+      case LogicalNotNode(argument) =>
+        generateExpression(argument) :::
         (Compare(r0, zero) ::
           Load(r0, loadZero, NE) ::
           Load(r0, LoadImmNum(1), EQ) :: Nil)
-      case NegationNode(argument) => generateExpression(argument) :::
+      case NegationNode(argument) =>
+        generateExpression(argument) :::
         (ReverseSubNoCarry(r0, r0, zero) :: Nil)
       case LenNode(argument) => throw new
           UnsupportedOperationException("generate len")
-      case OrdNode(argument) => Nil // Don't need to do anything
-      case ChrNode(argument) => Nil // Don't need to do anything
-
+      case OrdNode(argument) =>
+        generateExpression(argument) // Don't need to do anything else
+      case ChrNode(argument) =>
+        generateExpression(argument) // Don't need to do anything else
     }
 
   }
