@@ -19,7 +19,7 @@ object Labels {
 
   def getLabel(str: String): (String, String) = {
     val head = getStreamHead()
-    (str ++ head.toString() ++ "start ", str ++ head.toString() ++ "end")
+    (str ++ head.toString() ++ "start", str ++ head.toString() ++ "end")
   }
 
   def addMessageLabel(str: String): Unit = {
