@@ -241,8 +241,7 @@ object CodeGen {
       case BoolLiteralNode(value) => Move(r0, ImmNum(if (value) 1 else 0)) :: Nil
       case CharLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
       case StringLiteralNode(value) => Labels.addMessageLabel(value); Load(r0, LabelOp(Labels.getMessageLabel)) :: Nil
-      case expr: PairLiteralNode => throw new
-          UnsupportedOperationException("generate pair literal node")
+      case expr: PairLiteralNode => Move(r0, ImmNum(0)) :: Nil
       case _ => throw new
           UnsupportedOperationException("generate expr catch all")
 
