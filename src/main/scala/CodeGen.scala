@@ -72,7 +72,7 @@ object CodeGen {
       case PrintlnNode(value) =>
         genericPrint(value, lnFlag = true)
       case stat: IfNode =>
-        throw new UnsupportedOperationException("generateIfNode not implemented.")
+        generateIf(stat)
       case stat: WhileNode =>
         throw new UnsupportedOperationException("generateWhileNode not implemented.")
       case stat: NewBeginNode =>
