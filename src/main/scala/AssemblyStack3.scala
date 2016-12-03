@@ -30,7 +30,7 @@ object AssemblyStack3 {
       if (currentFrame.contains(ident)) {
         return offset + currentFrame.getOffsetFor(ident)
       }
-      offset += WORD_SIZE // go past all "old" fps
+      offset += WORD_SIZE * 2 // go past all "old" fps
       offset += WORD_SIZE * currentFrame.size // go past all other local vars
     }
 
