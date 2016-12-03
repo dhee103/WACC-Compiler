@@ -74,7 +74,7 @@ object CodeGen {
       case stat: IfNode =>
         generateIf(stat)
       case stat: WhileNode =>
-        throw new UnsupportedOperationException("generateWhileNode not implemented.")
+        generateWhile(stat)
       case stat: NewBeginNode =>
         generateNewBegin(stat)
       case SequenceNode(fstStat, sndStat) =>
@@ -153,6 +153,26 @@ object CodeGen {
     elseBranch :::
     closeElseFrame :::
     Label(endIfLabel) :: Nil
+
+  }
+
+  def generateWhile(whileStat: WhileNode): List[Instruction] = {
+    val condition = generateExpression(whileStat.condition)
+    val setUpFrame = AssemblyStack3.createNewScope(whileStat.symbols.head)
+    val loopBody = generateStatement(whileStat.loopBody)
+    val closeFrame = AssemblyStack3.destroyNewestScope()
+
+    val (whileStart, whileEnd) = Labels.getLabel("while")
+
+    Label(whileStart) ::
+    condition :::
+    Compare(r0, ImmNum(0)) ::
+    StandardBranch(whileEnd, EQ) ::
+    setUpFrame :::
+    loopBody :::
+    closeFrame :::
+    StandardBranch(whileStart) ::
+    Label(whileEnd) :: Nil
 
   }
 
