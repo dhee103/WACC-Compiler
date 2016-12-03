@@ -139,7 +139,7 @@ object CodeGen {
     val elseBranch = generateStatement(ifStat.elseStat)
     val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
-    val (elseBranchLabel, endIfLabel) = Labels.getLabel("L")
+    val (elseBranchLabel, endIfLabel) = Labels.getLabel("if")
 
     condition :::
     Compare(r0, ImmNum(0)) ::
@@ -149,9 +149,10 @@ object CodeGen {
     closeThenFrame :::
     StandardBranch(endIfLabel) ::
     setUpElseFrame :::
-    elseBranch ::: // need the elseBranchLabel here
-    closeElseFrame
-    // need the endIfLabel here
+    Label(elseBranchLabel) ::
+    elseBranch :::
+    closeElseFrame :::
+    Label(endIfLabel) :: Nil
 
   }
 
@@ -319,6 +320,5 @@ object CodeGen {
       mainInstruction
 
   }
-
 
 }
