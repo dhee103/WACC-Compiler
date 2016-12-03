@@ -25,7 +25,7 @@ object Labels {
 
   def addMessageLabel(str: String, name: String): Unit = {
     msgMap += ("msg_" + name ->
-      MutableList[String](s".word ${getSize(str) - 2}", s".ascii $str"))
+      MutableList[String](s".word ${getSize(str)}", f""".ascii \"$str\""""))
   }
 
   def getMessageLabel(): String = {
