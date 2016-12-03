@@ -11,16 +11,20 @@ object Labels {
 
   val dataMsgMap = LinkedHashMap[String, MutableList[String]]()
 
-  def getLabel(str: String): (String, String) = {
-
+  def getStreamHead(): Int = {
     val head = stream.head
     stream = stream.tail
+    head
+  }
 
+  def getLabel(str: String): (String, String) = {
+    val head = getStreamHead()
     (str ++ head.toString() ++ "start ", str ++ head.toString() ++ "end")
   }
 
   def addMessageLabel(str: String): Unit = {
-    addMessageLabel(str, stream.head.toString)
+    val head = getStreamHead()
+    addMessageLabel(str, head.toString)
   }
 
   def addMessageLabel(str: String, name: String): Unit = {
