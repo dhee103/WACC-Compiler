@@ -5,7 +5,7 @@ object AssemblyStack3 {
   private var stackFrames = new MutableList[StackFrame2]()
 
   // Adds a new StackFrame to list of stack frames
-  // and returns instruction to decrement stack pointer
+  // and returns instruction to set up stack frame
   // (allocating space for local variables)
   def createNewScope(localVars: List[IdentNode]): List[Instruction] = {
     stackFrames += new StackFrame2(localVars)
@@ -15,7 +15,7 @@ object AssemblyStack3 {
     Sub(sp, sp, ImmNum(WORD_SIZE * localVars.size)) :: Nil
   }
 
-  def destroyScope(): List[Instruction] = {
+  def destroyNewestScope(): List[Instruction] = {
     val destroyedStack: StackFrame2 = stackFrames.last
     stackFrames = stackFrames.dropRight(1)
 
@@ -30,8 +30,8 @@ object AssemblyStack3 {
       if (currentFrame.contains(ident)) {
         return offset + currentFrame.getOffsetFor(ident)
       }
-      offset += WORD_SIZE
-      offset += WORD_SIZE * currentFrame.size
+      offset += WORD_SIZE // go past all "old" fps
+      offset += WORD_SIZE * currentFrame.size // go past all other local vars
     }
 
     throw new RuntimeException("Fatal error: Variable not in scope.")

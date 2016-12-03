@@ -133,7 +133,7 @@ object CodeGen {
   def generateNewBegin(begin: NewBeginNode): List[Instruction] = {
     val setUpStack = AssemblyStack3.createNewScope(begin.symbols.head)
     val statOutput = generateStatement(begin.body)
-    val closeScope = AssemblyStack3.destroyScope()
+    val closeScope = AssemblyStack3.destroyNewestScope()
 
     setUpStack ::: statOutput ::: closeScope
   }
