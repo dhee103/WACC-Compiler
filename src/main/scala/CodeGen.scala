@@ -29,9 +29,13 @@ object CodeGen {
       Directive("global main") ::
       Label("main") ::
       pushlr ::
+      Push(fp) ::
+      Move(fp, sp) ::
       Sub(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
       statGeneration :::
+      Add(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
       (Move(r0, zero) ::
+      Pop(fp) ::
       poppc :: ltorg :: Nil)
 
     if (BuiltInFunctions.printFlag) {
@@ -167,9 +171,32 @@ object CodeGen {
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
     rhs match {
       case rhs: ExprNode => generateExpression(rhs)
+      case NewPairNode(fstElem, sndElem) => generateNewPairNode(fstElem, sndElem)
       case _ => throw new UnsupportedOperationException("generate Assignment " +
         "right")
     }
+  }
+
+  def generateNewPairNode(fstElem: ExprNode, sndElem: ExprNode): List[Instruction] = {
+    generateExpression(fstElem) :::
+    generateNewPairElem(fstElem) :::
+    generateExpression(sndElem) :::
+    generateNewPairElem(sndElem) :::
+    (Move(r0, ImmNum(8)) ::
+      BranchLink("malloc") ::
+      Pop(r1) ::
+      Pop(r2) ::
+      Store(r2, RegisterStackReference(r0)) ::
+      Store(r1, RegisterStackReference(r0, 4)) :: Nil)
+  }
+
+  def generateNewPairElem(elem: ExprNode): List[Instruction] = {
+    Push(r0) ::
+    Move(r0, ImmNum(4)) ::
+    BranchLink("malloc") ::
+    Pop(r1) ::
+    Store(r1, RegisterStackReference(r0)) ::
+    Push(r0) :: Nil
   }
 
   def generateExpression(expr: ExprNode): List[Instruction] = {
