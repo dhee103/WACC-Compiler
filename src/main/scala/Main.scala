@@ -7,21 +7,43 @@ import java.io.{File, PrintWriter}
 
 object Main {
 
+  //  def time[R](block: => R): R = {
+  //    val t0 = System.nanoTime()
+  //    val result = block    // call-by-name
+  //    val t1 = System.nanoTime()
+  //    println("Elapsed time: " + (t1 - t0) + "ns")
+  //    result
+  //  }
+
+  def time(f: => Unit) = {
+    val s = System.currentTimeMillis
+    f
+    System.currentTimeMillis() - s
+//    println(System.currentTimeMillis() - s)
+  }
+
   var outputString: String = ""
 
   def main(args: Array[String]): Unit = {
 
-    if (!args.isEmpty) {
-      val input = args(0)
-      val file =  input.substring(input.lastIndexOf('/') + 1, input.lastIndexOf('.'))
-      val exitCode = compile(input)
-      val pw = new PrintWriter(new File(s"$file.s" ))
-      pw.write(outputString)
-      pw.close
-      sys.exit(exitCode)
-    }
-    else {
-      sys.error("No filename passed")
+    time {
+
+      if (!args.isEmpty) {
+        val input = args(0)
+        val file = input.substring(input.lastIndexOf('/') + 1, input
+          .lastIndexOf('.'))
+
+        val exitCode = compile(input)
+        val pw = new PrintWriter(new File(s"$file.s"))
+        pw.write(outputString)
+        pw.close
+//        println(s"exitcode: $exitCode")
+                sys.exit(exitCode)
+      }
+      else {
+        sys.error("No filename passed")
+      }
+
     }
   }
 
@@ -33,7 +55,8 @@ object Main {
 
     // to add you can do: semanticErrorLog :+= (the string)
 
-    val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
+    val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream
+    (filename))
     val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLexer)
 
     val waccParser = new WaccParser(tokens)
@@ -79,10 +102,17 @@ object Main {
       return 200
     }
 
-    outputString = InstructionConverter.translate(CodeGen.generateProgramCode(ast))
+    time {
+      outputString = InstructionConverter.translate(CodeGen.generateProgramCode
+      (ast))
+    }
 
     return 0
   }
 
 
 }
+
+//wacc_examples/invalid/syntaxErr/basic/Begin.wacc
+
+//wacc_examples/valid/basic/skip/skip.wacc
