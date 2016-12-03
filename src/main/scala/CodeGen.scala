@@ -99,6 +99,7 @@ object CodeGen {
       case t if t.isEquivalentTo(IntTypeNode()) => BranchLink("p_print_int")
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
       case t if t.isEquivalentTo(BoolTypeNode()) => BranchLink("p_print_bool")
+      case t if t.isEquivalentTo(CharTypeNode()) => BranchLink("putchar")
 
 
     }
@@ -239,7 +240,8 @@ object CodeGen {
       case IntLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
       case BoolLiteralNode(value) => Move(r0, ImmNum(if (value) 1 else 0)) ::
         Nil
-      case CharLiteralNode(value) => Move(r0, ImmNum(value)) :: Nil
+      case CharLiteralNode(value) =>
+        Load(r0, LoadImmNum(value)) :: Nil
       case StringLiteralNode(value) => Labels.addMessageLabel(value); Load(r0, LabelOp(Labels.getMessageLabel)) :: Nil
       case expr: PairLiteralNode => throw new
           UnsupportedOperationException("generate pair literal node")
