@@ -5,23 +5,19 @@ trait Operand {
 case class StackPointerReference(val offset: Int) extends Operand {
 
   override def toString() = {
-    if (offset > 0) s"[sp + $offset]"
-    else {
-      if (offset == 0) "[sp]" else s"[sp - ${-offset}]"
-    }
+    if (offset != 0) s"[sp, #$offset]"
+    else "[sp]"
   }
-
-  //todo offsett zero
 
 }
 
 case class FramePointerReference(offset: Int) extends Operand {
+
   override def toString() = {
-    if (offset > 0) s"[fp + $offset]"
-    else {
-      if (offset == 0) "[fp]" else s"[fp - ${-offset}]"
-    }
+    if (offset != 0) s"[fp, #$offset]"
+    else "[fp]"
   }
+
 }
 
 case class RegisterStackReference(register: Register, offset: Int = 0) extends Operand {
