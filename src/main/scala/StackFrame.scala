@@ -15,8 +15,7 @@ class StackFrame(var stackSectionSize: Int, var originPointer: Int) {
   }
 
   def getOffsetForIdentifier(identifier: IdentNode, currentSP: Int): Int = {
-
-
+    5
   }
 
   def dictContainsIdent(identifier: IdentNode): Boolean = {
