@@ -76,9 +76,9 @@ object CodeGen {
       case PrintlnNode(value) =>
         genericPrint(value, lnFlag = true)
       case stat: IfNode =>
-        throw new UnsupportedOperationException("generateIfNode not implemented.")
+        generateIf(stat)
       case stat: WhileNode =>
-        throw new UnsupportedOperationException("generateWhileNode not implemented.")
+        generateWhile(stat)
       case stat: NewBeginNode =>
         generateNewBegin(stat)
       case SequenceNode(fstStat, sndStat) =>
@@ -143,7 +143,7 @@ object CodeGen {
     val elseBranch = generateStatement(ifStat.elseStat)
     val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
-    val (elseBranchLabel, endIfLabel) = Labels.getLabel("L")
+    val (elseBranchLabel, endIfLabel) = Labels.getLabel("if")
 
     condition :::
     Compare(r0, ImmNum(0)) ::
@@ -153,9 +153,30 @@ object CodeGen {
     closeThenFrame :::
     StandardBranch(endIfLabel) ::
     setUpElseFrame :::
-    elseBranch ::: // need the elseBranchLabel here
-    closeElseFrame
-    // need the endIfLabel here
+    Label(elseBranchLabel) ::
+    elseBranch :::
+    closeElseFrame :::
+    Label(endIfLabel) :: Nil
+
+  }
+
+  def generateWhile(whileStat: WhileNode): List[Instruction] = {
+    val condition = generateExpression(whileStat.condition)
+    val setUpFrame = AssemblyStack3.createNewScope(whileStat.symbols.head)
+    val loopBody = generateStatement(whileStat.loopBody)
+    val closeFrame = AssemblyStack3.destroyNewestScope()
+
+    val (whileStart, whileEnd) = Labels.getLabel("while")
+
+    Label(whileStart) ::
+    condition :::
+    Compare(r0, ImmNum(0)) ::
+    StandardBranch(whileEnd, EQ) ::
+    setUpFrame :::
+    loopBody :::
+    closeFrame :::
+    StandardBranch(whileStart) ::
+    Label(whileEnd) :: Nil
 
   }
 
@@ -202,8 +223,8 @@ object CodeGen {
   def generateExpression(expr: ExprNode): List[Instruction] = {
 
     expr match {
-      case expr: IdentNode => Move(r0, StackPointerReference(AssemblyStack2
-        .getOffsetForIdentifier(expr))) :: Nil
+      case expr: IdentNode =>
+        Move(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
       case expr: ArrayElemNode => throw new
           UnsupportedOperationException("Generate ArrayElemnode")
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
@@ -227,7 +248,7 @@ object CodeGen {
 
     //todo for arithmetic instructions, check for overflow / underflow
 
-    unOpNode match {
+    val mainInstruction = unOpNode match {
       case LogicalNotNode(argument) =>
         generateExpression(argument) :::
         (Compare(r0, zero) ::
@@ -243,6 +264,8 @@ object CodeGen {
       case ChrNode(argument) =>
         generateExpression(argument) // Don't need to do anything else
     }
+
+    mainInstruction ::: BranchLink("p_throw_overflow_error", VS) :: Nil
 
   }
 
@@ -346,6 +369,5 @@ object CodeGen {
       mainInstruction
 
   }
-
 
 }
