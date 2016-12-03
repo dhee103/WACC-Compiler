@@ -94,10 +94,15 @@ object CodeGen {
     Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
     Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
 
-    val printLink =
-      if (value.getType.isEquivalentTo(IntTypeNode())) {
-        BranchLink("p_print_int")
-      } else BranchLink("p_print_string")
+    val printLink = value.getType match {
+      case t if t.isEquivalentTo(IntTypeNode()) => BranchLink("p_print_int")
+      case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
+
+
+    }
+//      if (value.getType.isEquivalentTo(IntTypeNode())) {
+//        BranchLink("p_print_int")
+//      } else BranchLink("p_print_string")
 
     generateExpression(value) ::: (printLink ::
       (if (lnFlag) BranchLink("p_print_ln") :: Nil else Nil))
