@@ -7,7 +7,9 @@ object BuiltInFunctions {
 
   var arithmeticFlag: Boolean = false
 
-  var freeFlag: Boolean = false
+  var freePairFlag: Boolean = false
+
+  var freeArrayFlag: Boolean = false
 
   def println(): List[Instruction] = {
     Label("p_print_ln") ::
