@@ -196,8 +196,8 @@ object CodeGen {
   def generateExpression(expr: ExprNode): List[Instruction] = {
 
     expr match {
-      case expr: IdentNode => Move(r0, StackPointerReference(AssemblyStack2
-        .getOffsetForIdentifier(expr))) :: Nil
+      case expr: IdentNode =>
+        Move(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
       case expr: ArrayElemNode => throw new
           UnsupportedOperationException("Generate ArrayElemnode")
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
@@ -221,7 +221,7 @@ object CodeGen {
 
     //todo for arithmetic instructions, check for overflow / underflow
 
-    unOpNode match {
+    val mainInstruction = unOpNode match {
       case LogicalNotNode(argument) =>
         generateExpression(argument) :::
         (Compare(r0, zero) ::
@@ -237,6 +237,8 @@ object CodeGen {
       case ChrNode(argument) =>
         generateExpression(argument) // Don't need to do anything else
     }
+
+    mainInstruction ::: BranchLink("p_throw_overflow_error", VS) :: Nil
 
   }
 
