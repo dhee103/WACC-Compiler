@@ -52,6 +52,12 @@ object CodeGen {
         BuiltInFunctions.printRuntimeError()
     }
 
+    if (BuiltInFunctions.freeFlag) {
+      output = output ::: LabelData("\n") ::
+      BuiltInFunctions.printFreePair() ::: LabelData("\n") ::
+      BuiltInFunctions.printRuntimeError()
+    }
+
     output
 
   }
@@ -66,8 +72,13 @@ object CodeGen {
         generateAssignment(stat)
       case stat: ReadNode =>
         throw new UnsupportedOperationException("generateReadNode not implemented")
-      case stat: FreeNode =>
-        throw new UnsupportedOperationException("generateFreeNode not implemented")
+      case FreeNode(variable) =>
+        BuiltInFunctions.freeFlag = true
+        Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "free_pair")
+        generateExpression(variable) :::
+          (BranchLink("p_free_pair") :: Nil)
+//        TODO: do for an array
+        // TODO: should whatever variable points to be zeroed out?
       case stat: ReturnNode =>
         throw new UnsupportedOperationException("generateReturnNode not implemented")
       case stat: ExitNode =>
