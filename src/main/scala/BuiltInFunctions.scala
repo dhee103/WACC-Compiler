@@ -1,22 +1,13 @@
 import Condition._
+import Constants._
 
 object BuiltInFunctions {
-
-  val lr = LinkRegister()
-  val r0 = ResultRegister()
-  val r1 = R1()
-  val r2 = R2()
-  val pc = ProgramCounter()
-
-  val zero = ImmNum(0)
-  val loadZero = LoadImmNum(0)
-  val pushlr = Push(lr)
-  val poppc = Pop(pc)
-  val ltorg = Directive("ltorg")
 
   var printFlag: Boolean = false
 
   var arithmeticFlag: Boolean = false
+
+  var freeFlag: Boolean = false
 
   def println(): List[Instruction] = {
     Label("p_print_ln") ::
@@ -60,6 +51,23 @@ object BuiltInFunctions {
   def printRuntimeError(): List[Instruction] = {
     Label("p_throw_runtime_error") ::
       Move(r0, ImmNum(-1)) :: BranchLink("exit") :: Nil
+  }
+
+  def printFreePair(): List[Instruction] = {
+    Label("p_free_pair") ::
+    Push(lr) ::
+    Compare(r0, ImmNum(0)) ::
+    Load(r0, LabelOp("p_free_pair"), EQ) :: // add this label before
+    StandardBranch("p_throw_runtime_error", EQ) ::
+    Push(r0) ::
+    Load(r0, RegisterStackReference(r0)) ::
+    BranchLink("free") ::
+    Load(r0, RegisterStackReference(sp)) ::
+    Load(r0, RegisterStackReference(r0, 4)) ::
+    BranchLink("free") ::
+    Pop(r0) ::
+    BranchLink("free") ::
+    Pop(pc) :: Nil
   }
 
 }
