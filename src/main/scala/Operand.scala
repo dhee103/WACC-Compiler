@@ -24,12 +24,13 @@ case class FramePointerReference(offset: Int) extends Operand {
   }
 }
 
-case class RegisterStackReference(register: Register) extends Operand {
+case class RegisterStackReference(register: Register, offset: Int = 0) extends Operand {
   // E.g. StackreferenceRegister(r0) Would be [r0] in assembly
 
-  override def toString() = s"[${register.toString}]"
-
-  //todo offsett zero
+  override def toString() = {
+    if (offset != 0) s"[${register.toString}, #$offset]"
+    else s"[${register.toString}]"
+  }
 
 }
 
