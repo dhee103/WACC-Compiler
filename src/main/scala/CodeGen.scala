@@ -184,7 +184,7 @@ object CodeGen {
     val loopBody = generateStatement(whileStat.loopBody)
     val closeFrame = AssemblyStack3.destroyNewestScope()
 
-    val (whileStart, whileEnd) = Labels.getLabel("while")
+    val (whileStart, whileEnd) = Labels.getWhileLabels
 
     Label(whileStart) ::
     condition :::
