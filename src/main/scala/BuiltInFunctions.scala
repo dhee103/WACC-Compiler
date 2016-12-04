@@ -11,6 +11,8 @@ object BuiltInFunctions {
 
   var freeArrayFlag: Boolean = false
 
+  var nullPointerFlag: Boolean = false
+
   def println(): List[Instruction] = {
     Label("p_print_ln") ::
       pushlr :: Move(r1, r0) :: Load(r0, LabelOp("msg_p_print_ln")) ::
@@ -83,6 +85,16 @@ object BuiltInFunctions {
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
+
+  def checkNullPointer(): List[Instruction] = {
+    Label("p_check_null_pointer") ::
+    Push(lr) ::
+    Compare(r0, ImmNum(0)) ::
+    Load(r0, LabelOp("p_check_null_pointer"), EQ) ::
+    BranchLink("p_throw_runtime_error", EQ) ::
+    Pop(pc) :: Nil
+  }
+
 
 
 
