@@ -161,7 +161,7 @@ object CodeGen {
     val elseBranch = generateStatement(ifStat.elseStat)
     val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
-    val (elseBranchLabel, endIfLabel) = Labels.getLabel("if")
+    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
 
     condition :::
     Compare(r0, ImmNum(0)) ::

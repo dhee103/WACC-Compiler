@@ -22,6 +22,11 @@ object Labels {
     (str ++ head.toString() ++ "start", str ++ head.toString() ++ "end")
   }
 
+  def getIfLabels: (String, String) = {
+    val head = getStreamHead()
+    (s"if_stat${head}_else", s"if_stat${head}_end")
+  }
+
   def addMessageLabel(str: String): Unit = {
     val head = getStreamHead()
     addMessageLabel(str, head.toString)
