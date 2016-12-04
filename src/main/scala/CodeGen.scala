@@ -59,6 +59,12 @@ object CodeGen {
       BuiltInFunctions.runtimeError()
     }
 
+    if (BuiltInFunctions.nullPointerFlag) {
+      output = output ::: LabelData("\n") ::
+      BuiltInFunctions.checkNullPointer() ::: LabelData("\n") ::
+      BuiltInFunctions.runtimeError()
+    }
+
     output
 
   }
@@ -207,10 +213,24 @@ object CodeGen {
   }
 
 
+  def generateFstNode(exprChild: ExprNode): List[Instruction] = {
+    BuiltInFunctions.nullPointerFlag = true
+    generateExpression(exprChild) :::
+    BranchLink("p_check_null_pointer") ::
+    Load(r0, RegisterStackReference(r0)) ::
+    Load(r0, RegisterStackReference(r0)) ::
+      Nil
+//    LDR r0, [sp, #4]
+//    39		BL p_check_null_pointer
+//    40		LDR r0, [r0]
+  }
+
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
     rhs match {
       case rhs: ExprNode => generateExpression(rhs)
       case NewPairNode(fstElem, sndElem) => generateNewPairNode(fstElem, sndElem)
+      case FstNode(exprChild) => generateFstNode(exprChild)
+//        case PairElemNode => Labels.addDataMsgLabel(msg_p_check_null_pointer)
       case _ => throw new UnsupportedOperationException("generate Assignment " +
         "right")
     }
