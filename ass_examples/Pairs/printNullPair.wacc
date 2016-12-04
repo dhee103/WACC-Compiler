@@ -1,0 +1,13 @@
+# print pair a null pair
+
+# Output:
+# (nil)
+
+# Program:
+
+begin
+  println("does a null") ;
+  pair(pair, pair) p = null ;
+  println p ;
+  println("print anything?")
+end

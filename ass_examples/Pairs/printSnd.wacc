@@ -1,0 +1,5 @@
+begin
+  pair(int, char) p = newpair(10, 'a') ;
+  char c = snd p ;
+  print c
+end

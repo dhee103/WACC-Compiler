@@ -1,0 +1,5 @@
+begin
+  pair(int, char) p = newpair(10, 'a') ;
+  int x = fst p ;
+  print x
+end
