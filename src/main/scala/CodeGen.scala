@@ -167,7 +167,7 @@ object CodeGen {
     val elseBranch = generateStatement(ifStat.elseStat)
     val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
-    val (elseBranchLabel, endIfLabel) = Labels.getLabel("if")
+    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
 
     condition :::
     Compare(r0, ImmNum(0)) ::
@@ -176,8 +176,8 @@ object CodeGen {
     thenBranch :::
     closeThenFrame :::
     StandardBranch(endIfLabel) ::
-    setUpElseFrame :::
     Label(elseBranchLabel) ::
+    setUpElseFrame :::
     elseBranch :::
     closeElseFrame :::
     Label(endIfLabel) :: Nil
@@ -190,7 +190,7 @@ object CodeGen {
     val loopBody = generateStatement(whileStat.loopBody)
     val closeFrame = AssemblyStack3.destroyNewestScope()
 
-    val (whileStart, whileEnd) = Labels.getLabel("while")
+    val (whileStart, whileEnd) = Labels.getWhileLabels
 
     Label(whileStart) ::
     condition :::
