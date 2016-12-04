@@ -42,20 +42,21 @@ object CodeGen {
       output = output ::: LabelData("\n") ::
         BuiltInFunctions.printString() ::: LabelData("\n") ::
         BuiltInFunctions.printInt() ::: LabelData("\n") ::
-        BuiltInFunctions.printBool() :::
-        LabelData("\n") :: BuiltInFunctions.println()
+        BuiltInFunctions.printBool() ::: LabelData("\n") ::
+        BuiltInFunctions.println() ::: LabelData("\n") ::
+        BuiltInFunctions.printReference()
     }
 
     if (BuiltInFunctions.arithmeticFlag) {
       output = output ::: LabelData("\n") ::
-        BuiltInFunctions.printOverflowError() ::: LabelData("\n") ::
-        BuiltInFunctions.printRuntimeError()
+        BuiltInFunctions.overflowError() ::: LabelData("\n") ::
+        BuiltInFunctions.runtimeError()
     }
 
     if (BuiltInFunctions.freePairFlag) {
       output = output ::: LabelData("\n") ::
-      BuiltInFunctions.printFreePair() ::: LabelData("\n") ::
-      BuiltInFunctions.printRuntimeError()
+      BuiltInFunctions.freePair() ::: LabelData("\n") ::
+      BuiltInFunctions.runtimeError()
     }
 
     output
@@ -105,19 +106,17 @@ object CodeGen {
     Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
     Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
     Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
+    Labels.addDataMsgLabel("%p\\0", "p_print_reference")
 
     val printLink = value.getType match {
       case t if t.isEquivalentTo(IntTypeNode()) => BranchLink("p_print_int")
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
       case t if t.isEquivalentTo(BoolTypeNode()) => BranchLink("p_print_bool")
       case t if t.isEquivalentTo(CharTypeNode()) => BranchLink("putchar")
+      case _ => BranchLink("p_print_reference")
 
 
     }
-//      if (value.getType.isEquivalentTo(IntTypeNode())) {
-//        BranchLink("p_print_int")
-//      } else BranchLink("p_print_string")
-
     generateExpression(value) ::: (printLink ::
       (if (lnFlag) BranchLink("p_print_ln") :: Nil else Nil))
   }

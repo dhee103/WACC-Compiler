@@ -45,17 +45,17 @@ object BuiltInFunctions {
       poppc :: Nil
   }
 
-  def printOverflowError(): List[Instruction] = {
+  def overflowError(): List[Instruction] = {
     Label("p_throw_overflow_error") ::
       Load(r0, LabelOp("msg_p_throw_overflow_error")) :: BranchLink("p_throw_runtime_error") :: Nil
   }
 
-  def printRuntimeError(): List[Instruction] = {
+  def runtimeError(): List[Instruction] = {
     Label("p_throw_runtime_error") ::
       Move(r0, ImmNum(-1)) :: BranchLink("exit") :: Nil
   }
 
-  def printFreePair(): List[Instruction] = {
+  def freePair(): List[Instruction] = {
     Label("p_free_pair") ::
     Push(lr) ::
     Compare(r0, ImmNum(0)) ::
@@ -71,5 +71,19 @@ object BuiltInFunctions {
     BranchLink("free") ::
     Pop(pc) :: Nil
   }
+
+  def printReference(): List[Instruction] = {
+    Label("p_print_reference") ::
+    Push(lr) ::
+    Move(r1, r0) ::
+    Load(r0, LabelOp("p_print_reference")) ::
+    Add(r0, r0, ImmNum(4)) ::
+    BranchLink("printf") ::
+    Move(r0, ImmNum(0)) ::
+    BranchLink("fflush") ::
+    Pop(pc) :: Nil
+  }
+
+
 
 }
