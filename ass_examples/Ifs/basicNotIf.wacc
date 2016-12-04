@@ -1,0 +1,4 @@
+begin
+  int x = 5 ;
+  if (x == 6) then print "yo" else print "no" fi
+end

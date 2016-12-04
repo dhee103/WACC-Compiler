@@ -1,0 +1,9 @@
+begin
+  int x = 1;
+  while x < 2 do
+    print "x is ";
+    println x;
+    x = x + 1
+  done
+end
+
