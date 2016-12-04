@@ -170,8 +170,8 @@ object CodeGen {
     thenBranch :::
     closeThenFrame :::
     StandardBranch(endIfLabel) ::
-    setUpElseFrame :::
     Label(elseBranchLabel) ::
+    setUpElseFrame :::
     elseBranch :::
     closeElseFrame :::
     Label(endIfLabel) :: Nil
