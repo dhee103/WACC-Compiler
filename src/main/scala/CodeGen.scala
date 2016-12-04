@@ -148,9 +148,26 @@ object CodeGen {
         generateAssignmentRHS(rhs) :::
           Store(r0, FramePointerReference(offset)) ::
           Nil
+      case fst: FstNode =>
+//        TODO: Will need to sort out the offset; I think it's offset + 4 in the RegisterStackReference(sp, 4)
+        BuiltInFunctions.nullPointerFlag = true
+        generateAssignmentRHS(rhs) :::
+        Push(r0) ::
+        Load(r0, RegisterStackReference(sp, 4)) ::
+        BranchLink("p_check_null_pointer") ::
+        Add(r0, r0, ImmNum(0)) :: //        Redundant?
+        Push(r0) ::
+        Load(r0, RegisterStackReference(r0)) ::
+        BranchLink("free") ::
+        Move(r0, ImmNum(4)) ::
+        BranchLink("malloc") ::
+        Pop(r1) ::
+        Store(r0, RegisterStackReference(r1)) ::
+        Move(r1, r0) ::
+        Pop(r0) ::
+        Store(r0, RegisterStackReference(r1)) :: Nil
+
       case _ => throw new UnsupportedOperationException("generateAssignment")
-
-
     }
   }
 
