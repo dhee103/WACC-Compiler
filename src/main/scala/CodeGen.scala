@@ -16,6 +16,9 @@ object CodeGen {
     //    Initialise labels with builtin functions
     Labels.addDataMsgLabel("OverflowError: the result is too small/large to " +
       "store in a 4-byte signed-integer.", "p_throw_overflow_error")
+    Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
+    Labels.addDataMsgLabel("\\0", "p_print_ln")
+
 
     AssemblyStack3.createNewScope(prog.symbols.head)
     val statement: StatNode = prog.statChild
@@ -78,6 +81,12 @@ object CodeGen {
     if (PredefinedFunctions.runtimeFlag) {
       output = output ::: LabelData("\n") ::
         PredefinedFunctions.runtimeError()
+
+      if (!PredefinedFunctions.printFlag) {
+        output = output ::: LabelData("\n") ::
+          PredefinedFunctions.printString() ::: LabelData("\n") ::
+          PredefinedFunctions.println()
+      }
     }
 
     output
@@ -122,11 +131,11 @@ object CodeGen {
 
   def genericPrint(value: ExprNode, lnFlag: Boolean): List[Instruction] = {
     PredefinedFunctions.printFlag = true
-    Labels.addDataMsgLabel("\\0", "p_print_ln")
+//    Labels.addDataMsgLabel("\\0", "p_print_ln")
     Labels.addDataMsgLabel("%d\\0", "p_print_int")
     Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
     Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
-    Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
+//    Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
     Labels.addDataMsgLabel("%p\\0", "p_print_reference")
 
     val printLink = value.getType match {
@@ -326,6 +335,8 @@ object CodeGen {
         Load(r0, loadZero, NE) ::
         Load(r0, LoadImmNum(1), EQ) :: Nil
       case NegationNode(argument) =>
+        PredefinedFunctions.arithmeticFlag = true
+
         generateExpression(argument) :::
         ReverseSubNoCarry(r0, r0, zero) ::
         BranchLink("p_throw_overflow_error", VS) :: Nil
@@ -359,6 +370,7 @@ object CodeGen {
                                         ArithmeticBinaryOperationNode):
   List[Instruction] = {
     PredefinedFunctions.arithmeticFlag = true
+    
     val mainInstructions: List[Instruction] = arithBinOp match {
       case arithBin: MulNode =>
         Pop(r1) ::
