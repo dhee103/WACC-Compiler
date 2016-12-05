@@ -116,7 +116,8 @@ object CodeGen {
         throw new UnsupportedOperationException("generateReadNode not implemented")
       case FreeNode(variable) =>
         PredefinedFunctions.freePairFlag = true
-        Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "free_pair")
+        Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "null_check")
+
         generateExpression(variable) :::
         BranchLink("p_free_pair") :: Nil
 //        TODO: do for an array
@@ -197,7 +198,7 @@ object CodeGen {
         generateAssignmentRHS(rhs) :::
           Store(r0, FramePointerReference(offset)) ::
           Nil
-        
+
       case FstNode(expr) =>
         PredefinedFunctions.nullPointerFlag = true
         generateAssignmentRHS(rhs) ::: // r0 = value on rhs

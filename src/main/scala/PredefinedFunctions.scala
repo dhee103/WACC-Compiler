@@ -95,7 +95,7 @@ object PredefinedFunctions {
     Label("p_free_pair") ::
     Push(lr) ::
     Compare(r0, ImmNum(0)) ::
-    Load(r0, LabelOp("p_free_pair"), EQ) :: // add this label before
+    Load(r0, LabelOp("msg_null_check"), EQ) :: // add this label before
     StandardBranch("p_throw_runtime_error", EQ) ::
     Push(r0) ::
     Load(r0, RegisterStackReference(r0)) ::
@@ -112,7 +112,7 @@ object PredefinedFunctions {
     Label("p_print_reference") ::
     Push(lr) ::
     Move(r1, r0) ::
-    Load(r0, LabelOp("p_print_reference")) ::
+    Load(r0, LabelOp("msg_p_print_reference")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("printf") ::
     Move(r0, ImmNum(0)) ::
@@ -124,7 +124,7 @@ object PredefinedFunctions {
     Label("p_check_null_pointer") ::
     Push(lr) ::
     Compare(r0, ImmNum(0)) ::
-    Load(r0, LabelOp("p_check_null_pointer"), EQ) ::
+    Load(r0, LabelOp("msg_null_check"), EQ) ::
     BranchLink("p_throw_runtime_error", EQ) ::
     Pop(pc) :: Nil
   }
@@ -133,11 +133,11 @@ object PredefinedFunctions {
     Label("p_check_array_bounds") ::
     Push(lr) ::
     Compare(r0, ImmNum(0)) ::
-    Load(r0, LabelOp("out_of_bounds_negative_index"), LT) ::
+    Load(r0, LabelOp("msg_out_of_bounds_negative_index"), LT) ::
     BranchLink("p_throw_runtime_error", LT) ::
     Load(r1, RegisterStackReference(r4)) ::
     Compare(r0, r1) ::
-    Load(r0, LabelOp("out_of_bounds_index_too_large"), CS) ::
+    Load(r0, LabelOp("msg_out_of_bounds_index_too_large"), CS) ::
     BranchLink("p_throw_runtime_error", CS) ::
     Pop(pc) :: Nil
   }
