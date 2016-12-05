@@ -3,57 +3,74 @@ import Constants._
 
 object PredefinedFunctions {
 
-  var printFlag: Boolean = false
+  var printFlag:       Boolean = false
 
-  var arithmeticFlag: Boolean = false
+  var arithmeticFlag:  Boolean = false
 
-  var divisionFlag: Boolean = false
+  var divisionFlag:    Boolean = false
 
-  var freePairFlag: Boolean = false
+  var freePairFlag:    Boolean = false
 
-  var freeArrayFlag: Boolean = false
+  var freeArrayFlag:   Boolean = false
 
   var nullPointerFlag: Boolean = false
 
-  var runtimeFlag: Boolean = false
+  var runtimeFlag:     Boolean = false
 
   def println(): List[Instruction] = {
     Label("p_print_ln") ::
-      Push(lr) :: Move(r1, r0) :: Load(r0, LabelOp("msg_p_print_ln")) ::
-      Add(r0, r0, ImmNum(4)) :: BranchLink("puts") :: Move(r0, ImmNum(0)) ::
-      BranchLink("fflush") :: Pop(pc) :: Nil
+    Push(lr) ::
+    Move(r1, r0) ::
+    Load(r0, LabelOp("msg_p_print_ln")) ::
+    Add(r0, r0, ImmNum(4)) ::
+    BranchLink("puts") ::
+    Move(r0, ImmNum(0)) ::
+    BranchLink("fflush") ::
+    Pop(pc) :: Nil
   }
 
   def printInt(): List[Instruction] = {
     Label("p_print_int") ::
-      Push(lr) :: Move(r1, r0) :: Load(r0, LabelOp("msg_p_print_int")) ::
-      Add(r0, r0, ImmNum(4)) :: BranchLink("printf") :: Move(r0, ImmNum(0)) ::
-      BranchLink("fflush") :: Pop(pc) :: Nil
+    Push(lr) ::
+    Move(r1, r0) ::
+    Load(r0, LabelOp("msg_p_print_int")) ::
+    Add(r0, r0, ImmNum(4)) ::
+    BranchLink("printf") ::
+    Move(r0, ImmNum(0)) ::
+    BranchLink("fflush") ::
+    Pop(pc) :: Nil
   }
 
   def printString(): List[Instruction] = {
     Label("p_print_string") ::
-      Push(lr) ::
-      Load(r1, RegisterStackReference(r0)) ::
-      Add(r2, r0, ImmNum(4)) ::
-      Load(r0, LabelOp("msg_p_print_string")) ::
-      Add(r0, r0, ImmNum(4)) ::
-      BranchLink("printf") ::
-      Move(r0, ImmNum(0)) ::
-      BranchLink("fflush") :: Pop(pc) :: Nil
+    Push(lr) ::
+    Load(r1, RegisterStackReference(r0)) ::
+    Add(r2, r0, ImmNum(4)) ::
+    Load(r0, LabelOp("msg_p_print_string")) ::
+    Add(r0, r0, ImmNum(4)) ::
+    BranchLink("printf") ::
+    Move(r0, ImmNum(0)) ::
+    BranchLink("fflush") ::
+    Pop(pc) :: Nil
   }
 
   def printBool(): List[Instruction] = {
     Label("p_print_bool") ::
-      Push(lr) :: Compare(r0, ImmNum(0)) :: Load(r0, LabelOp("msg_p_print_bool_t"),
-      NE) :: Load(r0, LabelOp("msg_p_print_bool_f"), EQ) :: Add(r0, r0, ImmNum(4)) ::
-      BranchLink("printf") :: Move(r0, ImmNum(0)) :: BranchLink("fflush") ::
-      Pop(pc) :: Nil
+    Push(lr) ::
+    Compare(r0, ImmNum(0)) ::
+    Load(r0, LabelOp("msg_p_print_bool_t"), NE) ::
+    Load(r0, LabelOp("msg_p_print_bool_f"), EQ) ::
+    Add(r0, r0, ImmNum(4)) ::
+    BranchLink("printf") ::
+    Move(r0, ImmNum(0)) ::
+    BranchLink("fflush") ::
+    Pop(pc) :: Nil
   }
 
   def overflowError(): List[Instruction] = {
     Label("p_throw_overflow_error") ::
-    Load(r0, LabelOp("msg_p_throw_overflow_error")) :: BranchLink("p_throw_runtime_error") :: Nil
+    Load(r0, LabelOp("msg_p_throw_overflow_error")) ::
+    BranchLink("p_throw_runtime_error") :: Nil
   }
 
   def runtimeError(): List[Instruction] = {
@@ -118,7 +135,7 @@ object PredefinedFunctions {
     BranchLink("p_throw_runtime_error", LT) ::
     Load(r1, RegisterStackReference(r4)) ::
     Compare(r0, r1) ::
-    Load(r0, LabelOp("out_of_bounds_index_too_large"), CS) :: //TODO: Add CS Flag
+    Load(r0, LabelOp("out_of_bounds_index_too_large"), CS) ::
     BranchLink("p_throw_runtime_error", CS) ::
     Pop(pc) :: Nil
   }
@@ -133,9 +150,5 @@ object PredefinedFunctions {
 //  61		LDRCS r0, =msg_1
 //  62		BLCS p_throw_runtime_error
 //  63		POP {pc}
-
-
-
-
 
 }
