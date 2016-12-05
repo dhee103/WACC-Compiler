@@ -174,6 +174,19 @@ object CodeGen {
       Nil
   }
 
+  def generateAssignmentPair(expr: ExprNode, offset: Int = 0): List[Instruction] = {
+    val load =
+      if (offset != 0) Load(r0, RegisterStackReference(r0, offset))
+      else Load(r0, RegisterStackReference(r0))  // r0= address of fst elem
+
+    Push(r0) ::
+    generateExpression(expr) ::: // r0 = address of pair
+    BranchLink("p_check_null_pointer") ::
+    load ::
+    Pop(r1) :: // r1 = value on rhs
+    Store(r1, RegisterStackReference(r0)) :: Nil
+  }
+
   def generateAssignment(assignment: AssignmentNode): List[Instruction] = {
     val lhs = assignment.lhs
     val rhs = assignment.rhs
@@ -184,25 +197,16 @@ object CodeGen {
         generateAssignmentRHS(rhs) :::
           Store(r0, FramePointerReference(offset)) ::
           Nil
+        
       case FstNode(expr) =>
         PredefinedFunctions.nullPointerFlag = true
         generateAssignmentRHS(rhs) ::: // r0 = value on rhs
-        Push(r0) ::
-        generateExpression(expr) ::: // r0 = address of pair
-        BranchLink("p_check_null_pointer") ::
-        Load(r0, RegisterStackReference(r0)) :: // r0= address of fst elem
-        Pop(r1) :: // r1 = value on rhs
-        Store(r1, RegisterStackReference(r0)) :: Nil
+        generateAssignmentPair(expr)
 
       case SndNode(expr) =>
         PredefinedFunctions.nullPointerFlag = true
         generateAssignmentRHS(rhs) ::: // r0 = value on rhs
-        Push(r0) ::
-        generateExpression(expr) ::: // r0 = address of pair
-        BranchLink("p_check_null_pointer") ::
-        Load(r0, RegisterStackReference(r0, 4)) :: // r0= address of snd elem
-        Pop(r1) :: // r1 = value on rhs
-        Store(r1, RegisterStackReference(r0)) :: Nil
+        generateAssignmentPair(expr, WORD_SIZE)
 
       case arr: ArrayElemNode => throw new UnsupportedOperationException("ArraysAssignment")
       case _ => throw new UnsupportedOperationException("generateAssignment")
