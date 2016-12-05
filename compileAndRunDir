@@ -11,7 +11,7 @@
 import sys
 import os
 
-argList = sys.argv # Note that argList[0] is './compileAndRun'
+argList = sys.argv # Note that argList[0] is './compileAndRunDir'
 rootDir = argList[1]
 
 for subDir, dirs, files in os.walk(rootDir):
