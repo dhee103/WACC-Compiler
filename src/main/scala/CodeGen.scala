@@ -190,6 +190,8 @@ object CodeGen {
         Move(r1, r0) ::
         Pop(r0) ::
         Store(r0, RegisterStackReference(r1)) :: Nil
+      case snd: SndNode => throw new UnsupportedOperationException("SndNode LHS")
+      // TODO: Right in the same manner as above and then abstract
 
       case _ => throw new UnsupportedOperationException("generateAssignment")
     }
@@ -271,12 +273,41 @@ object CodeGen {
     Load(r0, RegisterStackReference(r0)) :: Nil
   }
 
+//  def generateStoreArrayELem(value: ExprNode): List[Instruction] = {
+////    Load(r0, LoadImmNum(value)) ::
+//    generateExpression(value) :::
+//    Store(r0, RegisterStackReference(r2, index))
+//
+//  }
+
+  def generateStoreArrayELem(value: (ExprNode, Int)): List[Instruction] = {
+    //    Load(r0, LoadImmNum(value)) :: Store(r0, [r2, #4 * index + 1])
+    generateExpression(value._1) :::
+    Store(r0, RegisterStackReference(r2, WORD_SIZE * (value._2 + 1))) :: Nil
+  }
+
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
     rhs match {
       case rhs: ExprNode => generateExpression(rhs)
       case NewPairNode(fstElem, sndElem) => generateNewPairNode(fstElem, sndElem)
       case FstNode(exprChild) => generateFstNode(exprChild)
       case SndNode(exprChild) => generateSndNode(exprChild)
+      case ArrayLiteralNode(values) =>
+        val numElems = values.length
+        var elemCode: List[Instruction] = Nil
+
+        for (value <- values.zipWithIndex) {
+          elemCode = elemCode ::: generateStoreArrayELem(value)
+        }
+
+        Move(r0, ImmNum(numElems)) ::
+        BranchLink("malloc") ::
+        Move(r2, r0) ::
+        elemCode :::
+        Move(r0, ImmNum(numElems)) ::
+        Store(r0, RegisterStackReference(r2)) ::
+//        Maybe the line below is not needed?
+        Store(r0, RegisterStackReference(sp)) :: Nil
 //        case PairElemNode => Labels.addDataMsgLabel(msg_p_check_null_pointer)
       case _ => throw new UnsupportedOperationException("generate Assignment " +
         "right")
