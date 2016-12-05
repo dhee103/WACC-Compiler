@@ -103,8 +103,25 @@ object CodeGen {
 
     }
 
+    if (PredefinedFunctions.readFlag) {
+      output :::= PredefinedFunctions.readChar()
+    }
+
     output
 
+  }
+
+  def generateReadNode(variable: AssignmentLeftNode): List[Instruction] = {
+    val offset = variable match {
+      case id: IdentNode => AssemblyStack3.getOffsetFor(id)
+      case _ => 0
+    }
+
+    variable match {
+      case v if v.getType.isEquivalentTo(CharTypeNode()) =>
+        PredefinedFunctions.readFlag = true
+        Add(r0, fp, ImmNum(offset)) :: BranchLink("p_read_char") :: Nil
+    }
   }
 
   def generateStatement(statement: StatNode): List[Instruction] = {
@@ -115,9 +132,10 @@ object CodeGen {
         generateDeclaration(stat)
       case stat: AssignmentNode =>
         generateAssignment(stat)
-      case stat: ReadNode =>
-        Labels.addDataMsgLabel(" %c\\0")
-        throw new UnsupportedOperationException("generateReadNode not implemented")
+      case ReadNode(variable) =>
+        Labels.addDataMsgLabel(" %c\\0", "p_read_char")
+        generateReadNode(variable)
+//        throw new UnsupportedOperationException("generateReadNode not implemented")
       case FreeNode(variable) =>
         PredefinedFunctions.freePairFlag = true
 //        Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "null_check")
