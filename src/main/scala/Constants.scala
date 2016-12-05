@@ -1,5 +1,4 @@
 object Constants {
-  //todo: import this everywhere
   val WORD_SIZE = 4
 
   val lr = LinkRegister()
