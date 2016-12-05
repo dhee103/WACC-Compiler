@@ -83,7 +83,7 @@ object CodeGen {
         BuiltInFunctions.freePairFlag = true
         Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "free_pair")
         generateExpression(variable) :::
-          (BranchLink("p_free_pair") :: Nil)
+        BranchLink("p_free_pair") :: Nil
 //        TODO: do for an array
         // TODO: should whatever variable points to be zeroed out?
       case stat: ReturnNode =>
@@ -304,8 +304,6 @@ object CodeGen {
 
   def generateUnaryOperation(unOpNode: UnaryOperationNode): List[Instruction] = {
 
-    //todo for arithmetic instructions, check for overflow / underflow
-
     val mainInstruction = unOpNode match {
       case LogicalNotNode(argument) =>
         generateExpression(argument) :::
@@ -331,7 +329,6 @@ object CodeGen {
   List[Instruction] = {
 
     binOpNode match {
-
       case binOp: ArithmeticBinaryOperationNode =>
         generateArithmeticBinaryOperation(binOp)
       case binOp: OrderComparisonOperationNode =>
@@ -349,30 +346,33 @@ object CodeGen {
   List[Instruction] = {
     BuiltInFunctions.arithmeticFlag = true
     val mainInstructions: List[Instruction] = arithBinOp match {
-      case arithBin: MulNode => Pop(r1) ::
+      case arithBin: MulNode =>
+        Pop(r1) ::
         SMull(r0, r1, r0, r1) :: Nil
-      case arithBin: DivNode => Pop(r1) ::
+      case arithBin: DivNode =>
+        Pop(r1) ::
         SDiv(r0, r0, r1) :: Nil
-      case arithBin: ModNode => throw new UnsupportedOperationException("generate mod")
-
-      case arithBin: PlusNode => Pop(r1) ::
+      case arithBin: ModNode =>
+        throw new UnsupportedOperationException("generate mod")
+      case arithBin: PlusNode =>
+        Pop(r1) ::
         Add(r0, r0, r1) :: Nil
-      case arithBin: MinusNode => Pop(r1) ::
+      case arithBin: MinusNode =>
+        Pop(r1) ::
         Sub(r0, r0, r1) :: Nil
     }
 
     generateExpression(arithBinOp.rightExpr) :::
-      (Push(r0) :: Nil) :::
-      generateExpression(arithBinOp.leftExpr) :::
-      mainInstructions :::
-      BranchLink("p_throw_overflow_error", VS) :: Nil
+    Push(r0) ::
+    generateExpression(arithBinOp.leftExpr) :::
+    mainInstructions :::
+    BranchLink("p_throw_overflow_error", VS) :: Nil
   }
 
   def generateOrderComparisonOperation(orderOp: OrderComparisonOperationNode)
   : List[Instruction] = {
 
     val comparisonInstrs: List[Instruction] = orderOp match {
-
       case orderBin: GreaterThanNode =>
         Load(r0, LoadImmNum(1), GT) :: Load(r0, LoadImmNum(0), LE) :: Nil
       case orderBin: GreaterEqualNode =>
@@ -381,13 +381,14 @@ object CodeGen {
         Load(r0, LoadImmNum(1), LT) :: Load(r0, LoadImmNum(0), GE) :: Nil
       case orderBin: LessEqualNode =>
         Load(r0, LoadImmNum(1), LE) :: Load(r0, LoadImmNum(0), GT) :: Nil
-
     }
 
-    generateExpression(orderOp.rightExpr) ::: (Push(r0) :: Nil) :::
-      generateExpression(orderOp.leftExpr) :::
-      (Pop(r1) :: Compare(r0, r1) :: Nil) :::
-      comparisonInstrs
+    generateExpression(orderOp.rightExpr) :::
+    Push(r0) ::
+    generateExpression(orderOp.leftExpr) :::
+    Pop(r1) ::
+    Compare(r0, r1) ::
+    comparisonInstrs
 
   }
 
@@ -395,17 +396,18 @@ object CodeGen {
   List[Instruction] = {
 
     val comparisonInstrs: List[Instruction] = compOp match {
-
       case compBin: DoubleEqualNode =>
         Load(r0, LoadImmNum(1), EQ) :: Load(r0, LoadImmNum(0), NE) :: Nil
       case compBin: NotEqualNode =>
         Load(r0, LoadImmNum(1), NE) :: Load(r0, LoadImmNum(0), EQ) :: Nil
     }
 
-    generateExpression(compOp.rightExpr) ::: (Push(r0) :: Nil) :::
-      generateExpression(compOp.leftExpr) :::
-      (Pop(r1) :: Compare(r0, r1) :: Nil) :::
-      comparisonInstrs
+    generateExpression(compOp.rightExpr) :::
+    Push(r0) ::
+    generateExpression(compOp.leftExpr) :::
+    Pop(r1) ::
+    Compare(r0, r1) ::
+    comparisonInstrs
 
   }
 
@@ -421,10 +423,10 @@ object CodeGen {
     }
 
     generateExpression(boolOp.rightExpr) :::
-      (Push(r0) :: Nil) :::
-      generateExpression(boolOp.leftExpr) :::
-      (Pop(r1) :: Nil) :::
-      mainInstruction
+    Push(r0) ::
+    generateExpression(boolOp.leftExpr) :::
+    Pop(r1) ::
+    mainInstruction
 
   }
 
