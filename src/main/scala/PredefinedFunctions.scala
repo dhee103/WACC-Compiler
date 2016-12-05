@@ -3,7 +3,9 @@ import Constants._
 
 object PredefinedFunctions {
 
-  val checkArrayBoundsFlag: Boolean = false
+  var readFlag: Boolean = false
+
+  var checkArrayBoundsFlag: Boolean = false
 
   var printFlag:       Boolean = false
 
@@ -151,5 +153,16 @@ object PredefinedFunctions {
     BranchLink("scanf") ::
     Pop(pc) :: Nil
   }
+
+//  TODO: Abstract away commonality between readChar and readInt
+  def readInt(): List[Instruction] = {
+    Label("p_read_int") ::
+    Move(r1, r0) ::
+    Load(r0, LabelOp("msg_p_print_int")) ::
+    Add(r0, r0, ImmNum(4)) ::
+    BranchLink("scanf") ::
+    Pop(pc) :: Nil
+  }
+
 
 }
