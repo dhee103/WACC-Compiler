@@ -1,6 +1,6 @@
 object Condition extends Enumeration {
   type  Condition = Value
-  val EQ, NEQ, NE, VS, VC, LS, HI, LT, GT, LE, GE = Value
+  val EQ, NEQ, CS, NE, VS, VC, LS, HI, LT, GT, LE, GE = Value
   val AL = Value("")
 }
 
