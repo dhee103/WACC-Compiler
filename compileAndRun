@@ -49,6 +49,7 @@ os.system("arm-linux-gnueabi-gcc -o "
 print("Output of running", fileName + ":")
 print()
 os.system("qemu-arm -L /usr/arm-linux-gnueabi/ " + fileName) # run through emulator
+print()
 
 # Clean up
 os.system("rm " + fileName)
