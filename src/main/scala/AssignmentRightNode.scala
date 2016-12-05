@@ -2,7 +2,7 @@ trait AssignmentRightNode extends AstNode {
   def getType: TypeNode
 }
 
-case class NewPairNode(val fstElem: ExprNode, val sndElem: ExprNode) extends AssignmentRightNode {
+case class NewPairNode(fstElem: ExprNode, sndElem: ExprNode) extends AssignmentRightNode {
   override def getType: TypeNode = {
     val fstElemType = fstElem.getType
     val sndElemType = sndElem.getType
@@ -10,7 +10,7 @@ case class NewPairNode(val fstElem: ExprNode, val sndElem: ExprNode) extends Ass
   }
 }
 
-case class CallNode(val id: IdentNode, val argList: Option[ArgListNode]) extends AssignmentRightNode with ScopeExtender {
+case class CallNode(id: IdentNode, argList: Option[ArgListNode]) extends AssignmentRightNode with ScopeExtender {
   override def getType: TypeNode = {
     val paramTypeList: List[TypeNode] = FunctionTable.getParamTypes(id)
 
