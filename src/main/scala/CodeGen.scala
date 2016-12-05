@@ -185,9 +185,6 @@ object CodeGen {
           Store(r0, FramePointerReference(offset)) ::
           Nil
       case FstNode(expr) =>
-//        TODO: Will need to sort out the offset; I think it's offset + 4 in the RegisterStackReference(sp, 4)
-//        val
-
         PredefinedFunctions.nullPointerFlag = true
         generateAssignmentRHS(rhs) ::: // r0 = value on rhs
         Push(r0) ::
@@ -197,8 +194,15 @@ object CodeGen {
         Pop(r1) :: // r1 = value on rhs
         Store(r1, RegisterStackReference(r0)) :: Nil
 
-      case snd: SndNode => throw new UnsupportedOperationException("SndNode LHS")
-      // TODO: Right in the same manner as above and then abstract
+      case SndNode(expr) =>
+        PredefinedFunctions.nullPointerFlag = true
+        generateAssignmentRHS(rhs) ::: // r0 = value on rhs
+        Push(r0) ::
+        generateExpression(expr) ::: // r0 = address of pair
+        BranchLink("p_check_null_pointer") ::
+        Load(r0, RegisterStackReference(r0, 4)) :: // r0= address of snd elem
+        Pop(r1) :: // r1 = value on rhs
+        Store(r1, RegisterStackReference(r0)) :: Nil
 
       case arr: ArrayElemNode => throw new UnsupportedOperationException("ArraysAssignment")
       case _ => throw new UnsupportedOperationException("generateAssignment")
