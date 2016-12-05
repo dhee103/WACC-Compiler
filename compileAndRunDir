@@ -19,5 +19,6 @@ for subDir, dirs, files in os.walk(rootDir):
         filePath = subDir + os.sep + file
         os.system("./compileAndRun " + filePath)
         print('\n')
-        input("Press Enter to continue onto the next file.\n")
+        input("Press Enter to continue onto the next file.")
+        print('\n\n\n\n\n')
         os.system("clear")
