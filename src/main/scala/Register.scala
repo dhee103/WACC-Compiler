@@ -41,3 +41,13 @@ case class R2() extends Register {
 
   override def toString() = "r2"
 }
+
+case class R3() extends Register {
+
+  override def toString() = "r3"
+}
+
+case class R4() extends Register {
+
+  override def toString() = "r4"
+}
