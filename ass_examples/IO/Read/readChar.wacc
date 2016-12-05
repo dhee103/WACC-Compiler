@@ -1,0 +1,5 @@
+begin
+  char c = '0';
+  read c ;
+  print(c)
+end
