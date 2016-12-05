@@ -1,7 +1,7 @@
 import Condition._
 import Constants._
 
-object BuiltInFunctions {
+object PredefinedFunctions {
 
   var printFlag: Boolean = false
 

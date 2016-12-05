@@ -38,31 +38,31 @@ object CodeGen {
       Pop(fp) ::
       poppc :: ltorg :: Nil)
 
-    if (BuiltInFunctions.printFlag) {
+    if (PredefinedFunctions.printFlag) {
       output = output ::: LabelData("\n") ::
-        BuiltInFunctions.printString() ::: LabelData("\n") ::
-        BuiltInFunctions.printInt() ::: LabelData("\n") ::
-        BuiltInFunctions.printBool() ::: LabelData("\n") ::
-        BuiltInFunctions.println() ::: LabelData("\n") ::
-        BuiltInFunctions.printReference()
+        PredefinedFunctions.printString() ::: LabelData("\n") ::
+        PredefinedFunctions.printInt() ::: LabelData("\n") ::
+        PredefinedFunctions.printBool() ::: LabelData("\n") ::
+        PredefinedFunctions.println() ::: LabelData("\n") ::
+        PredefinedFunctions.printReference()
     }
 
-    if (BuiltInFunctions.arithmeticFlag) {
+    if (PredefinedFunctions.arithmeticFlag) {
       output = output ::: LabelData("\n") ::
-        BuiltInFunctions.overflowError() ::: LabelData("\n") ::
-        BuiltInFunctions.runtimeError()
+        PredefinedFunctions.overflowError() ::: LabelData("\n") ::
+        PredefinedFunctions.runtimeError()
     }
 
-    if (BuiltInFunctions.freePairFlag) {
+    if (PredefinedFunctions.freePairFlag) {
       output = output ::: LabelData("\n") ::
-      BuiltInFunctions.freePair() ::: LabelData("\n") ::
-      BuiltInFunctions.runtimeError()
+      PredefinedFunctions.freePair() ::: LabelData("\n") ::
+      PredefinedFunctions.runtimeError()
     }
 
-    if (BuiltInFunctions.nullPointerFlag) {
+    if (PredefinedFunctions.nullPointerFlag) {
       output = output ::: LabelData("\n") ::
-      BuiltInFunctions.checkNullPointer() ::: LabelData("\n") ::
-      BuiltInFunctions.runtimeError()
+      PredefinedFunctions.checkNullPointer() ::: LabelData("\n") ::
+      PredefinedFunctions.runtimeError()
     }
 
     output
@@ -80,7 +80,7 @@ object CodeGen {
       case stat: ReadNode =>
         throw new UnsupportedOperationException("generateReadNode not implemented")
       case FreeNode(variable) =>
-        BuiltInFunctions.freePairFlag = true
+        PredefinedFunctions.freePairFlag = true
         Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "free_pair")
         generateExpression(variable) :::
         BranchLink("p_free_pair") :: Nil
@@ -106,7 +106,7 @@ object CodeGen {
   }
 
   def genericPrint(value: ExprNode, lnFlag: Boolean): List[Instruction] = {
-    BuiltInFunctions.printFlag = true
+    PredefinedFunctions.printFlag = true
     Labels.addDataMsgLabel("\\0", "p_print_ln")
     Labels.addDataMsgLabel("%d\\0", "p_print_int")
     Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
@@ -150,7 +150,7 @@ object CodeGen {
           Nil
       case fst: FstNode =>
 //        TODO: Will need to sort out the offset; I think it's offset + 4 in the RegisterStackReference(sp, 4)
-        BuiltInFunctions.nullPointerFlag = true
+        PredefinedFunctions.nullPointerFlag = true
         generateAssignmentRHS(rhs) :::
         Push(r0) ::
         Load(r0, RegisterStackReference(sp, 4)) ::
@@ -231,7 +231,7 @@ object CodeGen {
 
 
   def generateFstNode(exprChild: ExprNode): List[Instruction] = {
-    BuiltInFunctions.nullPointerFlag = true
+    PredefinedFunctions.nullPointerFlag = true
     generateExpression(exprChild) :::
     BranchLink("p_check_null_pointer") ::
     Load(r0, RegisterStackReference(r0)) ::
@@ -240,7 +240,7 @@ object CodeGen {
   }
 
   def generateSndNode(exprChild: ExprNode): List[Instruction] = {
-    BuiltInFunctions.nullPointerFlag = true
+    PredefinedFunctions.nullPointerFlag = true
     generateExpression(exprChild) :::
     BranchLink("p_check_null_pointer") ::
     Load(r0, RegisterStackReference(r0, 4)) ::
@@ -344,7 +344,7 @@ object CodeGen {
   def generateArithmeticBinaryOperation(arithBinOp:
                                         ArithmeticBinaryOperationNode):
   List[Instruction] = {
-    BuiltInFunctions.arithmeticFlag = true
+    PredefinedFunctions.arithmeticFlag = true
     val mainInstructions: List[Instruction] = arithBinOp match {
       case arithBin: MulNode =>
         Pop(r1) ::
