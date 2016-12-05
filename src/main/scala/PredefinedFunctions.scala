@@ -110,6 +110,31 @@ object PredefinedFunctions {
     Pop(pc) :: Nil
   }
 
+  def checkArrayBounds(): List[Instruction] = {
+    Label("p_check_array_bounds") ::
+    Push(lr) ::
+    Compare(r0, ImmNum(0)) ::
+    Load(r0, LabelOp("out_of_bounds_negative_index"), LT) ::
+    BranchLink("p_throw_runtime_error", LT) ::
+    Load(r1, RegisterStackReference(r4)) ::
+    Compare(r0, r1) ::
+    Load(r0, LabelOp("out_of_bounds_index_too_large"), CS) :: //TODO: Add CS Flag
+    BranchLink("p_throw_runtime_error", CS) ::
+    Pop(pc) :: Nil
+  }
+
+//  p_check_array_bounds:
+//  55		PUSH {lr}
+//  56		CMP r0, #0
+//  57		LDRLT r0, =msg_0
+//  58		BLLT p_throw_runtime_error
+//  59		LDR r1, [r4]
+//  60		CMP r0, r1
+//  61		LDRCS r0, =msg_1
+//  62		BLCS p_throw_runtime_error
+//  63		POP {pc}
+
+
 
 
 
