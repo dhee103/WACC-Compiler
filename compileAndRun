@@ -14,6 +14,9 @@ def printFile(filePath):
         lineCount += 1
     f.close()    
 
+def sanitiseExitCode(code):
+  return (code & 0xFF00)  >> 8
+
 # Execution begins
 
 import sys
@@ -31,7 +34,7 @@ printFile(inputFilePath)
 
 print("Compiling", inputFilePath, "to assembly...")
 exitCode = os.system("./compile " + inputFilePath) # pass input through wacc compiler
-print("Compiler exit code:", exitCode)
+print("Compiler exit code:", sanitiseExitCode(exitCode))
 if exitCode != 0:
     sys.exit()
 
@@ -48,8 +51,9 @@ os.system("arm-linux-gnueabi-gcc -o "
 
 print("Output of running", fileName + ":")
 print()
-os.system("qemu-arm -L /usr/arm-linux-gnueabi/ " + fileName) # run through emulator
+qExitCode = os.system("qemu-arm -L /usr/arm-linux-gnueabi/ " + fileName) # run through emulator
 print()
+print("Runtime exit code:", sanitiseExitCode(qExitCode))
 
 # Clean up
 os.system("rm " + fileName)
