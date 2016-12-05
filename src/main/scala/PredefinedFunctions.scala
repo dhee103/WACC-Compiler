@@ -19,36 +19,36 @@ object PredefinedFunctions {
 
   def println(): List[Instruction] = {
     Label("p_print_ln") ::
-      pushlr :: Move(r1, r0) :: Load(r0, LabelOp("msg_p_print_ln")) ::
+      Push(lr) :: Move(r1, r0) :: Load(r0, LabelOp("msg_p_print_ln")) ::
       Add(r0, r0, ImmNum(4)) :: BranchLink("puts") :: Move(r0, ImmNum(0)) ::
-      BranchLink("fflush") :: poppc :: Nil
+      BranchLink("fflush") :: Pop(pc) :: Nil
   }
 
   def printInt(): List[Instruction] = {
     Label("p_print_int") ::
-      pushlr :: Move(r1, r0) :: Load(r0, LabelOp("msg_p_print_int")) ::
+      Push(lr) :: Move(r1, r0) :: Load(r0, LabelOp("msg_p_print_int")) ::
       Add(r0, r0, ImmNum(4)) :: BranchLink("printf") :: Move(r0, ImmNum(0)) ::
-      BranchLink("fflush") :: poppc :: Nil
+      BranchLink("fflush") :: Pop(pc) :: Nil
   }
 
   def printString(): List[Instruction] = {
     Label("p_print_string") ::
-      pushlr ::
+      Push(lr) ::
       Load(r1, RegisterStackReference(r0)) ::
       Add(r2, r0, ImmNum(4)) ::
       Load(r0, LabelOp("msg_p_print_string")) ::
       Add(r0, r0, ImmNum(4)) ::
       BranchLink("printf") ::
       Move(r0, ImmNum(0)) ::
-      BranchLink("fflush") :: poppc :: Nil
+      BranchLink("fflush") :: Pop(pc) :: Nil
   }
 
   def printBool(): List[Instruction] = {
     Label("p_print_bool") ::
-      pushlr :: Compare(r0, ImmNum(0)) :: Load(r0, LabelOp("msg_p_print_bool_t"),
+      Push(lr) :: Compare(r0, ImmNum(0)) :: Load(r0, LabelOp("msg_p_print_bool_t"),
       NE) :: Load(r0, LabelOp("msg_p_print_bool_f"), EQ) :: Add(r0, r0, ImmNum(4)) ::
       BranchLink("printf") :: Move(r0, ImmNum(0)) :: BranchLink("fflush") ::
-      poppc :: Nil
+      Pop(pc) :: Nil
   }
 
   def overflowError(): List[Instruction] = {

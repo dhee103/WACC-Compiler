@@ -31,15 +31,16 @@ object CodeGen {
       Directive("text\n") ::
       Directive("global main") ::
       Label("main") ::
-      pushlr ::
+      Push(lr) ::
       Push(fp) ::
       Move(fp, sp) ::
       Sub(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
       statGeneration :::
       Add(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
-      (Move(r0, zero) ::
+      Move(r0, zero) ::
       Pop(fp) ::
-      poppc :: ltorg :: Nil)
+      Pop(pc) ::
+      Directive("ltorg") :: Nil
 
     if (PredefinedFunctions.printFlag) {
       output = output ::: LabelData("\n") ::

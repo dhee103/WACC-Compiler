@@ -14,7 +14,4 @@ object Constants {
 
   val zero = ImmNum(0)
   val loadZero = LoadImmNum(0)
-  val pushlr = Push(lr)  //todo: remove these unneeded variables
-  val poppc = Pop(pc)
-  val ltorg = Directive("ltorg")
 }
