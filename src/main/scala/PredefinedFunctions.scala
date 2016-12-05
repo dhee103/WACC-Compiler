@@ -142,15 +142,14 @@ object PredefinedFunctions {
     Pop(pc) :: Nil
   }
 
-//  p_check_array_bounds:
-//  55		PUSH {lr}
-//  56		CMP r0, #0
-//  57		LDRLT r0, =msg_0
-//  58		BLLT p_throw_runtime_error
-//  59		LDR r1, [r4]
-//  60		CMP r0, r1
-//  61		LDRCS r0, =msg_1
-//  62		BLCS p_throw_runtime_error
-//  63		POP {pc}
+  def readChar(): List[Instruction] = {
+    Label("p_read_char") ::
+    Push(lr) ::
+    Move(r1, r0) ::
+    Load(r0, LabelOp("msg_p_read_char")) ::
+    Add(r0, r0, ImmNum(4)) ::
+    BranchLink("scanf") ::
+    Pop(pc) :: Nil
+  }
 
 }

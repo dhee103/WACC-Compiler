@@ -18,6 +18,9 @@ object CodeGen {
       "store in a 4-byte signed-integer.", "p_throw_overflow_error")
     Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
     Labels.addDataMsgLabel("\\0", "p_print_ln")
+    Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "null_check")
+
+//    remove
 
 
     AssemblyStack3.createNewScope(prog.symbols.head)
@@ -113,10 +116,11 @@ object CodeGen {
       case stat: AssignmentNode =>
         generateAssignment(stat)
       case stat: ReadNode =>
+        Labels.addDataMsgLabel(" %c\\0")
         throw new UnsupportedOperationException("generateReadNode not implemented")
       case FreeNode(variable) =>
         PredefinedFunctions.freePairFlag = true
-        Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "null_check")
+//        Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "null_check")
 
         generateExpression(variable) :::
         BranchLink("p_free_pair") :: Nil
@@ -155,7 +159,7 @@ object CodeGen {
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
       case t if t.isEquivalentTo(BoolTypeNode()) => BranchLink("p_print_bool")
       case t if t.isEquivalentTo(CharTypeNode()) => BranchLink("putchar")
-//      case t if t.isEquivalentTo(ArrayLiteralNode()) =>
+//      case t if t.isEquivalentTo(ArrayTypeNode(AnyTypeNode())) =>
       case _ => BranchLink("p_print_reference")
 
 
