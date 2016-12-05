@@ -7,11 +7,15 @@ object PredefinedFunctions {
 
   var arithmeticFlag: Boolean = false
 
+  var divisionFlag: Boolean = false
+
   var freePairFlag: Boolean = false
 
   var freeArrayFlag: Boolean = false
 
   var nullPointerFlag: Boolean = false
+
+  var runtimeFlag: Boolean = false
 
   def println(): List[Instruction] = {
     Label("p_print_ln") ::
@@ -49,12 +53,23 @@ object PredefinedFunctions {
 
   def overflowError(): List[Instruction] = {
     Label("p_throw_overflow_error") ::
-      Load(r0, LabelOp("msg_p_throw_overflow_error")) :: BranchLink("p_throw_runtime_error") :: Nil
+    Load(r0, LabelOp("msg_p_throw_overflow_error")) :: BranchLink("p_throw_runtime_error") :: Nil
   }
 
   def runtimeError(): List[Instruction] = {
     Label("p_throw_runtime_error") ::
-      Move(r0, ImmNum(-1)) :: BranchLink("exit") :: Nil
+    BranchLink("p_print_string") ::
+    Move(r0, ImmNum(-1)) ::
+    BranchLink("exit") :: Nil
+  }
+
+  def checkDivByZero(): List[Instruction] = {
+    Label("p_check_divide_by_zero") ::
+    Push(lr) ::
+    Compare(r1, ImmNum(0)) ::
+    Load(r0, LabelOp("msg_p_check_divide_by_zero"), EQ) ::
+    BranchLink("p_throw_runtime_error", EQ) ::
+    Pop(pc) :: Nil
   }
 
   def freePair(): List[Instruction] = {

@@ -48,21 +48,36 @@ object CodeGen {
     }
 
     if (PredefinedFunctions.arithmeticFlag) {
+      PredefinedFunctions.runtimeFlag = true
+
       output = output ::: LabelData("\n") ::
-        PredefinedFunctions.overflowError() ::: LabelData("\n") ::
-        PredefinedFunctions.runtimeError()
+        PredefinedFunctions.overflowError() ::: LabelData("\n") :: Nil
+    }
+
+    if (PredefinedFunctions.divisionFlag) {
+      PredefinedFunctions.runtimeFlag = true
+
+      output = output ::: LabelData("\n") ::
+      PredefinedFunctions.checkDivByZero() ::: LabelData("\n") :: Nil
     }
 
     if (PredefinedFunctions.freePairFlag) {
+      PredefinedFunctions.runtimeFlag = true
+
       output = output ::: LabelData("\n") ::
-      PredefinedFunctions.freePair() ::: LabelData("\n") ::
-      PredefinedFunctions.runtimeError()
+      PredefinedFunctions.freePair() ::: LabelData("\n") :: Nil
     }
 
     if (PredefinedFunctions.nullPointerFlag) {
+      PredefinedFunctions.runtimeFlag = true
+
       output = output ::: LabelData("\n") ::
-      PredefinedFunctions.checkNullPointer() ::: LabelData("\n") ::
-      PredefinedFunctions.runtimeError()
+      PredefinedFunctions.checkNullPointer() ::: LabelData("\n") :: Nil
+    }
+
+    if (PredefinedFunctions.runtimeFlag) {
+      output = output ::: LabelData("\n") ::
+        PredefinedFunctions.runtimeError()
     }
 
     output
@@ -350,8 +365,12 @@ object CodeGen {
         Pop(r1) ::
         SMull(r0, r1, r0, r1) :: Nil
       case arithBin: DivNode =>
+        Labels.addDataMsgLabel("DivideByZeroError: divide or modulo by zero\\n\\0", "p_check_divide_by_zero")
+        PredefinedFunctions.divisionFlag = true
+
         Pop(r1) ::
-        SDiv(r0, r0, r1) :: Nil
+        BranchLink("p_check_divide_by_zero") ::
+        BranchLink("__aeabi_idiv") :: Nil
       case arithBin: ModNode =>
         throw new UnsupportedOperationException("generate mod")
       case arithBin: PlusNode =>
