@@ -1,0 +1,52 @@
+#!/usr/bin/python3
+
+# Input:  Path to a given wacc program. This is validated. 
+# Output: Exit code of wacc compiler.
+#         If wacc program is valid:
+#           Generated Assembly to terminal, Output of qemu to terminal
+# All generated assembly and binary files will be cleaned by default
+
+def printFile(filePath):
+    f = open(filePath)
+    lineCount = 0
+    for line in iter(f):
+        print(lineCount, ":", line, end="")
+        lineCount += 1
+    f.close()    
+
+# Execution begins
+
+import sys
+import os
+
+argList = sys.argv # Note that argList[0] is './compileAndRun'
+inputFilePath = argList[1]
+if not inputFilePath.endswith(".wacc"):
+    print(inputFilePath, "is not a .wacc file.")
+    sys.exit()
+fileName = inputFilePath.rpartition('/')[2].rpartition('.wacc')[0]
+
+print("Compiling", inputFilePath, "to assembly...")
+exitCode = os.system("./compile " + inputFilePath) # pass input through wacc compiler
+print("Compiler exit code:", exitCode)
+if exitCode != 0:
+    sys.exit()
+
+print()
+print("Assembly File:\n")
+printFile(fileName + ".s")
+print()
+
+print("Assembling", fileName + ".s", "to binary...")
+os.system("arm-linux-gnueabi-gcc -o "
+          + fileName +
+          " -mcpu=arm1176jzf-s -mtune=arm1176jzf-s "
+          + fileName + ".s") # assemble .s file into binary
+
+print("Output of running", fileName + ":")
+print()
+os.system("qemu-arm -L /usr/arm-linux-gnueabi/ " + fileName) # run through emulator
+
+# Clean up
+os.system("rm " + fileName)
+os.system("rm " + fileName + ".s")
