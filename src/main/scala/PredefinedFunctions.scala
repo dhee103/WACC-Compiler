@@ -3,10 +3,6 @@ import Constants._
 
 object PredefinedFunctions {
 
-  var readFlag: Boolean = false
-
-  var checkArrayBoundsFlag: Boolean = false
-
   var printFlag:       Boolean = false
 
   var arithmeticFlag:  Boolean = false
@@ -17,9 +13,15 @@ object PredefinedFunctions {
 
   var freeArrayFlag:   Boolean = false
 
+  var runtimeFlag:     Boolean = false
+
   var nullPointerFlag: Boolean = false
 
-  var runtimeFlag:     Boolean = false
+  var checkArrayBoundsFlag: Boolean = false
+
+  var readCharFlag: Boolean = false
+
+  var readIntFlag: Boolean = false
 
   def println(): List[Instruction] = {
     Label("p_print_ln") ::
@@ -157,8 +159,9 @@ object PredefinedFunctions {
 //  TODO: Abstract away commonality between readChar and readInt
   def readInt(): List[Instruction] = {
     Label("p_read_int") ::
+    Push(lr) ::
     Move(r1, r0) ::
-    Load(r0, LabelOp("msg_p_print_int")) ::
+    Load(r0, LabelOp("msg_p_read_int")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("scanf") ::
     Pop(pc) :: Nil

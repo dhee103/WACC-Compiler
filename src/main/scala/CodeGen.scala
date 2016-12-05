@@ -103,8 +103,12 @@ object CodeGen {
 
     }
 
-    if (PredefinedFunctions.readFlag) {
-      output :::= PredefinedFunctions.readChar()
+    if (PredefinedFunctions.readCharFlag) {
+      output = output ::: LabelData("\n") :: PredefinedFunctions.readChar()
+    }
+
+    if (PredefinedFunctions.readIntFlag) {
+      output = output ::: LabelData("\n") :: PredefinedFunctions.readInt()
     }
 
     output
@@ -119,8 +123,13 @@ object CodeGen {
 
     variable match {
       case v if v.getType.isEquivalentTo(CharTypeNode()) =>
-        PredefinedFunctions.readFlag = true
+        Labels.addDataMsgLabel(" %c\\0", "p_read_char")
+        PredefinedFunctions.readCharFlag = true
         Add(r0, fp, ImmNum(offset)) :: BranchLink("p_read_char") :: Nil
+      case v if v.getType.isEquivalentTo(IntTypeNode()) =>
+        Labels.addDataMsgLabel("%d\\0", "p_read_int")
+        PredefinedFunctions.readIntFlag = true
+        Add(r0, fp, ImmNum(offset)) :: BranchLink("p_read_int") :: Nil
     }
   }
 
@@ -133,7 +142,7 @@ object CodeGen {
       case stat: AssignmentNode =>
         generateAssignment(stat)
       case ReadNode(variable) =>
-        Labels.addDataMsgLabel(" %c\\0", "p_read_char")
+
         generateReadNode(variable)
 //        throw new UnsupportedOperationException("generateReadNode not implemented")
       case FreeNode(variable) =>
