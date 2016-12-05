@@ -319,15 +319,16 @@ object CodeGen {
 
   def generateUnaryOperation(unOpNode: UnaryOperationNode): List[Instruction] = {
 
-    val mainInstruction = unOpNode match {
+    unOpNode match {
       case LogicalNotNode(argument) =>
         generateExpression(argument) :::
-        (Compare(r0, zero) ::
-          Load(r0, loadZero, NE) ::
-          Load(r0, LoadImmNum(1), EQ) :: Nil)
+        Compare(r0, zero) ::
+        Load(r0, loadZero, NE) ::
+        Load(r0, LoadImmNum(1), EQ) :: Nil
       case NegationNode(argument) =>
         generateExpression(argument) :::
-        (ReverseSubNoCarry(r0, r0, zero) :: Nil)
+        ReverseSubNoCarry(r0, r0, zero) ::
+        BranchLink("p_throw_overflow_error", VS) :: Nil
       case LenNode(argument) => throw new
           UnsupportedOperationException("generate len")
       case OrdNode(argument) =>
@@ -335,8 +336,6 @@ object CodeGen {
       case ChrNode(argument) =>
         generateExpression(argument) // Don't need to do anything else
     }
-
-    mainInstruction ::: BranchLink("p_throw_overflow_error", VS) :: Nil
 
   }
 
@@ -372,7 +371,13 @@ object CodeGen {
         BranchLink("p_check_divide_by_zero") ::
         BranchLink("__aeabi_idiv") :: Nil
       case arithBin: ModNode =>
-        throw new UnsupportedOperationException("generate mod")
+        Labels.addDataMsgLabel("DivideByZeroError: divide or modulo by zero\\n\\0", "p_check_divide_by_zero")
+        PredefinedFunctions.divisionFlag = true
+
+        Pop(r1) ::
+        BranchLink("p_check_divide_by_zero") ::
+        BranchLink("__aeabi_idivmod") ::
+        Move(r0, r1) ::  Nil
       case arithBin: PlusNode =>
         Pop(r1) ::
         Add(r0, r0, r1) :: Nil
