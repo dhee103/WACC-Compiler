@@ -11,29 +11,29 @@ object Labels {
 
   val dataMsgMap = LinkedHashMap[String, MutableList[String]]()
 
-  def getStreamHead(): Int = {
+  def getStreamHead: Int = {
     val head = stream.head
     stream = stream.tail
     head
   }
 
   def getLabel(str: String): (String, String) = {
-    val head = getStreamHead()
+    val head = getStreamHead
     (str ++ head.toString() ++ "start", str ++ head.toString() ++ "end")
   }
 
   def getIfLabels: (String, String) = {
-    val head = getStreamHead()
+    val head = getStreamHead
     (s"if_stat${head}_else", s"if_stat${head}_end")
   }
 
   def getWhileLabels: (String, String) = {
-    val head = getStreamHead()
+    val head = getStreamHead
     (s"while_loop${head}_start", s"while_loop${head}_end")
   }
 
   def addMessageLabel(str: String): Unit = {
-    val head = getStreamHead()
+    val head = getStreamHead
     addMessageLabel(str, head.toString)
   }
 
@@ -42,7 +42,7 @@ object Labels {
       MutableList[String](s".word ${getSize(str)}", f""".ascii \"$str\""""))
   }
 
-  def getMessageLabel(): String = {
+  def getMessageLabel: String = {
     msgMap.last._1
   }
 
@@ -96,6 +96,7 @@ object Labels {
       if (s != '\\') count += 1
       // todo: this won't work when we have escaped backslashes in the string?
       // todo: fix this
+      // is there a reason why we don't just use str.size where appropriate?
     }
     count
   }
