@@ -26,6 +26,9 @@ if not inputFilePath.endswith(".wacc"):
     sys.exit()
 fileName = inputFilePath.rpartition('/')[2].rpartition('.wacc')[0]
 
+print("Input .wacc file:\n")
+printFile(inputFilePath)
+
 print("Compiling", inputFilePath, "to assembly...")
 exitCode = os.system("./compile " + inputFilePath) # pass input through wacc compiler
 print("Compiler exit code:", exitCode)
