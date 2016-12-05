@@ -3,6 +3,8 @@ import Constants._
 
 object PredefinedFunctions {
 
+  val checkArrayBoundsFlag: Boolean = false
+
   var printFlag:       Boolean = false
 
   var arithmeticFlag:  Boolean = false

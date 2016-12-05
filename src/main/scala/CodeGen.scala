@@ -90,6 +90,16 @@ object CodeGen {
       }
     }
 
+    if (PredefinedFunctions.checkArrayBoundsFlag) {
+//      2	msg_0:
+//      3		.word 44
+//      4		.ascii	"ArrayIndexOutOfBoundsError: negative index\n\0"
+//      5	msg_1:
+//      6		.word 45
+//      7		.ascii	"ArrayIndexOutOfBoundsError: index too large\n\0"
+
+    }
+
     output
 
   }
@@ -144,6 +154,7 @@ object CodeGen {
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
       case t if t.isEquivalentTo(BoolTypeNode()) => BranchLink("p_print_bool")
       case t if t.isEquivalentTo(CharTypeNode()) => BranchLink("putchar")
+//      case t if t.isEquivalentTo(ArrayLiteralNode()) =>
       case _ => BranchLink("p_print_reference")
 
 
@@ -173,27 +184,23 @@ object CodeGen {
         generateAssignmentRHS(rhs) :::
           Store(r0, FramePointerReference(offset)) ::
           Nil
-      case fst: FstNode =>
+      case FstNode(expr) =>
 //        TODO: Will need to sort out the offset; I think it's offset + 4 in the RegisterStackReference(sp, 4)
+//        val
+
         PredefinedFunctions.nullPointerFlag = true
-        generateAssignmentRHS(rhs) :::
+        generateAssignmentRHS(rhs) ::: // r0 = value on rhs
         Push(r0) ::
-        Load(r0, RegisterStackReference(sp, 4)) ::
+        generateExpression(expr) ::: // r0 = address of pair
         BranchLink("p_check_null_pointer") ::
-        Add(r0, r0, ImmNum(0)) :: //        Redundant?
-        Push(r0) ::
-        Load(r0, RegisterStackReference(r0)) ::
-        BranchLink("free") ::
-        Move(r0, ImmNum(4)) ::
-        BranchLink("malloc") ::
-        Pop(r1) ::
-        Store(r0, RegisterStackReference(r1)) ::
-        Move(r1, r0) ::
-        Pop(r0) ::
-        Store(r0, RegisterStackReference(r1)) :: Nil
+        Load(r0, RegisterStackReference(r0)) :: // r0= address of fst elem
+        Pop(r1) :: // r1 = value on rhs
+        Store(r1, RegisterStackReference(r0)) :: Nil
+
       case snd: SndNode => throw new UnsupportedOperationException("SndNode LHS")
       // TODO: Right in the same manner as above and then abstract
 
+      case arr: ArrayElemNode => throw new UnsupportedOperationException("ArraysAssignment")
       case _ => throw new UnsupportedOperationException("generateAssignment")
     }
   }
@@ -274,15 +281,9 @@ object CodeGen {
     Load(r0, RegisterStackReference(r0)) :: Nil
   }
 
-//  def generateStoreArrayELem(value: ExprNode): List[Instruction] = {
-////    Load(r0, LoadImmNum(value)) ::
-//    generateExpression(value) :::
-//    Store(r0, RegisterStackReference(r2, index))
-//
-//  }
-
+//  TODO: Check this works with things which aren't int's
   def generateStoreArrayELem(value: (ExprNode, Int)): List[Instruction] = {
-    //    Load(r0, LoadImmNum(value)) :: Store(r0, [r2, #4 * index + 1])
+    // Should do this Load(r0, LoadImmNum(value)) :: Store(r0, [r2, #4 * index + 1])
     generateExpression(value._1) :::
     Store(r0, RegisterStackReference(r2, WORD_SIZE * (value._2 + 1))) :: Nil
   }
@@ -342,8 +343,10 @@ object CodeGen {
     expr match {
       case expr: IdentNode =>
         Load(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
-      case expr: ArrayElemNode => throw new
-          UnsupportedOperationException("Generate ArrayElemnode")
+      case expr: ArrayElemNode =>
+
+              throw new UnsupportedOperationException("Generate ArrayElemnode")
+
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
       case expr: BinaryOperationNode => generateBinaryOperation(expr)
       case IntLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
