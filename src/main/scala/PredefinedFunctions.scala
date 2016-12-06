@@ -66,7 +66,7 @@ object PredefinedFunctions {
     Compare(r0, ImmNum(0)) ::
     Load(r0, LabelOp("msg_p_print_bool_t"), NE) ::
     Load(r0, LabelOp("msg_p_print_bool_f"), EQ) ::
-    Add(r0, r0, ImmNum(4)) ::
+    Add(r0, r0, ImmNum(WORD_SIZE)) ::
     BranchLink("printf") ::
     Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
@@ -105,7 +105,7 @@ object PredefinedFunctions {
     Load(r0, RegisterStackReference(r0)) ::
     BranchLink("free") ::
     Load(r0, RegisterStackReference(sp)) ::
-    Load(r0, RegisterStackReference(r0, 4)) ::
+    Load(r0, RegisterStackReference(r0, WORD_SIZE)) ::
     BranchLink("free") ::
     Pop(r0) ::
     BranchLink("free") ::
@@ -117,7 +117,7 @@ object PredefinedFunctions {
     Push(lr) ::
     Move(r1, r0) ::
     Load(r0, LabelOp("msg_p_print_reference")) ::
-    Add(r0, r0, ImmNum(4)) ::
+    Add(r0, r0, ImmNum(WORD_SIZE)) ::
     BranchLink("printf") ::
     Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
@@ -151,7 +151,7 @@ object PredefinedFunctions {
     Push(lr) ::
     Move(r1, r0) ::
     Load(r0, LabelOp("msg_p_read_char")) ::
-    Add(r0, r0, ImmNum(4)) ::
+    Add(r0, r0, ImmNum(WORD_SIZE)) ::
     BranchLink("scanf") ::
     Pop(pc) :: Nil
   }
@@ -162,7 +162,7 @@ object PredefinedFunctions {
     Push(lr) ::
     Move(r1, r0) ::
     Load(r0, LabelOp("msg_p_read_int")) ::
-    Add(r0, r0, ImmNum(4)) ::
+    Add(r0, r0, ImmNum(WORD_SIZE)) ::
     BranchLink("scanf") ::
     Pop(pc) :: Nil
   }
