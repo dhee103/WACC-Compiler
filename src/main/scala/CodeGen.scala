@@ -394,24 +394,19 @@ object CodeGen {
       case expr: IdentNode =>
         Load(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
       case ArrayElemNode(identifier, index) =>
-        println(s"identifier: $identifier; index: $index")
         Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: negative index\\n\\0", "negative_index")
         Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: index too large\\n\\0", "index_too_large")
         PredefinedFunctions.checkArrayBoundsFlag = true
+        val offset = AssemblyStack3.getOffsetFor(identifier)
 
-        Load(r0, RegisterStackReference(fp)) ::
-        Push(r4) ::
-        Move(r4, r0) ::
-        // need to get correct index in r0
-        generateExpression(index(0)) :::
-//        Load(r0, RegisterStackReference(r0)) :: // printing as index - 160501845
-        BranchLink("p_print_int") ::
-//        BranchLink("p_check_array_bounds") ::
-        Add(r4, r4, ImmNum(4)) ::
-        AddShift(r4, r4, r0, LSL, 2) ::
-        Load(r4, RegisterStackReference(r4)) ::
-        Move(r0, r4) ::
-        Pop(r4) :: Nil
+        Load(r0, RegisterStackReference(fp, offset)) :: // r0 = address of array
+        Move(r4, r0) :: // r4 = address of array
+        generateExpression(index(0)) ::: // r0 = first index
+        BranchLink("p_check_array_bounds") :: // checks address in r4, index in r0
+        Add(r4, r4, ImmNum(WORD_SIZE)) :: // moves past "size of array" stored in array
+        AddShift(r4, r4, r0, LSL, 2) :: // r4 = r4 + WORD_SIZE * index
+        Load(r4, RegisterStackReference(r4)) :: // r4 = actual element in array
+        Move(r0, r4) :: Nil // r0 = actual element in array
 
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
       case expr: BinaryOperationNode => generateBinaryOperation(expr)

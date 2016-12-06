@@ -14,7 +14,7 @@ begin
   while i < 10 
   do
     #print i ;
-    print a[1] ;
+    print a[i] ;
     if i < 9
     then
       print ", "
