@@ -20,16 +20,16 @@ object AssemblyStack3 {
     val destroyedStack: StackFrame2 = stackFrames.last
     stackFrames = stackFrames.dropRight(1)
 
-    Add(sp, sp, ImmNum(WORD_SIZE * destroyedStack.size)) ::
+    Add(sp, sp, ImmNum(WORD_SIZE * destroyedStack.noOfLocalVars)) ::
     Pop(fp) :: Nil
   }
 
   def getOffsetFor(ident: IdentNode): Int = {
     var offset: Int = 0
-    offset -= WORD_SIZE * stackFrames.last.size
+    offset -= WORD_SIZE * stackFrames.last.noOfLocalVars
 
     for (currentFrame <- stackFrames.reverse) {
-      offset += WORD_SIZE * currentFrame.size // realign fp, by going past local variables
+      offset += WORD_SIZE * currentFrame.noOfLocalVars // realign fp, by going past local variables
       if (currentFrame.contains(ident)) {
         return offset + currentFrame.getOffsetFor(ident)
       }

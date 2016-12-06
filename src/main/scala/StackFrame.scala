@@ -28,11 +28,11 @@ class StackFrame(var stackSectionSize: Int, var originPointer: Int) {
 class StackFrame2(private val localVars: List[IdentNode],
                   private val params: List[IdentNode] = List()) {
   private val offsetMap = new HashMap[IdentNode, Int]()
-  def size: Int = offsetMap.size
+  val noOfLocalVars: Int = localVars.size
 
   for ( (name, index)  <- localVars.zipWithIndex)
     offsetMap += (name -> (index * -4))
-
+  
   def getOffsetFor(ident: IdentNode): Int = {
     offsetMap.getOrElse(ident,
       throw new RuntimeException("Fatal Error: Variable not found in " +
