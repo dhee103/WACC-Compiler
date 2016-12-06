@@ -238,16 +238,42 @@ object CodeGen {
         generateAssignmentRHS(rhs) ::: // r0 = value on rhs
         generateAssignmentPair(expr, WORD_SIZE)
 
-      case arr: ArrayElemNode =>
-//        TODO: Improve the efficiency of this
-        generateExpression(arr) :::     //        r0 = LHS
-        Move(r1, r0) :: //r1 = array index i.e. s[1]
-//        TODO: check valid call
-        generateAssignmentRHS(rhs) :::  // r0 = RHS
-//        [r1] = [r0] -- store?
-        Store(r0, RegisterStackReference(r1)) ::
-        Move (r0, r1) :: Nil
+//      case arr: ArrayElemNode =>
+////        TODO: Improve the efficiency of this
+//        generateExpression(arr) :::     // r0 = LHS
+//        Move(r1, r0) :: //r1 = array index i.e. s[1]
+////        TODO: check valid call
+//        generateAssignmentRHS(rhs) :::  // r0 = RHS
+////        [r1] = [r0] -- store?
+//        Load(r0, RegisterStackReference(r0)) :: // r0 = [r0]
+//        Store(r0, RegisterStackReference(r1)) ::
+//        Move (r0, r1) :: Nil
 
+
+
+      case ArrayElemNode(identifier, indices) =>
+        Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: negative index\\n\\0", "negative_index")
+        Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: index too large\\n\\0", "index_too_large")
+        PredefinedFunctions.checkArrayBoundsFlag = true
+        val offset = AssemblyStack3.getOffsetFor(identifier)
+        val getElemAddrInR4: List[Instruction] = (for (index <- indices.dropRight(1))
+          yield generateExpression(index) ::: // r0 = current index
+            BranchLink("p_check_array_bounds") :: // checks address in r4, index in r0
+            Add(r4, r4, ImmNum(WORD_SIZE)) :: // moves past "size of array" stored in array
+            AddShift(r4, r4, r0, LSL, 2) :: // r4 = r4 + WORD_SIZE * index
+            Load(r4, RegisterStackReference(r4)) :: Nil // r4 = actual element in array
+          ).toList.flatten :::
+          generateExpression(indices.last) ::: // r0 = current index
+          BranchLink("p_check_array_bounds") :: // checks address in r4, index in r0
+          Add(r4, r4, ImmNum(WORD_SIZE)) :: // moves past "size of array" stored in array
+          AddShift(r4, r4, r0, LSL, 2) :: Nil
+
+        Load(r0, RegisterStackReference(fp, offset)) :: // r0 = address of array
+        Move(r4, r0) ::
+        getElemAddrInR4 :::
+        Move(r1, r4) :: // r1 = address to be assigned to
+        generateAssignmentRHS(rhs) ::: // r0 = value to be assigned
+        Store(r0, RegisterStackReference(r1)) :: Nil // [r1] = r0
 
 //        throw new UnsupportedOperationException(s"ArraysAssignment $arr")
       case _ => throw new UnsupportedOperationException("generateAssignment")
