@@ -137,11 +137,11 @@ object PredefinedFunctions {
     Label("p_check_array_bounds") ::
     Push(lr) ::
     Compare(r0, ImmNum(0)) ::
-    Load(r0, LabelOp("msg_out_of_bounds_negative_index"), LT) ::
+    Load(r0, LabelOp("msg_negative_index"), LT) ::
     BranchLink("p_throw_runtime_error", LT) ::
     Load(r1, RegisterStackReference(r4)) ::
     Compare(r0, r1) ::
-    Load(r0, LabelOp("msg_out_of_bounds_index_too_large"), CS) ::
+    Load(r0, LabelOp("msg_index_too_large"), CS) ::
     BranchLink("p_throw_runtime_error", CS) ::
     Pop(pc) :: Nil
   }
