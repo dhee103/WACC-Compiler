@@ -398,38 +398,6 @@ object CodeGen {
         Move(r0, r4) ::
         Pop(r4) :: Nil
 
-
-//        Move(r4, ImmNum(100)) :: Nil
-//        generateExpression(index(0)) ::: // r0 = index
-//        Move(r1, r0) :: //r1 = r0 = index
-//        generateExpression(identifier) ::: // r0 = identifier
-//        Load(r0, RegisterStackReference(r0/*, offset*/)) :: Nil
-
-//        throw new UnsupportedOperationException(s"ArrayElemNode $expr")
-//        var generateExprs: List[Instruction] = Nil
-//        for (expr <- exprs) {
-//          generateExprs = generateExprs ::: generateExpression(expr)
-//        }
-//        generateExprs = generateAssignmentRHS(ArrayLiteralNode(exprs))
-
-//        TODO: Add array bounds labels here
-
-//        PredefinedFunctions.checkArrayBoundsFlag = true
-//
-//        generateExpression(identifier) :::
-//        Push(r4) ::
-//        Move(r4, r0) ::
-//        Load(r0, LoadImmNum(0)) ::
-//        BranchLink("p_check_array_bounds") ::
-//        Add(r4, r4, ImmNum(4)) ::
-//        Add(r4, r4, r0, LSL(2)) ::
-//        Load(r4, RegisterStackReference(r4)) ::
-//        Move(r0, r4) ::
-//        Pop(r4) ::  Nil
-
-      //::: generateExprs
-// TODO: Is this alright or am I just supposed to have the identifier?
-
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
       case expr: BinaryOperationNode => generateBinaryOperation(expr)
       case IntLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
@@ -457,8 +425,11 @@ object CodeGen {
         generateExpression(argument) :::
         ReverseSubNoCarry(r0, r0, zero) ::
         BranchLink("p_throw_overflow_error", VS) :: Nil
-      case LenNode(argument) => throw new
-          UnsupportedOperationException("generate len")
+      case LenNode(argument) =>
+//        TODO: Check that it's not called on anything but an array?
+        generateExpression(argument) ::: // r0 = argument
+        Load(r0, RegisterStackReference(r0)) :: Nil // r0 = First Element in R0 which should be array size
+
       case OrdNode(argument) =>
         generateExpression(argument) // Don't need to do anything else
       case ChrNode(argument) =>
