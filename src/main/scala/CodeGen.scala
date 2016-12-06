@@ -111,7 +111,7 @@ object CodeGen {
       output = output ::: LabelData("\n") :: PredefinedFunctions.readInt()
     }
 
-    output
+    output ::: Labels.userFunctions
 
   }
 
@@ -153,8 +153,8 @@ object CodeGen {
         BranchLink("p_free_pair") :: Nil
 //        TODO: do for an array
         // TODO: should whatever variable points to be zeroed out?
-      case stat: ReturnNode =>
-        throw new UnsupportedOperationException("generateReturnNode not implemented")
+      case ReturnNode(retVal) =>
+        generateExpression(retVal)
       case stat: ExitNode =>
         generateExit(stat)
       case PrintNode(value) =>
@@ -227,8 +227,7 @@ object CodeGen {
       case id: IdentNode =>
         val offset = AssemblyStack3.getOffsetFor(id)
         generateAssignmentRHS(rhs) :::
-          Store(r0, FramePointerReference(offset)) ::
-          Nil
+        Store(r0, FramePointerReference(offset)) :: Nil
 
       case FstNode(expr) =>
         PredefinedFunctions.nullPointerFlag = true
@@ -330,10 +329,16 @@ object CodeGen {
 
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
     rhs match {
-      case rhs: ExprNode => generateExpression(rhs)
-      case NewPairNode(fstElem, sndElem) => generateNewPairNode(fstElem, sndElem)
-      case FstNode(exprChild) => generateFstNode(exprChild)
-      case SndNode(exprChild) => generateSndNode(exprChild)
+      case rhs: ExprNode =>
+        generateExpression(rhs)
+      case NewPairNode(fstElem, sndElem) =>
+        generateNewPairNode(fstElem, sndElem)
+      case FstNode(exprChild) =>
+        generateFstNode(exprChild)
+      case SndNode(exprChild) =>
+        generateSndNode(exprChild)
+      case call: CallNode =>
+        generateFunctionCall(call)
       case ArrayLiteralNode(values) =>
         val numElems = values.length
         var elemCode: List[Instruction] = Nil
@@ -376,6 +381,23 @@ object CodeGen {
     Pop(r1) ::
     Store(r1, RegisterStackReference(r0)) ::
     Push(r0) :: Nil
+  }
+
+  def generateFunctionCall(call: CallNode): List[Instruction] = {
+    val pushParams: List[Instruction] =
+      (for (arg <- call.args) yield generateExpression(arg) ::: Push(r0) :: Nil).flatten
+    val setUpStackFrame = AssemblyStack3.createNewScope(call.symbols.head, call.params)
+    val funcBody = generateStatement(call.functionBody)
+    val closeStackFrame = AssemblyStack3.destroyNewestScope()
+    val removeParams = Add(sp, sp, ImmNum(WORD_SIZE * call.params.size)) :: Nil
+
+    val funcName: String = call.id.name
+    val funcDef = setUpStackFrame ::: funcBody ::: closeStackFrame
+    Labels.addFunction(funcName, funcDef)
+
+   pushParams :::
+   StandardBranch(funcName) ::
+   removeParams
   }
 
   def generateExpression(expr: ExprNode): List[Instruction] = {
