@@ -29,7 +29,8 @@ object CodeGen {
 
     val statGeneration = generateStatement(statement)
 
-    var output = (Directive("data\n") :: Nil) :::
+    var output: List[Instruction] =
+      Directive("data\n") ::
       Labels.printMsgMap() :::
       Labels.printDataMsgMap() :::
       Directive("text\n") ::
@@ -38,13 +39,15 @@ object CodeGen {
       Push(lr) ::
       Push(fp) ::
       Move(fp, sp) ::
-      Sub(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
+      (for (i <- valuesModStackLimit(WORD_SIZE * prog.scopeSizes.head))
+        yield Sub(sp, sp, ImmNum(i))) :::
       statGeneration :::
-      Add(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
-      Load(r0, LoadImmNum(0)) ::
-      Pop(fp) ::
-      Pop(pc) ::
-      Directive("ltorg") :: Nil
+      (for (i <- valuesModStackLimit(WORD_SIZE * prog.scopeSizes.head))
+        yield Add(sp, sp, ImmNum(i))) :::
+       Load(r0, LoadImmNum(0)) ::
+       Pop(fp) ::
+       Pop(pc) ::
+       Directive("ltorg") :: Nil
 
     if (PredefinedFunctions.printFlag) {
       output = output ::: LabelData("\n") ::
@@ -591,6 +594,16 @@ object CodeGen {
     Pop(r1) ::
     mainInstruction
 
+  }
+
+  private def valuesModMaxLiteral(value: Int): List[Int] = {
+    var remainder = value
+    var outputList = List[Int]()
+    while (remainder >  MAX_LITERAL) {
+      outputList = outputList ++ List(MAX_LITERAL)
+      remainder -= MAX_LITERAL
+    }
+    outputList ++ List(remainder)
   }
 
 }
