@@ -39,8 +39,8 @@ case class Add(dst: Register, src1: Register, src2: Operand, override val cond: 
 //}
 
 case class AddShift(dst: Register, src1: Register, src2: Operand, shift: Shift = NA, n: Int = 0) extends Instruction {
-  val str = if (shift != NA) shift + ", #" + n.toString else ""
-  override val main: String = "ADD" + " " + dst.toString + ", " + src1.toString + ", " + src2.toString + ", " + str
+  val str = if (shift != NA) ", " + shift + " #" + n.toString else ""
+  override val main: String = "ADD" + " " + dst.toString + ", " + src1.toString + ", " + src2.toString + str
 }
 
 case class Sub(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
