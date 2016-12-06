@@ -37,4 +37,6 @@ case class CallNode(id: IdentNode, argList: Option[ArgListNode]) extends Assignm
       case Some(list) => list.exprs
     }
   }
+
+  def functionBody: StatNode = FunctionTable.getBody(id)
 }
