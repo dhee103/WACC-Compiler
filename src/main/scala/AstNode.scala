@@ -58,10 +58,19 @@ case class IdentNode(name: String) extends ExprNode with AssignmentLeftNode {
 case class ArrayElemNode(identifier: IdentNode, exprs: IndexedSeq[ExprNode]) extends ExprNode with AssignmentLeftNode {
   override def getType: TypeNode = {
     identifier.getType match {
-      case ArrayTypeNode(elemType) => elemType
+      case t: ArrayTypeNode => unwrapArrayType(t, exprs.size)
       case StringTypeNode() => if (exprs.length == 1) CharTypeNode() else {SemanticErrorLog.add(s"$identifier is not an array"); ErrorTypeNode()}
       case _ => SemanticErrorLog.add(s"$identifier is not an array"); ErrorTypeNode()
     }
+  }
+
+  private def unwrapArrayType(arrayType: ArrayTypeNode, unwrapCount: Int): TypeNode = {
+    var elemType: TypeNode = arrayType
+    for (i <- 1 to unwrapCount) {
+      elemType = elemType.asInstanceOf[ArrayTypeNode].elemType
+    }
+
+    elemType
   }
 }
 
