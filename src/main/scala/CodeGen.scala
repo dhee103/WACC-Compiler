@@ -387,12 +387,10 @@ object CodeGen {
         Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: index too large\\n\\0", "index_too_large")
         PredefinedFunctions.checkArrayBoundsFlag = true
 
-//       TODO: extract index to integer value; currently index(0) = IntLiteralNode('value I want')
-
         Load(r0, RegisterStackReference(fp)) ::
         Push(r4) ::
         Move(r4, r0) ::
-        Load(r0, LoadImmNum(0)) ::
+        generateExpression(index(0)) :::
         BranchLink("p_check_array_bounds") ::
         Add(r4, r4, ImmNum(4)) ::
         AddShift(r4, r4, r0, "LSL #2") ::
