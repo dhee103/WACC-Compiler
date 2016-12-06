@@ -30,7 +30,7 @@ object PredefinedFunctions {
     Load(r0, LabelOp("msg_p_print_ln")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("puts") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -42,7 +42,7 @@ object PredefinedFunctions {
     Load(r0, LabelOp("msg_p_print_int")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("printf") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -55,7 +55,7 @@ object PredefinedFunctions {
     Load(r0, LabelOp("msg_p_print_string")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("printf") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -68,7 +68,7 @@ object PredefinedFunctions {
     Load(r0, LabelOp("msg_p_print_bool_f"), EQ) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("printf") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -82,7 +82,7 @@ object PredefinedFunctions {
   def runtimeError(): List[Instruction] = {
     Label("p_throw_runtime_error") ::
     BranchLink("p_print_string") ::
-    Move(r0, ImmNum(-1)) ::
+    Load(r0, LoadImmNum(-1)) ::
     BranchLink("exit") :: Nil
   }
 
@@ -119,7 +119,7 @@ object PredefinedFunctions {
     Load(r0, LabelOp("msg_p_print_reference")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("printf") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }

@@ -377,11 +377,11 @@ object CodeGen {
           elemCode = elemCode ::: generateStoreArrayELem(value)
         }
 
-        Move(r0, ImmNum(WORD_SIZE * (numElems + 1))) ::
+        Load(r0, LoadImmNum(WORD_SIZE * (numElems + 1))) ::
         BranchLink("malloc") ::
         Move(r3, r0) ::
         elemCode :::
-        Move(r0, ImmNum(numElems)) ::
+        Load(r0, LoadImmNum(numElems)) ::
         Store(r0, RegisterStackReference(r3)) ::
         Move(r0, r3) ::
 //        Store(r0, RegisterStackReference(fp)) ::
@@ -397,17 +397,17 @@ object CodeGen {
     generateNewPairElem(fstElem) :::
     generateExpression(sndElem) :::
     generateNewPairElem(sndElem) :::
-    (Move(r0, ImmNum(8)) ::
+    (Load(r0, LoadImmNum(PAIR_SIZE)) ::
       BranchLink("malloc") ::
       Pop(r1) ::
       Pop(r2) ::
       Store(r2, RegisterStackReference(r0)) ::
-      Store(r1, RegisterStackReference(r0, 4)) :: Nil)
+      Store(r1, RegisterStackReference(r0, WORD_SIZE)) :: Nil)
   }
 
   def generateNewPairElem(elem: ExprNode): List[Instruction] = {
     Push(r0) ::
-    Move(r0, ImmNum(4)) ::
+    Load(r0, LoadImmNum(WORD_SIZE)) ::
     BranchLink("malloc") ::
     Pop(r1) ::
     Store(r1, RegisterStackReference(r0)) ::
@@ -440,10 +440,10 @@ object CodeGen {
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
       case expr: BinaryOperationNode => generateBinaryOperation(expr)
       case IntLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
-      case BoolLiteralNode(value) => Move(r0, ImmNum(if (value) 1 else 0)) :: Nil
+      case BoolLiteralNode(value) => Load(r0, LoadImmNum(if (value) 1 else 0)) :: Nil
       case CharLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
       case StringLiteralNode(value) => Labels.addMessageLabel(value); Load(r0, LabelOp(Labels.getMessageLabel)) :: Nil
-      case expr: PairLiteralNode => Move(r0, ImmNum(0)) :: Nil
+      case expr: PairLiteralNode => Load(r0, LoadImmNum(0)) :: Nil
       case _ => throw new
           UnsupportedOperationException("generate expr catch all")
     }
