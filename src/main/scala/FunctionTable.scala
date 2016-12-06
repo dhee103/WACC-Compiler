@@ -33,10 +33,10 @@ object FunctionTable {
 
   def getLocalVars(ident: IdentNode): List[IdentNode] = lookup(ident)._3
 
-  def getNoOfLocalVars(ident: IdentNode): Int = lookup(ident)._4
+  def getNoOfLocalVars(ident: IdentNode): Int = getLocalVars(ident).size
 
   private def lookup(ident: IdentNode): (TypeNode, List[TypeNode], List[IdentNode], Int) = {
-    dict.getOrElse(ident, throw new RuntimeException("Variable used but not in scope")) // TO DO: Change this?
+    dict.getOrElse(ident, throw new RuntimeException("Variable used but not in scope")) // TODO: Change this?
   }
 
   def doesContain(ident: IdentNode): Boolean = {
