@@ -178,7 +178,7 @@ object CodeGen {
     Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
 //    Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
     Labels.addDataMsgLabel("%p\\0", "p_print_reference")
-
+    
     val printLink = value.getType match {
       case t if t.isEquivalentTo(IntTypeNode()) => BranchLink("p_print_int")
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
@@ -393,19 +393,22 @@ object CodeGen {
     expr match {
       case expr: IdentNode =>
         Load(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
-      case ArrayElemNode(identifier, index) =>
+      case ArrayElemNode(identifier, indices) =>
         Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: negative index\\n\\0", "negative_index")
         Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: index too large\\n\\0", "index_too_large")
         PredefinedFunctions.checkArrayBoundsFlag = true
         val offset = AssemblyStack3.getOffsetFor(identifier)
+        val getElemInR4: List[Instruction] = (for (index <- indices)
+          yield generateExpression(index) ::: // r0 = current index
+            BranchLink("p_check_array_bounds") :: // checks address in r4, index in r0
+            Add(r4, r4, ImmNum(WORD_SIZE)) :: // moves past "size of array" stored in array
+            AddShift(r4, r4, r0, LSL, 2) :: // r4 = r4 + WORD_SIZE * index
+            Load(r4, RegisterStackReference(r4)) :: Nil // r4 = actual element in array
+        ).toList.flatten
 
         Load(r0, RegisterStackReference(fp, offset)) :: // r0 = address of array
         Move(r4, r0) :: // r4 = address of array
-        generateExpression(index(0)) ::: // r0 = first index
-        BranchLink("p_check_array_bounds") :: // checks address in r4, index in r0
-        Add(r4, r4, ImmNum(WORD_SIZE)) :: // moves past "size of array" stored in array
-        AddShift(r4, r4, r0, LSL, 2) :: // r4 = r4 + WORD_SIZE * index
-        Load(r4, RegisterStackReference(r4)) :: // r4 = actual element in array
+        getElemInR4 :::
         Move(r0, r4) :: Nil // r0 = actual element in array
 
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
