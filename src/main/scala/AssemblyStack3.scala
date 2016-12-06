@@ -7,7 +7,8 @@ object AssemblyStack3 {
   // Adds a new StackFrame to list of stack frames
   // and returns instruction to set up stack frame
   // (allocating space for local variables)
-  def createNewScope(localVars: List[IdentNode]): List[Instruction] = {
+  def createNewScope(localVars: List[IdentNode], params: List[IdentNode] = List())
+  : List[Instruction] = {
     stackFrames += new StackFrame2(localVars)
 
     Push(fp) ::

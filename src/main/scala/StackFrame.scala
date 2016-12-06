@@ -25,7 +25,8 @@ class StackFrame(var stackSectionSize: Int, var originPointer: Int) {
 
 /////
 
-class StackFrame2(private val localVars: List[IdentNode]) {
+class StackFrame2(private val localVars: List[IdentNode],
+                  private val params: List[IdentNode] = List()) {
   private val offsetMap = new HashMap[IdentNode, Int]()
   def size: Int = offsetMap.size
 
