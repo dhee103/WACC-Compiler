@@ -39,10 +39,10 @@ object CodeGen {
       Push(lr) ::
       Push(fp) ::
       Move(fp, sp) ::
-      (for (i <- valuesModStackLimit(WORD_SIZE * prog.scopeSizes.head))
+      (for (i <- valuesModMaxLiteral(WORD_SIZE * prog.scopeSizes.head))
         yield Sub(sp, sp, ImmNum(i))) :::
       statGeneration :::
-      (for (i <- valuesModStackLimit(WORD_SIZE * prog.scopeSizes.head))
+      (for (i <- valuesModMaxLiteral(WORD_SIZE * prog.scopeSizes.head))
         yield Add(sp, sp, ImmNum(i))) :::
        Load(r0, LoadImmNum(0)) ::
        Pop(fp) ::
