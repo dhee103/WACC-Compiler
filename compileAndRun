@@ -6,6 +6,8 @@
 #           Generated Assembly to terminal, Output of qemu to terminal
 # All generated assembly and binary files will be cleaned by default
 
+# Note to self: os.system() is deprecated. Your python is out of date.
+
 def printFile(filePath):
     f = open(filePath)
     lineCount = 0
