@@ -31,10 +31,10 @@ case class CallNode(id: IdentNode, argList: Option[ArgListNode]) extends Assignm
 
   def params: List[IdentNode] = FunctionTable.getParamIdents(id)
 
-  def args: IndexedSeq[ExprNode] = {
+  def args: List[ExprNode] = {
     argList match {
-      case None => IndexedSeq[ExprNode]()
-      case Some(list) => list.exprs
+      case None => List[ExprNode]()
+      case Some(list) => list.exprs.toList
     }
   }
 
