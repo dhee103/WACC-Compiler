@@ -9,7 +9,7 @@ object AssemblyStack3 {
   // (allocating space for local variables)
   def createNewScope(localVars: List[IdentNode], params: List[IdentNode] = List())
   : List[Instruction] = {
-    stackFrames += new StackFrame2(localVars)
+    stackFrames += new StackFrame2(localVars, params)
 
     Push(fp) ::
     Move(fp, sp) ::
