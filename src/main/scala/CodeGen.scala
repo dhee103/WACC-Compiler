@@ -41,7 +41,7 @@ object CodeGen {
       Sub(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
       statGeneration :::
       Add(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
-      Move(r0, zero) ::
+      Load(r0, LoadImmNum(0)) ::
       Pop(fp) ::
       Pop(pc) ::
       Directive("ltorg") :: Nil
@@ -455,14 +455,14 @@ object CodeGen {
     unOpNode match {
       case LogicalNotNode(argument) =>
         generateExpression(argument) :::
-        Compare(r0, zero) ::
-        Load(r0, loadZero, NE) ::
+        Compare(r0, ImmNum(0)) ::
+        Load(r0, LoadImmNum(0), NE) ::
         Load(r0, LoadImmNum(1), EQ) :: Nil
       case NegationNode(argument) =>
         PredefinedFunctions.arithmeticFlag = true
 
         generateExpression(argument) :::
-        ReverseSubNoCarry(r0, r0, zero) ::
+        ReverseSubNoCarry(r0, r0, ImmNum(0)) ::
         BranchLink("p_throw_overflow_error", VS) :: Nil
       case LenNode(argument) =>
 //        TODO: Check that it's not called on anything but an array?

@@ -10,7 +10,5 @@ object Constants {
   val pc = ProgramCounter()
   val fp = FramePointer()
   val sp = StackPointer()
-
-  val zero = ImmNum(0)
-  val loadZero = LoadImmNum(0)
+  
 }
