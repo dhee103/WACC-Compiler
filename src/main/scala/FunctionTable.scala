@@ -25,15 +25,21 @@ object FunctionTable {
 
   def getReturnType(ident: IdentNode): TypeNode = lookup(ident)._1
 
+  private def getParamList(ident: IdentNode): List[ParamNode] = {
+    lookup(ident)._2
+  }
+
   def getParamTypes(ident: IdentNode): List[TypeNode] = {
-    val paramList: List[ParamNode] = lookup(ident)._2
+    val paramList: List[ParamNode] = getParamList(ident)
     for (param <- paramList) yield param.variableType
   }
 
   def getParamIdents(ident: IdentNode): List[IdentNode] = {
-    val paramList: List[ParamNode] = lookup(ident)._2
+    val paramList: List[ParamNode] = getParamList(ident)
     for (param <- paramList) yield param.identifier
   }
+  
+  def getNoOfParams(ident: IdentNode): Int = getParamList(ident).size
 
   def getLocalVars(ident: IdentNode): List[IdentNode] = lookup(ident)._3
 
