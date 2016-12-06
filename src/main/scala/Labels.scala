@@ -17,11 +17,6 @@ object Labels {
     head
   }
 
-  def getLabel(str: String): (String, String) = {
-    val head = getStreamHead
-    (str ++ head.toString() ++ "start", str ++ head.toString() ++ "end")
-  }
-
   def getIfLabels: (String, String) = {
     val head = getStreamHead
     (s"if_stat${head}_else", s"if_stat${head}_end")
