@@ -25,11 +25,11 @@ class StackFrame(var stackSectionSize: Int, var originPointer: Int) {
 
 /////
 
-class StackFrame2(private val identifiers: List[IdentNode]) {
+class StackFrame2(private val localVars: List[IdentNode]) {
   private val offsetMap = new HashMap[IdentNode, Int]()
   def size: Int = offsetMap.size
 
-  for ( (name, index)  <- identifiers.zipWithIndex)
+  for ( (name, index)  <- localVars.zipWithIndex)
     offsetMap += (name -> (index * -4))
 
   def getOffsetFor(ident: IdentNode): Int = {
