@@ -404,7 +404,7 @@ object CodeGen {
         generateExpression(index(0)) :::
         BranchLink("p_check_array_bounds") ::
         Add(r4, r4, ImmNum(4)) ::
-        AddShift(r4, r4, r0, "LSL #2") ::
+        AddShift(r4, r4, r0, LSL, 2) ::
         Load(r4, RegisterStackReference(r4)) ::
         Move(r0, r4) ::
         Pop(r4) :: Nil
