@@ -1,4 +1,5 @@
 import Condition._
+import Shift._
 import Constants._
 
 object CodeGen {
@@ -82,25 +83,22 @@ object CodeGen {
       PredefinedFunctions.checkNullPointer() ::: LabelData("\n") :: Nil
     }
 
+    if (PredefinedFunctions.checkArrayBoundsFlag) {
+      PredefinedFunctions.runtimeFlag = true
+
+      output = output ::: LabelData("\n") ::
+        PredefinedFunctions.checkArrayBounds()
+    }
+
     if (PredefinedFunctions.runtimeFlag) {
       output = output ::: LabelData("\n") ::
-        PredefinedFunctions.runtimeError()
+      PredefinedFunctions.runtimeError()
 
       if (!PredefinedFunctions.printFlag) {
         output = output ::: LabelData("\n") ::
-          PredefinedFunctions.printString() ::: LabelData("\n") ::
-          PredefinedFunctions.println()
+        PredefinedFunctions.printString() ::: LabelData("\n") ::
+        PredefinedFunctions.println()
       }
-    }
-
-    if (PredefinedFunctions.checkArrayBoundsFlag) {
-//      2	msg_0:
-//      3		.word 44
-//      4		.ascii	"ArrayIndexOutOfBoundsError: negative index\n\0"
-//      5	msg_1:
-//      6		.word 45
-//      7		.ascii	"ArrayIndexOutOfBoundsError: index too large\n\0"
-
     }
 
     if (PredefinedFunctions.readCharFlag) {
@@ -325,7 +323,7 @@ object CodeGen {
   def generateStoreArrayELem(value: (ExprNode, Int)): List[Instruction] = {
     // Should do this Load(r0, LoadImmNum(value)) :: Store(r0, [r2, #4 * index + 1])
     generateExpression(value._1) :::
-    Store(r0, RegisterStackReference(r2, WORD_SIZE * (value._2 + 1))) :: Nil
+    Store(r0, RegisterStackReference(r3, WORD_SIZE * (value._2 + 1))) :: Nil
   }
 
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
@@ -342,14 +340,15 @@ object CodeGen {
           elemCode = elemCode ::: generateStoreArrayELem(value)
         }
 
-        Move(r0, ImmNum(numElems)) ::
+        Move(r0, ImmNum(WORD_SIZE * (numElems + 1))) ::
         BranchLink("malloc") ::
-        Move(r2, r0) ::
+        Move(r3, r0) ::
         elemCode :::
         Move(r0, ImmNum(numElems)) ::
-        Store(r0, RegisterStackReference(r2)) ::
-//        Maybe the line below is not needed?
-        Store(r0, RegisterStackReference(sp)) :: Nil
+        Store(r0, RegisterStackReference(r3)) ::
+        Move(r0, r3) ::
+//        Store(r0, RegisterStackReference(fp)) ::
+        Nil
 //        case PairElemNode => Labels.addDataMsgLabel(msg_p_check_null_pointer)
       case _ => throw new UnsupportedOperationException("generate Assignment " +
         "right")
@@ -383,9 +382,55 @@ object CodeGen {
     expr match {
       case expr: IdentNode =>
         Load(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
-      case expr: ArrayElemNode =>
+      case ArrayElemNode(identifier, index) =>
+        Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: negative index\\n\\0", "negative_index")
+        Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: index too large\\n\\0", "index_too_large")
+        PredefinedFunctions.checkArrayBoundsFlag = true
 
-              throw new UnsupportedOperationException("Generate ArrayElemnode")
+//       TODO: extract index to integer value; currently index(0) = IntLiteralNode('value I want')
+
+        Load(r0, RegisterStackReference(fp)) ::
+        Push(r4) ::
+        Move(r4, r0) ::
+        Load(r0, LoadImmNum(0)) ::
+        BranchLink("p_check_array_bounds") ::
+        Add(r4, r4, ImmNum(4)) ::
+        AddShift(r4, r4, r0, "LSL #2") ::
+        Load(r4, RegisterStackReference(r4)) ::
+        Move(r0, r4) ::
+        Pop(r4) :: Nil
+
+
+//        Move(r4, ImmNum(100)) :: Nil
+//        generateExpression(index(0)) ::: // r0 = index
+//        Move(r1, r0) :: //r1 = r0 = index
+//        generateExpression(identifier) ::: // r0 = identifier
+//        Load(r0, RegisterStackReference(r0/*, offset*/)) :: Nil
+
+//        throw new UnsupportedOperationException(s"ArrayElemNode $expr")
+//        var generateExprs: List[Instruction] = Nil
+//        for (expr <- exprs) {
+//          generateExprs = generateExprs ::: generateExpression(expr)
+//        }
+//        generateExprs = generateAssignmentRHS(ArrayLiteralNode(exprs))
+
+//        TODO: Add array bounds labels here
+
+//        PredefinedFunctions.checkArrayBoundsFlag = true
+//
+//        generateExpression(identifier) :::
+//        Push(r4) ::
+//        Move(r4, r0) ::
+//        Load(r0, LoadImmNum(0)) ::
+//        BranchLink("p_check_array_bounds") ::
+//        Add(r4, r4, ImmNum(4)) ::
+//        Add(r4, r4, r0, LSL(2)) ::
+//        Load(r4, RegisterStackReference(r4)) ::
+//        Move(r0, r4) ::
+//        Pop(r4) ::  Nil
+
+      //::: generateExprs
+// TODO: Is this alright or am I just supposed to have the identifier?
 
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
       case expr: BinaryOperationNode => generateBinaryOperation(expr)
@@ -396,7 +441,6 @@ object CodeGen {
       case expr: PairLiteralNode => Move(r0, ImmNum(0)) :: Nil
       case _ => throw new
           UnsupportedOperationException("generate expr catch all")
-
     }
 
   }
