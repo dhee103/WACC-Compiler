@@ -34,6 +34,7 @@ object AssemblyStack3 {
         return offset + currentFrame.getOffsetFor(ident)
       }
       offset += WORD_SIZE // go past all "old" fps
+      offset += WORD_SIZE * currentFrame.noOfParams // go past any params
     }
 
     throw new RuntimeException("Fatal error: Variable not in scope.")
