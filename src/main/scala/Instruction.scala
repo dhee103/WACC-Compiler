@@ -1,4 +1,5 @@
 import Condition._
+import Shift._
 
 trait Instruction {
 
@@ -27,10 +28,14 @@ case class Pop(dst: Register, override val cond: Condition = AL, override val la
   override val main = "POP" + cond + " {" + dst.toString + "}"
 }
 
-case class Add(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
-  def this(dst: Register, src1: Register, src2: Operand, label: Option[String]) = this(dst, src1, src2, AL, label)
-  def this(dst: Register, src1: Register, src2: Operand, cond: Condition) = this(dst, src1, src2, cond, None)
+case class Add(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None, str:String = "") extends Instruction {
+  def this(dst: Register, src1: Register, src2: Operand, label: Option[String]) = this(dst, src1, src2, AL, label, "")
+  def this(dst: Register, src1: Register, src2: Operand, cond: Condition) = this(dst, src1, src2, cond, None, "")
   override val main = "ADD" + cond + " " + dst.toString + ", " + src1.toString + ", " + src2.toString
+}
+
+case class AddShift(dst: Register, src1: Register, src2: Operand, str:String) extends Instruction {
+  override val main: String = "ADD" + " " + dst.toString + ", " + src1.toString + ", " + src2.toString + ", " + str
 }
 
 case class Sub(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
