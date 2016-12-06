@@ -238,7 +238,18 @@ object CodeGen {
         generateAssignmentRHS(rhs) ::: // r0 = value on rhs
         generateAssignmentPair(expr, WORD_SIZE)
 
-      case arr: ArrayElemNode => throw new UnsupportedOperationException("ArraysAssignment")
+      case arr: ArrayElemNode =>
+//        TODO: Improve the efficiency of this
+        generateExpression(arr) :::     //        r0 = LHS
+        Move(r1, r0) :: //r1 = array index i.e. s[1]
+//        TODO: check valid call
+        generateAssignmentRHS(rhs) :::  // r0 = RHS
+//        [r1] = [r0] -- store?
+        Store(r0, RegisterStackReference(r1)) ::
+        Move (r0, r1) :: Nil
+
+
+//        throw new UnsupportedOperationException(s"ArraysAssignment $arr")
       case _ => throw new UnsupportedOperationException("generateAssignment")
     }
   }
