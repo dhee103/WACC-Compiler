@@ -390,20 +390,22 @@ object CodeGen {
     generateExpression(sndElem) :::
     generateNewPairElem() :::
     Load(r0, LoadImmNum(PAIR_SIZE)) ::
-    BranchLink("malloc") ::
-    Pop(r1) ::
-    Pop(r2) ::
+    BranchLink("malloc") :: // r0 = address of pair
+    Pop(r1) :: // r1 = address of second elem
+    Pop(r2) :: // r2 = address of first elem
     Store(r2, RegisterStackReference(r0)) ::
     Store(r1, RegisterStackReference(r0, WORD_SIZE)) :: Nil
   }
 
   def generateNewPairElem(): List[Instruction] = {
+    // PRE:  Value to be stored as pair elem in r0
+    // POST: Address pointing to pair elem is last on stack
     Push(r0) ::
     Load(r0, LoadImmNum(WORD_SIZE)) ::
-    BranchLink("malloc") ::
-    Pop(r1) ::
-    Store(r1, RegisterStackReference(r0)) ::
-    Push(r0) :: Nil
+    BranchLink("malloc") :: // r0 = address of pair elem
+    Pop(r1) :: // r1 = value to be stored
+    Store(r1, RegisterStackReference(r0)) :: // [r0] = r1
+    Push(r0) :: Nil // store address of pair elem on stack
   }
 
   def generateFunctionCall(call: CallNode): List[Instruction] = {
