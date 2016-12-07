@@ -103,8 +103,7 @@ object Main {
     }
 
     time {
-      outputString = InstructionConverter.translate(CodeGen.generateProgramCode
-      (ast))
+      outputString = InstructionConverter.translate(CodeGen.generateProgramCode(ast))
     }
 
     return 0

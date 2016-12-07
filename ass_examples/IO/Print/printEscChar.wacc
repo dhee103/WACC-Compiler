@@ -1,0 +1,11 @@
+# basic escaped character printing
+
+# Output:
+# An escaped character example is "
+
+# Program:
+
+begin
+  println '\"'
+end
+
