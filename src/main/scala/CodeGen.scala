@@ -4,14 +4,6 @@ import Constants._
 
 object CodeGen {
 
-  //use the above e.g when pushing sp or subbing from the stack to make space
-
-  val spReference = StackPointerReference(0)
-  //use when doing stuff with things on the stack e.g addition with a value
-  // on the stack
-
-  //  var stack = new AssemblyStack()
-
   def generateProgramCode(prog: ProgNode): List[Instruction] = {
 
     //    Initialise labels with builtin functions
@@ -20,9 +12,6 @@ object CodeGen {
     Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
     Labels.addDataMsgLabel("\\0", "p_print_ln")
     Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "null_check")
-
-//    remove
-
 
     AssemblyStack3.createNewScope(prog.symbols.head)
     val statement: StatNode = prog.statChild
@@ -138,18 +127,11 @@ object CodeGen {
 
     statement match {
       case stat: SkipStatNode => Nil
-      case stat: DeclarationNode =>
-        generateDeclaration(stat)
-      case stat: AssignmentNode =>
-        generateAssignment(stat)
-      case ReadNode(variable) =>
-
-        generateReadNode(variable)
-//        throw new UnsupportedOperationException("generateReadNode not implemented")
+      case stat: DeclarationNode => generateDeclaration(stat)
+      case stat: AssignmentNode => generateAssignment(stat)
+      case ReadNode(variable) => generateReadNode(variable)
       case FreeNode(variable) =>
         PredefinedFunctions.freePairFlag = true
-//        Labels.addDataMsgLabel("NullReferenceError: dereference a null reference\\n\\0", "null_check")
-
         generateExpression(variable) :::
         BranchLink("p_free_pair") :: Nil
 //        TODO: do for an array
@@ -177,11 +159,9 @@ object CodeGen {
 
   def genericPrint(value: ExprNode, lnFlag: Boolean): List[Instruction] = {
     PredefinedFunctions.printFlag = true
-//    Labels.addDataMsgLabel("\\0", "p_print_ln")
     Labels.addDataMsgLabel("%d\\0", "p_print_int")
     Labels.addDataMsgLabel("true\\0", "p_print_bool_t")
     Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
-//    Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
     Labels.addDataMsgLabel("%p\\0", "p_print_reference")
 
     val printLink = value.getType match {
@@ -189,7 +169,6 @@ object CodeGen {
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
       case t if t.isEquivalentTo(BoolTypeNode()) => BranchLink("p_print_bool")
       case t if t.isEquivalentTo(CharTypeNode()) => BranchLink("putchar")
-//      case t if t.isEquivalentTo(ArrayTypeNode(AnyTypeNode())) =>
       case _ => BranchLink("p_print_reference")
 
 
@@ -242,19 +221,6 @@ object CodeGen {
         PredefinedFunctions.nullPointerFlag = true
         generateAssignmentRHS(rhs) ::: // r0 = value on rhs
         generateAssignmentPair(expr, WORD_SIZE)
-
-//      case arr: ArrayElemNode =>
-////        TODO: Improve the efficiency of this
-//        generateExpression(arr) :::     // r0 = LHS
-//        Move(r1, r0) :: //r1 = array index i.e. s[1]
-////        TODO: check valid call
-//        generateAssignmentRHS(rhs) :::  // r0 = RHS
-////        [r1] = [r0] -- store?
-//        Load(r0, RegisterStackReference(r0)) :: // r0 = [r0]
-//        Store(r0, RegisterStackReference(r1)) ::
-//        Move (r0, r1) :: Nil
-
-
 
       case ArrayElemNode(identifier, indices) =>
         Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: negative index\\n\\0", "negative_index")
@@ -320,11 +286,7 @@ object CodeGen {
     val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
     val thenBranch = generateStatement(ifStat.thenStat)
     val closeThenFrame = AssemblyStack3.destroyNewestScope()
-//    val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols(1))
-//    val elseBranch = generateStatement(ifStat.elseStat)
-//    val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
-//    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
     val endIfLabel = Labels.getIfThenLabel
 
     condition :::
@@ -334,10 +296,6 @@ object CodeGen {
       thenBranch :::
       closeThenFrame :::
       StandardBranch(endIfLabel) ::
-//      Label(elseBranchLabel) ::
-//      setUpElseFrame :::
-//      elseBranch :::
-//      closeElseFrame :::
       Label(endIfLabel) :: Nil
 
   }
@@ -416,9 +374,7 @@ object CodeGen {
         Load(r0, LoadImmNum(numElems)) ::
         Store(r0, RegisterStackReference(r3)) ::
         Move(r0, r3) ::
-//        Store(r0, RegisterStackReference(fp)) ::
         Nil
-//        case PairElemNode => Labels.addDataMsgLabel(msg_p_check_null_pointer)
       case _ => throw new UnsupportedOperationException("generate Assignment " +
         "right")
     }
