@@ -513,7 +513,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(1).getText
 
     operation match {
-      case "||" => LogicalAndNode(leftExpr, rightExpr)
+      case "||" => LogicalOrNode(leftExpr, rightExpr)
       case _ => throw new RuntimeException("Unknown Binary Operand with " +
         "precedence 6.")
     }

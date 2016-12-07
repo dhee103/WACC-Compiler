@@ -11,7 +11,7 @@ begin
   string s = "hello world!" ;
   println s ;
   s[0] = 'H' ;
-  println s ;
-  s = "Hi!" ;
-  println s
+  println s 
+  #s = "Hi!" ;
+  #println s
 end

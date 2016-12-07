@@ -30,7 +30,7 @@ object PredefinedFunctions {
     Load(r0, LabelOp("msg_p_print_ln")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("puts") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -42,7 +42,7 @@ object PredefinedFunctions {
     Load(r0, LabelOp("msg_p_print_int")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("printf") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -55,7 +55,7 @@ object PredefinedFunctions {
     Load(r0, LabelOp("msg_p_print_string")) ::
     Add(r0, r0, ImmNum(4)) ::
     BranchLink("printf") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -66,9 +66,9 @@ object PredefinedFunctions {
     Compare(r0, ImmNum(0)) ::
     Load(r0, LabelOp("msg_p_print_bool_t"), NE) ::
     Load(r0, LabelOp("msg_p_print_bool_f"), EQ) ::
-    Add(r0, r0, ImmNum(4)) ::
+    Add(r0, r0, ImmNum(WORD_SIZE)) ::
     BranchLink("printf") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -82,7 +82,7 @@ object PredefinedFunctions {
   def runtimeError(): List[Instruction] = {
     Label("p_throw_runtime_error") ::
     BranchLink("p_print_string") ::
-    Move(r0, ImmNum(-1)) ::
+    Load(r0, LoadImmNum(-1)) ::
     BranchLink("exit") :: Nil
   }
 
@@ -105,7 +105,7 @@ object PredefinedFunctions {
     Load(r0, RegisterStackReference(r0)) ::
     BranchLink("free") ::
     Load(r0, RegisterStackReference(sp)) ::
-    Load(r0, RegisterStackReference(r0, 4)) ::
+    Load(r0, RegisterStackReference(r0, WORD_SIZE)) ::
     BranchLink("free") ::
     Pop(r0) ::
     BranchLink("free") ::
@@ -117,9 +117,9 @@ object PredefinedFunctions {
     Push(lr) ::
     Move(r1, r0) ::
     Load(r0, LabelOp("msg_p_print_reference")) ::
-    Add(r0, r0, ImmNum(4)) ::
+    Add(r0, r0, ImmNum(WORD_SIZE)) ::
     BranchLink("printf") ::
-    Move(r0, ImmNum(0)) ::
+    Load(r0, LoadImmNum(0)) ::
     BranchLink("fflush") ::
     Pop(pc) :: Nil
   }
@@ -137,11 +137,11 @@ object PredefinedFunctions {
     Label("p_check_array_bounds") ::
     Push(lr) ::
     Compare(r0, ImmNum(0)) ::
-    Load(r0, LabelOp("msg_out_of_bounds_negative_index"), LT) ::
+    Load(r0, LabelOp("msg_negative_index"), LT) ::
     BranchLink("p_throw_runtime_error", LT) ::
     Load(r1, RegisterStackReference(r4)) ::
     Compare(r0, r1) ::
-    Load(r0, LabelOp("msg_out_of_bounds_index_too_large"), CS) ::
+    Load(r0, LabelOp("msg_index_too_large"), CS) ::
     BranchLink("p_throw_runtime_error", CS) ::
     Pop(pc) :: Nil
   }
@@ -151,7 +151,7 @@ object PredefinedFunctions {
     Push(lr) ::
     Move(r1, r0) ::
     Load(r0, LabelOp("msg_p_read_char")) ::
-    Add(r0, r0, ImmNum(4)) ::
+    Add(r0, r0, ImmNum(WORD_SIZE)) ::
     BranchLink("scanf") ::
     Pop(pc) :: Nil
   }
@@ -162,7 +162,7 @@ object PredefinedFunctions {
     Push(lr) ::
     Move(r1, r0) ::
     Load(r0, LabelOp("msg_p_read_int")) ::
-    Add(r0, r0, ImmNum(4)) ::
+    Add(r0, r0, ImmNum(WORD_SIZE)) ::
     BranchLink("scanf") ::
     Pop(pc) :: Nil
   }

@@ -1,4 +1,5 @@
 import Condition._
+import Shift._
 import Constants._
 
 object CodeGen {
@@ -28,7 +29,8 @@ object CodeGen {
 
     val statGeneration = generateStatement(statement)
 
-    var output = (Directive("data\n") :: Nil) :::
+    var output: List[Instruction] =
+      Directive("data\n") ::
       Labels.printMsgMap() :::
       Labels.printDataMsgMap() :::
       Directive("text\n") ::
@@ -37,13 +39,15 @@ object CodeGen {
       Push(lr) ::
       Push(fp) ::
       Move(fp, sp) ::
-      Sub(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
+      (for (i <- valuesModMaxLiteral(WORD_SIZE * prog.scopeSizes.head))
+        yield Sub(sp, sp, ImmNum(i))) :::
       statGeneration :::
-      Add(sp, sp, ImmNum(WORD_SIZE * prog.scopeSizes.head)) ::
-      Move(r0, zero) ::
-      Pop(fp) ::
-      Pop(pc) ::
-      Directive("ltorg") :: Nil
+      (for (i <- valuesModMaxLiteral(WORD_SIZE * prog.scopeSizes.head))
+        yield Add(sp, sp, ImmNum(i))) :::
+       Load(r0, LoadImmNum(0)) ::
+       Pop(fp) ::
+       Pop(pc) ::
+       Directive("ltorg") :: Nil
 
     if (PredefinedFunctions.printFlag) {
       output = output ::: LabelData("\n") ::
@@ -82,25 +86,22 @@ object CodeGen {
       PredefinedFunctions.checkNullPointer() ::: LabelData("\n") :: Nil
     }
 
+    if (PredefinedFunctions.checkArrayBoundsFlag) {
+      PredefinedFunctions.runtimeFlag = true
+
+      output = output ::: LabelData("\n") ::
+        PredefinedFunctions.checkArrayBounds()
+    }
+
     if (PredefinedFunctions.runtimeFlag) {
       output = output ::: LabelData("\n") ::
-        PredefinedFunctions.runtimeError()
+      PredefinedFunctions.runtimeError()
 
       if (!PredefinedFunctions.printFlag) {
         output = output ::: LabelData("\n") ::
-          PredefinedFunctions.printString() ::: LabelData("\n") ::
-          PredefinedFunctions.println()
+        PredefinedFunctions.printString() ::: LabelData("\n") ::
+        PredefinedFunctions.println()
       }
-    }
-
-    if (PredefinedFunctions.checkArrayBoundsFlag) {
-//      2	msg_0:
-//      3		.word 44
-//      4		.ascii	"ArrayIndexOutOfBoundsError: negative index\n\0"
-//      5	msg_1:
-//      6		.word 45
-//      7		.ascii	"ArrayIndexOutOfBoundsError: index too large\n\0"
-
     }
 
     if (PredefinedFunctions.readCharFlag) {
@@ -180,7 +181,7 @@ object CodeGen {
     Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
 //    Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
     Labels.addDataMsgLabel("%p\\0", "p_print_reference")
-
+    
     val printLink = value.getType match {
       case t if t.isEquivalentTo(IntTypeNode()) => BranchLink("p_print_int")
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
@@ -239,7 +240,44 @@ object CodeGen {
         generateAssignmentRHS(rhs) ::: // r0 = value on rhs
         generateAssignmentPair(expr, WORD_SIZE)
 
-      case arr: ArrayElemNode => throw new UnsupportedOperationException("ArraysAssignment")
+//      case arr: ArrayElemNode =>
+////        TODO: Improve the efficiency of this
+//        generateExpression(arr) :::     // r0 = LHS
+//        Move(r1, r0) :: //r1 = array index i.e. s[1]
+////        TODO: check valid call
+//        generateAssignmentRHS(rhs) :::  // r0 = RHS
+////        [r1] = [r0] -- store?
+//        Load(r0, RegisterStackReference(r0)) :: // r0 = [r0]
+//        Store(r0, RegisterStackReference(r1)) ::
+//        Move (r0, r1) :: Nil
+
+
+
+      case ArrayElemNode(identifier, indices) =>
+        Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: negative index\\n\\0", "negative_index")
+        Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: index too large\\n\\0", "index_too_large")
+        PredefinedFunctions.checkArrayBoundsFlag = true
+        val offset = AssemblyStack3.getOffsetFor(identifier)
+        val getElemAddrInR4: List[Instruction] = (for (index <- indices.dropRight(1))
+          yield generateExpression(index) ::: // r0 = current index
+            BranchLink("p_check_array_bounds") :: // checks address in r4, index in r0
+            Add(r4, r4, ImmNum(WORD_SIZE)) :: // moves past "size of array" stored in array
+            AddShift(r4, r4, r0, LSL, 2) :: // r4 = r4 + WORD_SIZE * index
+            Load(r4, RegisterStackReference(r4)) :: Nil // r4 = actual element in array
+          ).toList.flatten :::
+          generateExpression(indices.last) ::: // r0 = current index
+          BranchLink("p_check_array_bounds") :: // checks address in r4, index in r0
+          Add(r4, r4, ImmNum(WORD_SIZE)) :: // moves past "size of array" stored in array
+          AddShift(r4, r4, r0, LSL, 2) :: Nil
+
+        Load(r0, RegisterStackReference(fp, offset)) :: // r0 = address of array
+        Move(r4, r0) ::
+        getElemAddrInR4 :::
+        Move(r1, r4) :: // r1 = address to be assigned to
+        generateAssignmentRHS(rhs) ::: // r0 = value to be assigned
+        Store(r0, RegisterStackReference(r1)) :: Nil // [r1] = r0
+
+//        throw new UnsupportedOperationException(s"ArraysAssignment $arr")
       case _ => throw new UnsupportedOperationException("generateAssignment")
     }
   }
@@ -324,7 +362,7 @@ object CodeGen {
   def generateStoreArrayELem(value: (ExprNode, Int)): List[Instruction] = {
     // Should do this Load(r0, LoadImmNum(value)) :: Store(r0, [r2, #4 * index + 1])
     generateExpression(value._1) :::
-    Store(r0, RegisterStackReference(r2, WORD_SIZE * (value._2 + 1))) :: Nil
+    Store(r0, RegisterStackReference(r3, WORD_SIZE * (value._2 + 1))) :: Nil
   }
 
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
@@ -347,14 +385,15 @@ object CodeGen {
           elemCode = elemCode ::: generateStoreArrayELem(value)
         }
 
-        Move(r0, ImmNum(numElems)) ::
+        Load(r0, LoadImmNum(WORD_SIZE * (numElems + 1))) ::
         BranchLink("malloc") ::
-        Move(r2, r0) ::
+        Move(r3, r0) ::
         elemCode :::
-        Move(r0, ImmNum(numElems)) ::
-        Store(r0, RegisterStackReference(r2)) ::
-//        Maybe the line below is not needed?
-        Store(r0, RegisterStackReference(sp)) :: Nil
+        Load(r0, LoadImmNum(numElems)) ::
+        Store(r0, RegisterStackReference(r3)) ::
+        Move(r0, r3) ::
+//        Store(r0, RegisterStackReference(fp)) ::
+        Nil
 //        case PairElemNode => Labels.addDataMsgLabel(msg_p_check_null_pointer)
       case _ => throw new UnsupportedOperationException("generate Assignment " +
         "right")
@@ -366,17 +405,17 @@ object CodeGen {
     generateNewPairElem(fstElem) :::
     generateExpression(sndElem) :::
     generateNewPairElem(sndElem) :::
-    (Move(r0, ImmNum(8)) ::
+    (Load(r0, LoadImmNum(PAIR_SIZE)) ::
       BranchLink("malloc") ::
       Pop(r1) ::
       Pop(r2) ::
       Store(r2, RegisterStackReference(r0)) ::
-      Store(r1, RegisterStackReference(r0, 4)) :: Nil)
+      Store(r1, RegisterStackReference(r0, WORD_SIZE)) :: Nil)
   }
 
   def generateNewPairElem(elem: ExprNode): List[Instruction] = {
     Push(r0) ::
-    Move(r0, ImmNum(4)) ::
+    Load(r0, LoadImmNum(WORD_SIZE)) ::
     BranchLink("malloc") ::
     Pop(r1) ::
     Store(r1, RegisterStackReference(r0)) ::
@@ -405,20 +444,33 @@ object CodeGen {
     expr match {
       case expr: IdentNode =>
         Load(r0, FramePointerReference(AssemblyStack3.getOffsetFor(expr))) :: Nil
-      case expr: ArrayElemNode =>
+      case ArrayElemNode(identifier, indices) =>
+        Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: negative index\\n\\0", "negative_index")
+        Labels.addDataMsgLabel("ArrayIndexOutOfBoundsError: index too large\\n\\0", "index_too_large")
+        PredefinedFunctions.checkArrayBoundsFlag = true
+        val offset = AssemblyStack3.getOffsetFor(identifier)
+        val getElemInR4: List[Instruction] = (for (index <- indices)
+          yield generateExpression(index) ::: // r0 = current index
+            BranchLink("p_check_array_bounds") :: // checks address in r4, index in r0
+            Add(r4, r4, ImmNum(WORD_SIZE)) :: // moves past "size of array" stored in array
+            AddShift(r4, r4, r0, LSL, 2) :: // r4 = r4 + WORD_SIZE * index
+            Load(r4, RegisterStackReference(r4)) :: Nil // r4 = actual element in array
+        ).toList.flatten
 
-              throw new UnsupportedOperationException("Generate ArrayElemnode")
+        Load(r0, RegisterStackReference(fp, offset)) :: // r0 = address of array
+        Move(r4, r0) :: // r4 = address of array
+        getElemInR4 :::
+        Move(r0, r4) :: Nil // r0 = actual element in array
 
       case expr: UnaryOperationNode => generateUnaryOperation(expr)
       case expr: BinaryOperationNode => generateBinaryOperation(expr)
       case IntLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
-      case BoolLiteralNode(value) => Move(r0, ImmNum(if (value) 1 else 0)) :: Nil
+      case BoolLiteralNode(value) => Load(r0, LoadImmNum(if (value) 1 else 0)) :: Nil
       case CharLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
       case StringLiteralNode(value) => Labels.addMessageLabel(value); Load(r0, LabelOp(Labels.getMessageLabel)) :: Nil
-      case expr: PairLiteralNode => Move(r0, ImmNum(0)) :: Nil
+      case expr: PairLiteralNode => Load(r0, LoadImmNum(0)) :: Nil
       case _ => throw new
           UnsupportedOperationException("generate expr catch all")
-
     }
 
   }
@@ -428,17 +480,20 @@ object CodeGen {
     unOpNode match {
       case LogicalNotNode(argument) =>
         generateExpression(argument) :::
-        Compare(r0, zero) ::
-        Load(r0, loadZero, NE) ::
+        Compare(r0, ImmNum(0)) ::
+        Load(r0, LoadImmNum(0), NE) ::
         Load(r0, LoadImmNum(1), EQ) :: Nil
       case NegationNode(argument) =>
         PredefinedFunctions.arithmeticFlag = true
 
         generateExpression(argument) :::
-        ReverseSubNoCarry(r0, r0, zero) ::
+        ReverseSubNoCarry(r0, r0, ImmNum(0)) ::
         BranchLink("p_throw_overflow_error", VS) :: Nil
-      case LenNode(argument) => throw new
-          UnsupportedOperationException("generate len")
+      case LenNode(argument) =>
+//        TODO: Check that it's not called on anything but an array?
+        generateExpression(argument) ::: // r0 = argument
+        Load(r0, RegisterStackReference(r0)) :: Nil // r0 = First Element in R0 which should be array size
+
       case OrdNode(argument) =>
         generateExpression(argument) // Don't need to do anything else
       case ChrNode(argument) =>
@@ -561,6 +616,16 @@ object CodeGen {
     Pop(r1) ::
     mainInstruction
 
+  }
+
+  private def valuesModMaxLiteral(value: Int): List[Int] = {
+    var remainder = value
+    var outputList = List[Int]()
+    while (remainder >  MAX_LITERAL) {
+      outputList = outputList ++ List(MAX_LITERAL)
+      remainder -= MAX_LITERAL
+    }
+    outputList ++ List(remainder)
   }
 
 }
