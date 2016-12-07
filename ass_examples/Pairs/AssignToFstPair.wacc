@@ -1,0 +1,21 @@
+begin
+    pair(int, char) p = newpair(10, 'a') ;
+    print p ; 
+    print " = (" ;
+    int x = fst p ;
+    print x ;
+    print ", " ;
+    char c = snd p ;
+    print c ;
+    println ')' ;
+
+    fst p = 11 ;
+    print p ; 
+    print " = (" ;
+    int y = fst p ;
+    print y ;
+    print ", " ;
+    char d = snd p ;
+    print d ;
+    println ')' 
+end    
