@@ -1,0 +1,4 @@
+begin
+  if true then print "yay"; exit 0 fi;
+  print "nay"
+end

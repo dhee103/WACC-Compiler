@@ -1,4 +1,3 @@
 begin
-  if true then exit 0;
-  exit 1
+  if true then exit 14 fi
 end
