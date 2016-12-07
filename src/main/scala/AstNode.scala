@@ -49,9 +49,7 @@ case class SndNode(override val exprChild: ExprNode) extends PairElemNode {
   }
 }
 
-case class IdentNode(name: String) extends ExprNode with AssignmentLeftNode {
-  var identType: Option[TypeNode] = None
-
+case class IdentNode(name: String, var identType: Option[TypeNode] = None) extends ExprNode with AssignmentLeftNode {
   override def getType: TypeNode = identType.getOrElse(throw new RuntimeException("Fatal Error: Identifier not annotated."))
 }
 
