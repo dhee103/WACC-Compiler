@@ -18,6 +18,7 @@ object TypeChecker {
       case stat: SequenceNode => checkFunctionReturnStatement(stat.sndStat, correctType, functionName)
       case stat: IfNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
         checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
+      case stat: IfExtNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
       case stat: NewBeginNode => checkFunctionReturnStatement(stat.body, correctType, functionName)
       case _ =>
     }
@@ -36,6 +37,7 @@ object TypeChecker {
       case PrintNode(expr)                 => expr.getType
       case PrintlnNode(expr)               => expr.getType
       case stat: IfNode                    => checkIf(stat)
+      case stat: IfExtNode                 => checkIfExt(stat)
       case stat: WhileNode                 => checkWhile(stat)
       case NewBeginNode(stat)              => checkStatement(stat)
       case stat: SkipStatNode              =>
@@ -119,6 +121,18 @@ object TypeChecker {
       SemanticErrorLog.add("If statement expects boolean condition.")
     }
   }
+
+  def checkIfExt(ifNode: IfExtNode): Unit = {
+    checkStatement(ifNode.thenStat)
+//    checkStatement(ifNode.elseStat)
+
+    val condType = ifNode.condition.getType
+    val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
+    if (!condIsBoolean) {
+      SemanticErrorLog.add("If statement expects boolean condition.")
+    }
+  }
+
 
   def checkWhile(whileNode: WhileNode): Unit = {
     checkStatement(whileNode.loopBody)

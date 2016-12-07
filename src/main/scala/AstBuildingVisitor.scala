@@ -7,7 +7,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     .getMethodName
 
   override def visitProg(ctx: WaccParser.ProgContext): AstNode = {
-//    println("hit " + currentMethodName())
+    //    println("hit " + currentMethodName())
     val noOfChildren = ctx.getChildCount
     val statChild: StatNode = visit(ctx.getChild(noOfChildren - 3))
       .asInstanceOf[StatNode]
@@ -141,6 +141,20 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     val elseStat: StatNode = visit(ctx.getChild(5)).asInstanceOf[StatNode]
 
     IfNode(condition, thenStat, elseStat)
+  }
+
+  //  override def visitIfExt(ctx: WaccParser.IfContext): IfExtNode = {
+  //    //    println("hit " + currentMethodName())
+  //
+  //    val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+  //    val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
+  //    IfExtNode(condition, thenStat)
+  //  }
+
+  override def visitIfExt(ctx: WaccParser.IfExtContext): IfExtNode = {
+    val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+    val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
+    IfExtNode(condition, thenStat)
   }
 
   override def visitWhile(ctx: WaccParser.WhileContext): WhileNode = {
@@ -354,7 +368,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
   }
 
   def negateIntLiteralNode(intNode: IntLiteralNode): IntLiteralNode = {
-    IntLiteralNode(- intNode.value)
+    IntLiteralNode(-intNode.value)
   }
 
   override def visitPairLiteral(ctx: WaccParser.PairLiteralContext): ExprNode
@@ -556,7 +570,8 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
       for (i <- 0 until noOfChildren if i % 2 == 1)
         yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]
 
-    ArrayLiteralNode(if (noOfChildren == 2) IndexedSeq[ExprNode]() else
+    ArrayLiteralNode(if (noOfChildren == 2) IndexedSeq[ExprNode]()
+    else
       values)
   }
 

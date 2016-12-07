@@ -31,6 +31,9 @@ case class PrintlnNode(val text: ExprNode) extends StatNode {
 case class IfNode(condition: ExprNode, thenStat: StatNode, elseStat: StatNode) extends StatNode with ScopeExtender {
 }
 
+case class IfExtNode(condition: ExprNode, thenStat: StatNode) extends StatNode with ScopeExtender {
+}
+
 case class WhileNode(condition: ExprNode, loopBody: StatNode) extends StatNode with ScopeExtender {
 }
 

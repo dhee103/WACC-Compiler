@@ -27,6 +27,11 @@ object Labels {
     (s"if_stat${head}_else", s"if_stat${head}_end")
   }
 
+  def getIfExtLabel: String = {
+    val head = getStreamHead
+    s"if_stat${head}_end"
+  }
+
   def getWhileLabels: (String, String) = {
     val head = getStreamHead
     (s"while_loop${head}_start", s"while_loop${head}_end")

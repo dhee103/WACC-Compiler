@@ -164,6 +164,8 @@ object CodeGen {
         genericPrint(value, lnFlag = true)
       case stat: IfNode =>
         generateIf(stat)
+      case stat: IfExtNode =>
+        generateIfExt(stat)
       case stat: WhileNode =>
         generateWhile(stat)
       case stat: NewBeginNode =>
@@ -310,6 +312,33 @@ object CodeGen {
     elseBranch :::
     closeElseFrame :::
     Label(endIfLabel) :: Nil
+
+  }
+
+  def generateIfExt(ifStat: IfExtNode): List[Instruction] = {
+    val condition = generateExpression(ifStat.condition)
+    val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
+    val thenBranch = generateStatement(ifStat.thenStat)
+    val closeThenFrame = AssemblyStack3.destroyNewestScope()
+//    val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols(1))
+//    val elseBranch = generateStatement(ifStat.elseStat)
+//    val closeElseFrame = AssemblyStack3.destroyNewestScope()
+
+//    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
+    val endIfLabel = Labels.getIfExtLabel
+
+    condition :::
+      Compare(r0, ImmNum(0)) ::
+      StandardBranch(endIfLabel, EQ) ::
+      setUpThenFrame :::
+      thenBranch :::
+      closeThenFrame :::
+      StandardBranch(endIfLabel) ::
+//      Label(elseBranchLabel) ::
+//      setUpElseFrame :::
+//      elseBranch :::
+//      closeElseFrame :::
+      Label(endIfLabel) :: Nil
 
   }
 
