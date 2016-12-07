@@ -386,9 +386,9 @@ object CodeGen {
 
   def generateNewPairNode(fstElem: ExprNode, sndElem: ExprNode): List[Instruction] = {
     generateExpression(fstElem) :::
-    generateNewPairElem(fstElem) :::
+    generateNewPairElem() :::
     generateExpression(sndElem) :::
-    generateNewPairElem(sndElem) :::
+    generateNewPairElem() :::
     Load(r0, LoadImmNum(PAIR_SIZE)) ::
     BranchLink("malloc") ::
     Pop(r1) ::
@@ -397,7 +397,7 @@ object CodeGen {
     Store(r1, RegisterStackReference(r0, WORD_SIZE)) :: Nil
   }
 
-  def generateNewPairElem(elem: ExprNode): List[Instruction] = {
+  def generateNewPairElem(): List[Instruction] = {
     Push(r0) ::
     Load(r0, LoadImmNum(WORD_SIZE)) ::
     BranchLink("malloc") ::
