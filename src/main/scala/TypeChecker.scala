@@ -16,9 +16,9 @@ object TypeChecker {
         if (!foundType.isEquivalentTo(correctType))
         SemanticErrorLog.add(s"Function $functionName expected return type $correctType. Found $foundType)")
       case stat: SequenceNode => checkFunctionReturnStatement(stat.sndStat, correctType, functionName)
-      case stat: IfNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
+      case stat: IfThenElseNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
         checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
-      case stat: IfExtNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
+      case stat: IfThenNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
       case stat: NewBeginNode => checkFunctionReturnStatement(stat.body, correctType, functionName)
       case _ =>
     }
@@ -36,8 +36,8 @@ object TypeChecker {
       case stat: ExitNode                  => checkExit(stat)
       case PrintNode(expr)                 => expr.getType
       case PrintlnNode(expr)               => expr.getType
-      case stat: IfNode                    => checkIf(stat)
-      case stat: IfExtNode                 => checkIfExt(stat)
+      case stat: IfThenElseNode                    => checkIf(stat)
+      case stat: IfThenNode                 => checkIfExt(stat)
       case stat: WhileNode                 => checkWhile(stat)
       case NewBeginNode(stat)              => checkStatement(stat)
       case stat: SkipStatNode              =>
@@ -111,7 +111,7 @@ object TypeChecker {
     }
   }
 
-  def checkIf(ifNode: IfNode): Unit = {
+  def checkIf(ifNode: IfThenElseNode): Unit = {
     checkStatement(ifNode.thenStat)
     checkStatement(ifNode.elseStat)
 
@@ -122,7 +122,7 @@ object TypeChecker {
     }
   }
 
-  def checkIfExt(ifNode: IfExtNode): Unit = {
+  def checkIfExt(ifNode: IfThenNode): Unit = {
     checkStatement(ifNode.thenStat)
 //    checkStatement(ifNode.elseStat)
 

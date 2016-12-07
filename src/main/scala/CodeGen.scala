@@ -162,10 +162,10 @@ object CodeGen {
         genericPrint(value, lnFlag = false)
       case PrintlnNode(value) =>
         genericPrint(value, lnFlag = true)
-      case stat: IfNode =>
-        generateIf(stat)
-      case stat: IfExtNode =>
-        generateIfExt(stat)
+      case stat: IfThenElseNode =>
+        generateIfThenElse(stat)
+      case stat: IfThenNode =>
+        generateIfThen(stat)
       case stat: WhileNode =>
         generateWhile(stat)
       case stat: NewBeginNode =>
@@ -183,7 +183,7 @@ object CodeGen {
     Labels.addDataMsgLabel("false\\0", "p_print_bool_f")
 //    Labels.addDataMsgLabel("%.*s\\0", "p_print_string")
     Labels.addDataMsgLabel("%p\\0", "p_print_reference")
-    
+
     val printLink = value.getType match {
       case t if t.isEquivalentTo(IntTypeNode()) => BranchLink("p_print_int")
       case t if t.isEquivalentTo(StringTypeNode()) => BranchLink("p_print_string")
@@ -289,7 +289,7 @@ object CodeGen {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
-  def generateIf(ifStat: IfNode): List[Instruction] = {
+  def generateIfThenElse(ifStat: IfThenElseNode): List[Instruction] = {
     val condition = generateExpression(ifStat.condition)
     val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
     val thenBranch = generateStatement(ifStat.thenStat)
@@ -298,7 +298,7 @@ object CodeGen {
     val elseBranch = generateStatement(ifStat.elseStat)
     val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
-    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
+    val (elseBranchLabel, endIfLabel) = Labels.getIfThenElseLabels
 
     condition :::
     Compare(r0, ImmNum(0)) ::
@@ -315,7 +315,7 @@ object CodeGen {
 
   }
 
-  def generateIfExt(ifStat: IfExtNode): List[Instruction] = {
+  def generateIfThen(ifStat: IfThenNode): List[Instruction] = {
     val condition = generateExpression(ifStat.condition)
     val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
     val thenBranch = generateStatement(ifStat.thenStat)
@@ -325,7 +325,7 @@ object CodeGen {
 //    val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
 //    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
-    val endIfLabel = Labels.getIfExtLabel
+    val endIfLabel = Labels.getIfThenLabel
 
     condition :::
       Compare(r0, ImmNum(0)) ::

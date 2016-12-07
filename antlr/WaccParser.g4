@@ -22,8 +22,8 @@ stat: SKIP_                                                 #SkipStat
     | EXIT expr                                             #Exit
     | PRINT expr                                            #Print
     | PRINTLN expr                                          #Println
-    | IF expr THEN stat ELSE stat FI                        #If
-    | IF expr THEN stat FI                                  #IfExt
+    | IF expr THEN stat ELSE stat FI                        #IfThen
+    | IF expr THEN stat FI                                  #IfThenElse
     | WHILE expr DO stat DONE                               #While
     | BEGIN stat END                                        #NewBegin
     | stat SEMICOLON stat                                   #Sequence

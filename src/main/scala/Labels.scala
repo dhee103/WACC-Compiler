@@ -22,12 +22,12 @@ object Labels {
     (str ++ head.toString() ++ "start", str ++ head.toString() ++ "end")
   }
 
-  def getIfLabels: (String, String) = {
+  def getIfThenElseLabels: (String, String) = {
     val head = getStreamHead
     (s"if_stat${head}_else", s"if_stat${head}_end")
   }
 
-  def getIfExtLabel: String = {
+  def getIfThenLabel: String = {
     val head = getStreamHead
     s"if_stat${head}_end"
   }
