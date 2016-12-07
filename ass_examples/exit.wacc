@@ -1,4 +1,0 @@
-begin
-  exit 1;
-  println("hellO")
-end

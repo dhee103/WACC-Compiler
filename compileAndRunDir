@@ -1,0 +1,24 @@
+#!/usr/bin/python3
+
+# Input: Path to directory
+# Output: For each .wacc file in directory:
+#           Exit code of wacc compiler.
+#           If wacc program is valid:
+#             Generated Assembly to terminal, Output of qemu to terminal
+# All generated assembly and binary files will be cleaned by default
+# This script works by calling ./compileAndRun
+
+import sys
+import os
+
+argList = sys.argv # Note that argList[0] is './compileAndRunDir'
+rootDir = argList[1]
+
+for subDir, dirs, files in os.walk(rootDir):
+    for file in files:
+        filePath = subDir + os.sep + file
+        os.system("./compileAndRun " + filePath)
+        print('\n')
+        input("Press Enter to continue onto the next file.")
+        print('\n\n\n\n\n')
+        os.system("clear")

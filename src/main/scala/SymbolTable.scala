@@ -28,4 +28,8 @@ class SymbolTable(val encTable: Option[SymbolTable]) {
     dict.size
   }
 
+  def symbols: List[IdentNode] = {
+    (for (pair <- dict) yield pair._1).to[collection.immutable.List]
+  }
+
 }

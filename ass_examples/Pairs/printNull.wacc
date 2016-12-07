@@ -1,0 +1,12 @@
+# print the null reference
+
+# Output:
+# (nil)
+
+# Program:
+
+begin
+  println("does a null") ;
+  println null ;
+  println("print anything?")
+end

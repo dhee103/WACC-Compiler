@@ -10,7 +10,7 @@ case class StackPointer() extends Register {
 
 case class FramePointer() extends Register {
 
-  override def toString() = "r11"
+  override def toString() = "fp"
 
 }
 
@@ -40,4 +40,14 @@ case class R1() extends Register {
 case class R2() extends Register {
 
   override def toString() = "r2"
+}
+
+case class R3() extends Register {
+
+  override def toString() = "r3"
+}
+
+case class R4() extends Register {
+
+  override def toString() = "r4"
 }

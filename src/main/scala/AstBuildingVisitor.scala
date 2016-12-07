@@ -392,7 +392,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitChar_liter(ctx: WaccParser.Char_literContext):
   CharLiteralNode = {
     //    println("hit " + currentMethodName())
-    val value = ctx.getText.charAt(0)
+    val value = ctx.getText.charAt(1)
 
     CharLiteralNode(value)
   }
@@ -406,7 +406,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitStr_liter(ctx: WaccParser.Str_literContext):
   StringLiteralNode = {
     //    println("hit " + currentMethodName())
-    val value = ctx.getText
+    val value = ctx.getText.tail.init
 
     StringLiteralNode(value)
   }
@@ -513,7 +513,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     val operation = ctx.getChild(1).getText
 
     operation match {
-      case "||" => LogicalAndNode(leftExpr, rightExpr)
+      case "||" => LogicalOrNode(leftExpr, rightExpr)
       case _ => throw new RuntimeException("Unknown Binary Operand with " +
         "precedence 6.")
     }

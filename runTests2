@@ -24,7 +24,7 @@ def outputMessage(file)
 end
 
  def getRefOutput(file)
-   puts "Reference compiler ouptut for #{file}\n\n"
+   puts "Reference compiler output for #{file}\n\n"
    puts output = `./refCompile -a -S -x #{file}`
    # using -x flag will execute but it hangs on user input
    # output = output.split("Printing Assembly...")

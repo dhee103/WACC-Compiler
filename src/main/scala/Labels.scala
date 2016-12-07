@@ -11,24 +11,38 @@ object Labels {
 
   val dataMsgMap = LinkedHashMap[String, MutableList[String]]()
 
-  def getLabel(str: String): (String, String) = {
-
+  def getStreamHead: Int = {
     val head = stream.head
     stream = stream.tail
+    head
+  }
 
-    (str ++ head.toString() ++ "start ", str ++ head.toString() ++ "end")
+  def getLabel(str: String): (String, String) = {
+    val head = getStreamHead
+    (str ++ head.toString() ++ "start", str ++ head.toString() ++ "end")
+  }
+
+  def getIfLabels: (String, String) = {
+    val head = getStreamHead
+    (s"if_stat${head}_else", s"if_stat${head}_end")
+  }
+
+  def getWhileLabels: (String, String) = {
+    val head = getStreamHead
+    (s"while_loop${head}_start", s"while_loop${head}_end")
   }
 
   def addMessageLabel(str: String): Unit = {
-    addMessageLabel(str, stream.head.toString)
+    val head = getStreamHead
+    addMessageLabel(str, head.toString)
   }
 
   def addMessageLabel(str: String, name: String): Unit = {
     msgMap += ("msg_" + name ->
-      MutableList[String](s".word ${getSize(str) - 2}", s".ascii $str"))
+      MutableList[String](s".word ${getSize(str)}", f""".ascii \"$str\""""))
   }
 
-  def getMessageLabel(): String = {
+  def getMessageLabel: String = {
     msgMap.last._1
   }
 
@@ -80,6 +94,9 @@ object Labels {
     var count: Int = 0
     for (s <- str.toCharArray) {
       if (s != '\\') count += 1
+      // todo: this won't work when we have escaped backslashes in the string?
+      // todo: fix this
+      // is there a reason why we don't just use str.size where appropriate?
     }
     count
   }

@@ -1,4 +1,5 @@
 import Condition._
+import Shift._
 
 trait Instruction {
 
@@ -19,41 +20,33 @@ case class Push(src: Register, override val cond: Condition.Condition = Conditio
   def this(src: Register, label: Option[String]) = this(src, Condition.AL, label)
   def this(src: Register, cond: Condition.Condition) = this(src, cond, None)
   override val main = "PUSH" + cond + " {" + src + "}"
-  AssemblyStack2.subStackAddVirtual(4)
 }
 
 case class Pop(dst: Register, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
   def this(dst: Register, label: Option[String]) = this(dst, AL, label)
   def this(dst: Register, cond: Condition) = this(dst, cond, None)
   override val main = "POP" + cond + " {" + dst.toString + "}"
-  AssemblyStack2.addStackSubVirtual(4)
-
 }
 
-case class Add(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
-  def this(dst: Register, src1: Register, src2: Operand, label: Option[String]) = this(dst, src1, src2, AL, label)
-  def this(dst: Register, src1: Register, src2: Operand, cond: Condition) = this(dst, src1, src2, cond, None)
+case class Add(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None, str:String = "") extends Instruction {
+  def this(dst: Register, src1: Register, src2: Operand, label: Option[String]) = this(dst, src1, src2, AL, label, "")
+  def this(dst: Register, src1: Register, src2: Operand, cond: Condition) = this(dst, src1, src2, cond, None, "")
   override val main = "ADD" + cond + " " + dst.toString + ", " + src1.toString + ", " + src2.toString
+}
 
-  if(dst.isInstanceOf[StackPointer]){
+//case class AddShift(dst: Register, src1: Register, src2: Operand, str:String) extends Instruction {
+//  override val main: String = "ADD" + " " + dst.toString + ", " + src1.toString + ", " + src2.toString + ", " + str
+//}
 
-    AssemblyStack2.subStackAddVirtual(4)
-    
-  }
-
+case class AddShift(dst: Register, src1: Register, src2: Operand, shift: Shift = NA, n: Int = 0) extends Instruction {
+  val str = if (shift != NA) ", " + shift + " #" + n.toString else ""
+  override val main: String = "ADD" + " " + dst.toString + ", " + src1.toString + ", " + src2.toString + str
 }
 
 case class Sub(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
   def this(dst: Register, src1: Register, src2: Operand, label: Option[String]) = this(dst, src1, src2, AL, label)
   def this(dst: Register, src1: Register, src2: Operand, cond: Condition) = this(dst, src1, src2, cond, None)
   override val main = "SUB" + cond + " " + dst.toString + ", " + src1.toString + ", " + src2.toString
-
-  if(dst.isInstanceOf[StackPointer]){
-
-    AssemblyStack2.addStackSubVirtual(4)
-
-  }
-
 }
 
 case class ReverseSubNoCarry(dst: Register, src1: Register, src2: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
