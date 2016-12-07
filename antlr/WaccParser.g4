@@ -23,6 +23,7 @@ stat: SKIP_                                                 #SkipStat
     | PRINT expr                                            #Print
     | PRINTLN expr                                          #Println
     | IF expr THEN stat ELSE stat FI                        #If
+    | IF expr THEN stat FI                                  #IfExt
     | WHILE expr DO stat DONE                               #While
     | BEGIN stat END                                        #NewBegin
     | stat SEMICOLON stat                                   #Sequence
