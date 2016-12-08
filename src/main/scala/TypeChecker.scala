@@ -18,7 +18,16 @@ object TypeChecker {
       case stat: SequenceNode => checkFunctionReturnStatement(stat.sndStat, correctType, functionName)
       case stat: IfThenElseNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
         checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
-      case stat: IfThenNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
+//      case stat: IfThenNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
+      case stat: IfElifNode =>
+        checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
+        for (thenStat <- stat.elifStats) {
+          checkFunctionReturnStatement(thenStat, correctType, functionName)
+        }
+        if (stat.elseStat.nonEmpty) {
+          checkFunctionReturnStatement(stat.elseStat.get, correctType, functionName)
+        }
+
       case stat: NewBeginNode => checkFunctionReturnStatement(stat.body, correctType, functionName)
       case _ =>
     }
@@ -36,12 +45,14 @@ object TypeChecker {
       case stat: ExitNode                  => checkExit(stat)
       case PrintNode(expr)                 => expr.getType
       case PrintlnNode(expr)               => expr.getType
-      case stat: IfThenElseNode                    => checkIf(stat)
-      case stat: IfThenNode                => checkIfExt(stat)
+      case stat: IfThenElseNode            => checkIf(stat)
+//      case stat: IfThenNode                => checkIfExt(stat)
+      case stat: IfElifNode                => checkIfElif(stat)
       case stat: WhileNode                 => checkWhile(stat)
       case NewBeginNode(stat)              => checkStatement(stat)
       case stat: SkipStatNode              => // nothing needs to be done
       case stat: BreakNode                 => // nothing needs to be done
+//      case s => println(s"wtf is: $s")
 //        TODO: Decide whether we need to check the location of a break i.e. can it only be used inside a scope extender?
     }
   }
@@ -124,14 +135,30 @@ object TypeChecker {
     }
   }
 
-  def checkIfExt(ifNode: IfThenNode): Unit = {
-    checkStatement(ifNode.thenStat)
-//    checkStatement(ifNode.elseStat)
+//  def checkIfExt(ifNode: IfThenNode): Unit = {
+//    checkStatement(ifNode.thenStat)
+////    checkStatement(ifNode.elseStat)
+//
+//    val condType = ifNode.condition.getType
+//    val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
+//    if (!condIsBoolean) {
+//      SemanticErrorLog.add("If statement expects boolean condition.")
+//    }
+//  }
 
-    val condType = ifNode.condition.getType
-    val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
-    if (!condIsBoolean) {
-      SemanticErrorLog.add("If statement expects boolean condition.")
+  def checkIfElif(ifNode: IfElifNode): Unit = {
+    if (ifNode.elseStat.isDefined) {
+      checkStatement(ifNode.elseStat.get)
+    }
+
+    //    check condition and check Statement for the if and for each elif
+    for ((cond, stat) <- ifNode.condition :: ifNode.elifConds zip ifNode.thenStat :: ifNode.elifStats) {
+      checkStatement(stat)
+      val condType = cond.getType
+      val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
+      if (!condIsBoolean) {
+        SemanticErrorLog.add("If statement expects boolean condition.")
+      }
     }
   }
 
