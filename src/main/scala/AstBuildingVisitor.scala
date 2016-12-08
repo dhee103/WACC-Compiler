@@ -160,34 +160,38 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 //  }
 
   override def visitIfElif(ctx: IfElifContext): AstNode = {
+    val elifSize = 4
+    val elseSize = 2
     val numChilds = ctx.getChildCount
 
     def isElsePresent(): Boolean = {
       ctx.getChild(numChilds - 3).getText.equals("else")
     }
-
-//    numElifsPresent = size - size(if then) - size(fi) - size(else)
-    def numElifsPresent(): Int = numChilds - 4 - 1 - (if (isElsePresent()) 2 else 0)
-
-    for (i <- 0 until ctx.getChildCount) println(s"child $i = ${ctx.getChild(i)}")
+//    numElifsPresent = (size - size(if then) - size(fi) - size(else))/ size(elif)
+    def numElifsPresent(): Int =
+      (numChilds - elifSize - 1 - (if (isElsePresent()) elseSize else 0)) / elifSize
 
     val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
     val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
 
-//    val elifStats: List[StatNode] =
+    val elifConds: List[ExprNode] = if (numElifsPresent() > 0) {
+      (for (i <- 5 to 5 + elifSize * (numElifsPresent() - 1) by elifSize)
+        yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]).toList
+    } else Nil
 
-    //    if it has an else stat then do this; need to get correct index
+    val elifStats: List[StatNode] = if (numElifsPresent() > 0) {
+      (for (i <- 7 to 7 + elifSize * (numElifsPresent() - 1) by elifSize)
+        yield visit(ctx.getChild(i)).asInstanceOf[StatNode]).toList
+    } else Nil
+
+    //    if it has an else stat then get it else it's None
+    val elseStat: Option[StatNode] =
     if (isElsePresent()) {
-      val elseStat: StatNode = visit(ctx.getChild(numChilds - 3)).asInstanceOf[StatNode]
-    }
-    val elseStat: StatNode = visit(ctx.getChild(numChilds - 3)).asInstanceOf[StatNode]
-    
+      Some(visit(ctx.getChild(numChilds - 2)).asInstanceOf[StatNode])
+    } else None
 
-    IfThenElseNode(condition, thenStat, elseStat)
-//    IfElifNode(condition, thenStat, elifStats)
-//    IfElifNode(condition, thenStat, elifStats, elseStat)
-//    IfElifNode(condition, thenStat)
-//    IfElifNode(condition, thenStat, elseStat)
+    //    IfThenElseNode(condition, thenStat, elseStat)
+    IfElifNode(condition, thenStat, elifConds, elifStats, elseStat)
   }
 
   override def visitWhile(ctx: WaccParser.WhileContext): WhileNode = {
