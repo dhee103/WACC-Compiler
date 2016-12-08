@@ -147,8 +147,9 @@ object CodeGen {
         genericPrint(value, lnFlag = true)
       case stat: IfThenElseNode =>
         generateIfThenElse(stat)
-      case stat: IfThenNode =>
-        generateIfThen(stat)
+//      case stat: IfThenNode =>
+//        generateIfThen(stat)
+      case stat: IfElifNode => generateIfElif(stat)
       case stat: WhileNode =>
         generateWhile(stat)
       case stat: NewBeginNode =>
@@ -289,24 +290,83 @@ object CodeGen {
 
   }
 
-  def generateIfThen(ifStat: IfThenNode): List[Instruction] = {
-    val condition = generateExpression(ifStat.condition)
+  def generateIfElif(ifStat: IfElifNode): List[Instruction] = {
+    val isElsePresent: Boolean = ifStat.elseStat.isDefined
+
+    val firstCondition = generateExpression(ifStat.condition)
     val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
     val thenBranch = generateStatement(ifStat.thenStat)
     val closeThenFrame = AssemblyStack3.destroyNewestScope()
 
-    val endIfLabel = Labels.getIfThenLabel
+    val (elseBranchLabel, endIfLabel) = Labels.getIfThenElseLabels
 
-    condition :::
-      Compare(r0, ImmNum(0)) ::
-      StandardBranch(endIfLabel, EQ) ::
-      setUpThenFrame :::
-      thenBranch :::
-      closeThenFrame :::
-      StandardBranch(endIfLabel) ::
-      Label(endIfLabel) :: Nil
+    val elifElseLabels
+    = (for (i <- 1 to ifStat.elifConds.size) yield Labels.getElifLabel).toList :::
+      (if (isElsePresent) elseBranchLabel else endIfLabel) :: Nil
+
+
+//    check if we have an else
+//    generate if for elseif
+
+    val allElifs: List[Instruction] =
+      (for (((cond, stat), i)
+            <- (ifStat.elifConds zip ifStat.elifStats).zipWithIndex)
+//        val condition = generateExpression(cond)
+//        val setUpFrame = AssemblyStack3.createNewScope(ifStat.symbols(i))
+//        val elifBranch = generateStatement(stat)
+//        val closeFrame = AssemblyStack3.destroyNewestScope()
+
+        yield Label(elifElseLabels(i)) ::
+          generateExpression(cond) :::
+          Compare(r0, ImmNum(0)) ::
+          StandardBranch(elifElseLabels(i + 1), EQ) :: // go to next elif/else
+          AssemblyStack3.createNewScope(ifStat.symbols(i)) :::
+          generateStatement(stat) :::
+          AssemblyStack3.destroyNewestScope() :::
+          StandardBranch(endIfLabel) :: Nil
+      ).flatten
+
+
+    val elseCode = if (isElsePresent) {
+      val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols.last)
+      val elseBranch = generateStatement(ifStat.elseStat.get)
+      val closeElseFrame = AssemblyStack3.destroyNewestScope()
+
+      Label(elseBranchLabel) :: setUpElseFrame ::: elseBranch ::: closeElseFrame
+    } else Nil
+
+    firstCondition :::
+    Compare(r0, ImmNum(0)) ::
+    StandardBranch(elifElseLabels.head, EQ) :: // go to first elif/else/end
+    setUpThenFrame :::
+    thenBranch :::
+    closeThenFrame :::
+    StandardBranch(endIfLabel) ::
+    allElifs :::
+    elseCode :::
+    StandardBranch(endIfLabel) ::
+    Label(endIfLabel) :: Nil
 
   }
+
+//  def generateIfThen(ifStat: IfThenNode): List[Instruction] = {
+//    val condition = generateExpression(ifStat.condition)
+//    val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
+//    val thenBranch = generateStatement(ifStat.thenStat)
+//    val closeThenFrame = AssemblyStack3.destroyNewestScope()
+//
+//    val endIfLabel = Labels.getElifLabel
+//
+//    condition :::
+//      Compare(r0, ImmNum(0)) ::
+//      StandardBranch(endIfLabel, EQ) ::
+//      setUpThenFrame :::
+//      thenBranch :::
+//      closeThenFrame :::
+//      StandardBranch(endIfLabel) ::
+//      Label(endIfLabel) :: Nil
+//
+//  }
 
   def generateWhile(whileStat: WhileNode): List[Instruction] = {
     val condition = generateExpression(whileStat.condition)
