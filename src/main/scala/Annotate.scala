@@ -6,10 +6,10 @@ object Annotate {
 
   def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable): Unit = {
     for (f <- prog.funcChildren) {
-      FunctionTable.add(f)
+      annotateFuncNode(f, new SymbolTable(Some(topSymbolTable)))
     }
     for (f <- prog.funcChildren) {
-      annotateFuncNode(f, new SymbolTable(Some(topSymbolTable)))
+      FunctionTable.add(f)
     }
     annotateStatNode(prog.statChild, topSymbolTable, isInMain = true)
     prog.symbols = List(topSymbolTable.symbols)
