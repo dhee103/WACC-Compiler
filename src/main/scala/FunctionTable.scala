@@ -2,15 +2,15 @@ import collection.mutable.HashMap
 
 // FunctionTable is an object as there is a single namespace for functions in
 // WACC programs.
-// Maps function identifiers to return types, list of param types,
+// Maps function names (String) to return types, list of param types,
 // list of locals vars, no. of local vars
 object FunctionTable {
 // TODO: consider having tuple of TypeNode and paramList
 // TODO: consider having an trait/abstract class for functionTable & SymbolTable
-  val dict = new HashMap[IdentNode, (TypeNode, List[TypeNode], List[IdentNode], Int)]()
+  val dict = new HashMap[String, (TypeNode, List[TypeNode], List[IdentNode], Int)]()
 
   def add(func: FuncNode): Unit = {
-    val identifier: IdentNode = func.identifier
+    val identName: String = func.identifier.name
     val returnType: TypeNode = func.returnType
     val paramList = func.paramList
     val paramTypes: List[TypeNode] =
@@ -19,11 +19,10 @@ object FunctionTable {
     val noOfLocalVars: Int = func.noOfLocalVars
 
 
-    if (dict.contains(identifier)) {
-      val name = identifier.name
-      SemanticErrorLog.add(s"Attempted to redefine function $name.")
+    if (dict.contains(identName)) {
+      SemanticErrorLog.add(s"Attempted to redefine function $identName.")
     } else {
-      dict += (identifier -> (returnType, paramTypes, localVars, noOfLocalVars))
+      dict += (identName -> (returnType, paramTypes, localVars, noOfLocalVars))
     }
   }
 
@@ -36,7 +35,7 @@ object FunctionTable {
   def getNoOfLocalVars(ident: IdentNode): Int = lookup(ident)._4
 
   private def lookup(ident: IdentNode): (TypeNode, List[TypeNode], List[IdentNode], Int) = {
-    dict.getOrElse(ident, throw new RuntimeException("Variable used but not in scope")) // TO DO: Change this?
+    dict.getOrElse(ident.name, throw new RuntimeException("Fatal Error")) // TODO: Change this?
   }
 
   def doesContain(ident: IdentNode): Boolean = {
