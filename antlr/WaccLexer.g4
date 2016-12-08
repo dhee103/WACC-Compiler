@@ -13,6 +13,7 @@ IF : 'if' ;
 THEN : 'then' ;
 ELSE : 'else' ;
 FI : 'fi' ;
+ELIF: 'elif' ;
 WHILE : 'while' ;
 DO : 'do' ;
 DONE : 'done' ;
