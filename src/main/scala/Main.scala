@@ -26,8 +26,6 @@ object Main {
 
   def main(args: Array[String]): Unit = {
 
-    time {
-
       if (!args.isEmpty) {
         val input = args(0)
         val file = input.substring(input.lastIndexOf('/') + 1, input
@@ -36,7 +34,7 @@ object Main {
         val exitCode = compile(input)
         val pw = new PrintWriter(new File(s"$file.s"))
         pw.write(outputString)
-        pw.close
+        pw.close()
 //        println(s"exitcode: $exitCode")
                 sys.exit(exitCode)
       }
@@ -44,7 +42,6 @@ object Main {
         sys.error("No filename passed")
       }
 
-    }
   }
 
   def compile(filename: String): Int = {
