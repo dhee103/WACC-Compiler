@@ -4,8 +4,8 @@ trait AstNode {
 }
 
 trait ScopeExtender {
-  val scopeSizes: MutableList[Int] = MutableList[Int]()
-  var symbols: List[List[IdentNode]] = _
+  val scopeSizes = MutableList[Int]()
+  var symbols = MutableList[List[IdentNode]]()
 }
 
 case class ProgNode(statChild: StatNode, funcChildren: IndexedSeq[FuncNode]) extends AstNode with ScopeExtender {
