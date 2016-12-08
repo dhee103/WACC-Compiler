@@ -295,7 +295,7 @@ object CodeGen {
     val thenBranch = generateStatement(ifStat.thenStat)
     val closeThenFrame = AssemblyStack3.destroyNewestScope()
 
-    val (elseBranchLabel, endIfLabel) = Labels.getIfThenElseLabels
+    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
 
     val elifElseLabels
     = (for (i <- 1 to ifStat.elifConds.size) yield Labels.getElifLabel).toList :::
