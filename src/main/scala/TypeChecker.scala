@@ -55,7 +55,7 @@ object TypeChecker {
     val rhsType: TypeNode = rhs.getType
 
     if (!rhsType.isEquivalentTo(identType)) {
-      SemanticErrorLog.add("Type mismatch in declaration statement.")
+      SemanticErrorLog.add(s"Type mismatch in declaration statement. Expected: $identType. Actual: $rhsType.")
     }
   }
 
