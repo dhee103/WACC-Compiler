@@ -8,10 +8,10 @@ object Annotate {
 
   def annotateProgNode(prog: ProgNode, topSymbolTable: SymbolTable): Unit = {
     for (f <- prog.funcChildren) {
-      FunctionTable.add(f)
+      annotateFuncNode(f, new SymbolTable(Some(topSymbolTable)))
     }
     for (f <- prog.funcChildren) {
-      annotateFuncNode(f, new SymbolTable(Some(topSymbolTable)))
+      FunctionTable.add(f)
     }
     annotateStatNode(prog.statChild, topSymbolTable, isInMain = true)
     prog.symbols = MutableList(topSymbolTable.symbols)
@@ -26,7 +26,7 @@ object Annotate {
     val noOfParameters = currentScopeSymbolTable.size
     val parameters = currentScopeSymbolTable.symbols
 
-    annotateStatNode(function.statement, currentScopeSymbolTable, false)
+    annotateStatNode(function.statement, currentScopeSymbolTable, isInMain = false)
 
     function.noOfLocalVars = currentScopeSymbolTable.size - noOfParameters
     function.localVars = currentScopeSymbolTable.symbols.filterNot(parameters.toSet)

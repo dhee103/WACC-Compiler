@@ -1,0 +1,9 @@
+begin
+  int x = 2;
+  bool y = true ;
+  begin
+    println "in scope" ;
+    y = !y
+  end ;
+  println x 
+end  

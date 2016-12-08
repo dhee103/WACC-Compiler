@@ -14,7 +14,7 @@ case class ProgNode(statChild: StatNode, funcChildren: IndexedSeq[FuncNode]) ext
 case class FuncNode(returnType: TypeNode, identifier: IdentNode,
                     paramList: ParamListNode, statement: StatNode, var noOfLocalVars: Int = 0)
   extends AstNode {
-  var localVars: List[IdentNode] = _
+  var localVars: List[IdentNode] = List[IdentNode]()
 }
 
 case class ParamListNode(params: IndexedSeq[ParamNode]) extends AstNode {

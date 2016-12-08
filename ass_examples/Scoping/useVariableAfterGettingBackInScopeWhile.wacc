@@ -1,0 +1,9 @@
+begin
+  int x = 2;
+  bool b = true ;
+  while b do
+    println "in loop";
+    b = !b
+  done ;
+  println x
+end  

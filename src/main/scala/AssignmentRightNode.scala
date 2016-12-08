@@ -28,4 +28,15 @@ case class CallNode(id: IdentNode, argList: Option[ArgListNode]) extends Assignm
       ErrorTypeNode()
     }
   }
+
+  def params: List[IdentNode] = FunctionTable.getParamIdents(id)
+
+  def args: List[ExprNode] = {
+    argList match {
+      case None => List[ExprNode]()
+      case Some(list) => list.exprs.toList
+    }
+  }
+
+  def functionBody: StatNode = FunctionTable.getBody(id)
 }
