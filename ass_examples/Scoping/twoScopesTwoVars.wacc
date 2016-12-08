@@ -1,0 +1,7 @@
+begin
+  int x = 5;
+  int y = 4;
+  begin
+    print x
+  end
+end

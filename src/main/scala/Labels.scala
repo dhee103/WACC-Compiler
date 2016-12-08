@@ -11,15 +11,14 @@ object Labels {
 
   val dataMsgMap = LinkedHashMap[String, MutableList[String]]()
 
+  // userFuncMap maps user defined function names to the assembly code of
+  // said function
+  private val userFuncMap = HashMap[String, List[Instruction]]()
+
   def getStreamHead: Int = {
     val head = stream.head
     stream = stream.tail
     head
-  }
-
-  def getLabel(str: String): (String, String) = {
-    val head = getStreamHead
-    (str ++ head.toString() ++ "start", str ++ head.toString() ++ "end")
   }
 
   def getIfLabels: (String, String) = {
@@ -68,6 +67,14 @@ object Labels {
   def getDataMsgLabel(str: String): MutableList[String] = {
     dataMsgMap.getOrElse(str, throw new RuntimeException(s"$str is not a data" +
       s" message"))
+  }
+
+  def addFunction(funcName: String, funcDef: List[Instruction]): Unit = {
+    userFuncMap += funcName -> funcDef
+  }
+
+  def userFunctions: List[Instruction] = {
+    (for ((str, body) <- userFuncMap) yield Label(str) :: body).toList.flatten
   }
 
   def printMsgMap(): List[Instruction] = {

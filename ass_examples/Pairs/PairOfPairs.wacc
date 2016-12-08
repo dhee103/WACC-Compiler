@@ -1,0 +1,31 @@
+
+begin
+  string comma = ", " ;
+  pair(char, bool) y = newpair('a', true);
+  pair(char, bool) z = newpair('b', false);
+  pair(char, bool)[] x = [y, z];
+  begin
+    int[] y = [1, 2, 3];
+    char[] z = ['a', 'b', 'c'];
+    pair(int[], char[]) x = newpair(y, z)
+  end;
+  pair(char, bool) a = x[0];
+  char aa = fst a;
+  #bool ab = snd a;
+  #pair(char, bool) b = x[1];
+  #char ba = fst b;
+  #bool bb = snd b;
+  #print "[ ";
+  #print a;
+  #print " = (";
+  #print aa;
+  #print comma;
+  #print ab;
+  #print "), ";
+  #print b;
+  #print " = (";
+  #print ba;
+  #print comma;
+  #print bb;
+  println ") ]" # [ x[0], x[1] ]
+end

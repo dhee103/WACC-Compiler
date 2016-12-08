@@ -1,4 +1,0 @@
-begin
-  pair(int, char) p = newpair(10, 'a') ;
-  print p 
-end

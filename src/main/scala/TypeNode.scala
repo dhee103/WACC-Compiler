@@ -13,21 +13,25 @@ trait PairElemTypeNode extends AstNode {
 }
 
 case class IntTypeNode() extends BaseTypeNode {
+  override def toString: String = "int"
 }
 
 case class BoolTypeNode() extends BaseTypeNode {
+  override def toString: String = "bool"
 }
 
 case class CharTypeNode() extends BaseTypeNode {
+  override def toString: String = "char"
 }
 
 case class StringTypeNode() extends BaseTypeNode {
   override def isEquivalentTo(that: TypeNode): Boolean = {
     (this == that) || (that == ArrayTypeNode(CharTypeNode()))
   }
+  override def toString: String = "string"
 }
 
-case class ArrayTypeNode(val elemType: TypeNode) extends PairElemTypeNode with TypeNode {
+case class ArrayTypeNode(elemType: TypeNode) extends PairElemTypeNode with TypeNode {
   override def toPairElemTypeNode: PairElemTypeNode = this
   override def toTypeNode: TypeNode = this
 
@@ -41,9 +45,10 @@ case class ArrayTypeNode(val elemType: TypeNode) extends PairElemTypeNode with T
       }
     }
   }
+  override def toString: String = s"${elemType.toString}[]"
 }
 
-case class PairTypeNode(val firstElemType: PairElemTypeNode, val secondElemType: PairElemTypeNode) extends TypeNode {
+case class PairTypeNode(firstElemType: PairElemTypeNode, secondElemType: PairElemTypeNode) extends TypeNode {
   override def toPairElemTypeNode: PairElemTypeNode = InnerPairTypeNode()
 
   override def isEquivalentTo(that: TypeNode): Boolean = {
@@ -52,16 +57,19 @@ case class PairTypeNode(val firstElemType: PairElemTypeNode, val secondElemType:
       case _ => this == that  || that == PairTypeNode(AnyTypeNode(), AnyTypeNode())
     }
   }
+  override def toString: String = s"pair(${firstElemType.toString},${secondElemType.toString})"
 }
 
 case class InnerPairTypeNode() extends PairElemTypeNode {
   override def toTypeNode: TypeNode = PairTypeNode(AnyTypeNode(), AnyTypeNode()) // watch out for this
+  override def toString: String = "pair"
 }
 
 case class ErrorTypeNode() extends TypeNode with PairElemTypeNode {
   override def toPairElemTypeNode: PairElemTypeNode = this // does this cause any problems?
   override def toTypeNode: TypeNode = this
   override def isEquivalentTo(that: TypeNode): Boolean = false
+  override def toString: String = "error"
 }
 
 case class AnyTypeNode() extends TypeNode with PairElemTypeNode {
