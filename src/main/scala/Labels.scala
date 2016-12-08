@@ -27,9 +27,9 @@ object Labels {
     (s"if_stat${head}_else", s"if_stat${head}_end")
   }
 
-  def getIfThenLabel: String = {
+  def getElifLabel: String = {
     val head = getStreamHead
-    s"if_stat${head}_end"
+    s"elif_stat${head}"
   }
 
   def getWhileLabels: (String, String) = {
