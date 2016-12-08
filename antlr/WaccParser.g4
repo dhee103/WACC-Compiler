@@ -27,6 +27,7 @@ stat: SKIP_                                                 #SkipStat
     | WHILE expr DO stat DONE                               #While
     | BEGIN stat END                                        #NewBegin
     | stat SEMICOLON stat                                   #Sequence
+    | BREAK                                                 #Break
     ;
 
 assign_lhs: ident                                           #IdentLHS

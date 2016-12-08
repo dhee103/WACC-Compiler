@@ -1,6 +1,9 @@
 trait StatNode extends AstNode {
 }
 
+case class BreakNode() extends StatNode {
+}
+
 case class SkipStatNode() extends StatNode {
 }
 

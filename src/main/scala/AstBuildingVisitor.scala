@@ -589,4 +589,8 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     ArgListNode(exprChildren)
   }
 
+  override def visitBreak(ctx: BreakContext): AstNode = {
+    BreakNode()
+  }
+
 }

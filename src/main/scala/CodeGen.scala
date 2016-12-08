@@ -4,7 +4,7 @@ import Constants._
 
 object CodeGen {
 
-  def generateProgramCode(prog: ProgNode): List[Instruction] = {
+    def generateProgramCode(prog: ProgNode): List[Instruction] = {
 
     //    Initialise labels with builtin functions
     Labels.addDataMsgLabel("OverflowError: the result is too small/large to " +
@@ -127,6 +127,7 @@ object CodeGen {
 
     statement match {
       case stat: SkipStatNode => Nil
+      case stat: BreakNode => generateBreak()
       case stat: DeclarationNode => generateDeclaration(stat)
       case stat: AssignmentNode => generateAssignment(stat)
       case ReadNode(variable) => generateReadNode(variable)
@@ -155,6 +156,13 @@ object CodeGen {
       case SequenceNode(fstStat, sndStat) =>
         generateStatement(fstStat) ::: generateStatement(sndStat)
     }
+  }
+
+  def generateBreak(): List[Instruction] = {
+    Nil
+//    If it's in main it should do nothing i.e. skip
+//    Else it should exit the current scope
+//    TODO: Find what break needs to do this
   }
 
   def genericPrint(value: ExprNode, lnFlag: Boolean): List[Instruction] = {

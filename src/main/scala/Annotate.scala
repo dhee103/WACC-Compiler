@@ -45,7 +45,8 @@ object Annotate {
       case stat: WhileNode => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       case stat: NewBeginNode => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       case stat: SequenceNode => annotateSequenceNode(stat, currentScopeSymbolTable, isInMain)
-      case stat: SkipStatNode =>
+      case stat: SkipStatNode => // Nothing needs to be done
+      case stat: BreakNode => // Nothing needs to be done
       //      case _: Any                => println("error"); numSemanticErrors += 1
     }
   }

@@ -37,10 +37,12 @@ object TypeChecker {
       case PrintNode(expr)                 => expr.getType
       case PrintlnNode(expr)               => expr.getType
       case stat: IfThenElseNode                    => checkIf(stat)
-      case stat: IfThenNode                 => checkIfExt(stat)
+      case stat: IfThenNode                => checkIfExt(stat)
       case stat: WhileNode                 => checkWhile(stat)
       case NewBeginNode(stat)              => checkStatement(stat)
-      case stat: SkipStatNode              =>
+      case stat: SkipStatNode              => // nothing needs to be done
+      case stat: BreakNode                 => // nothing needs to be done
+//        TODO: Decide whether we need to check the location of a break i.e. can it only be used inside a scope extender?
     }
   }
 
