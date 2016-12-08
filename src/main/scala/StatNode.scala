@@ -31,8 +31,8 @@ case class PrintNode(val text: ExprNode) extends StatNode {
 case class PrintlnNode(val text: ExprNode) extends StatNode {
 }
 
-case class IfThenElseNode(condition: ExprNode, thenStat: StatNode, elseStat: StatNode) extends StatNode with ScopeExtender {
-}
+//case class IfThenElseNode(condition: ExprNode, thenStat: StatNode, elseStat: StatNode) extends StatNode with ScopeExtender {
+//}
 
 case class IfNode(condition: ExprNode, thenStat: StatNode, elifConds: List[ExprNode], elifStats: List[StatNode], elseStat: Option[StatNode] = None) extends StatNode with ScopeExtender {
 }

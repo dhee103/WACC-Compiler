@@ -42,7 +42,7 @@ object Annotate {
       case stat: ExitNode => annotateExitNode(stat, currentScopeSymbolTable)
       case stat: PrintNode => annotatePrintNode(stat, currentScopeSymbolTable)
       case stat: PrintlnNode => annotatePrintlnNode(stat, currentScopeSymbolTable)
-      case stat: IfThenElseNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
+//      case stat: IfThenElseNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
       case stat: IfNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
 //      case stat: IfThenNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
       case stat: WhileNode => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
@@ -98,18 +98,18 @@ object Annotate {
     annotateExprNode(statement.text, currentST)
   }
 
-  def annotateIfNode(statement: IfThenElseNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
-    annotateExprNode(statement.condition, currentST)
-    val thenBranchST = new SymbolTable(Some(currentST))
-    val elseBranchST = new SymbolTable(Some(currentST))
-    annotateStatNode(statement.thenStat, thenBranchST, isInMain)
-    annotateStatNode(statement.elseStat, elseBranchST, isInMain)
-
-    // New scopes introduced in IfNode
-    statement.scopeSizes += thenBranchST.size
-    statement.scopeSizes += elseBranchST.size
-    statement.symbols = MutableList(thenBranchST.symbols, elseBranchST.symbols)
-  }
+//  def annotateIfNode(statement: IfThenElseNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
+//    annotateExprNode(statement.condition, currentST)
+//    val thenBranchST = new SymbolTable(Some(currentST))
+//    val elseBranchST = new SymbolTable(Some(currentST))
+//    annotateStatNode(statement.thenStat, thenBranchST, isInMain)
+//    annotateStatNode(statement.elseStat, elseBranchST, isInMain)
+//
+//    // New scopes introduced in IfNode
+//    statement.scopeSizes += thenBranchST.size
+//    statement.scopeSizes += elseBranchST.size
+//    statement.symbols = MutableList(thenBranchST.symbols, elseBranchST.symbols)
+//  }
 
   def annotateIfNode(statement: IfNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
