@@ -1,51 +1,35 @@
-import java.io.{File, PrintWriter}
+// import errorLogging.ErrorLog._
+
 
 /*
   For testing purposes we have split the compilation into two functions.
   Compile returns the exit code as an integer as this can be tested.
 */
+import java.io._
 
-object Main {
+object Main2 {
 
-  //  def time[R](block: => R): R = {
-  //    val t0 = System.nanoTime()
-  //    val result = block    // call-by-name
-  //    val t1 = System.nanoTime()
-  //    println("Elapsed time: " + (t1 - t0) + "ns")
-  //    result
-  //  }
+  var outputString: String = null
 
-  def time(f: => Unit) = {
-    val s = System.currentTimeMillis
-    f
-    System.currentTimeMillis() - s
-//    println(System.currentTimeMillis() - s)
-  }
-
-  var outputString: String = ""
 
   def main(args: Array[String]): Unit = {
 
-    time {
-
-      if (!args.isEmpty) {
-        val input = args(0)
-        val file = input.substring(input.lastIndexOf('/') + 1, input
-          .lastIndexOf('.'))
-
-        val exitCode = compile(input)
-        val pw = new PrintWriter(new File(s"$file.s"))
-        pw.write(outputString)
-        pw.close
-//        println(s"exitcode: $exitCode")
-                sys.exit(exitCode)
-      }
-      else {
-        sys.error("No filename passed")
-      }
-
+    if (!args.isEmpty) {
+      val input = args(0)
+      val file =  input.substring(input.lastIndexOf('/') + 1, input.lastIndexOf('.'))
+      val exitCode = compile(input)
+      val pw = new PrintWriter(new File(s"$file.s" ))
+      pw.write(outputString)
+      pw.close
+      println(outputString)
+      sys.exit(exitCode)
+    }
+    else {
+      sys.error("No filename passed")
     }
   }
+
+  //    should check https://www.safaribooksonline.com/library/view/scala-cookbook/9781449340292/ch12s03.html
 
   def compile(filename: String): Int = {
 
@@ -55,8 +39,7 @@ object Main {
 
     // to add you can do: semanticErrorLog :+= (the string)
 
-    val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream
-    (filename))
+    val waccLexer = new WaccLexer(new org.antlr.v4.runtime.ANTLRFileStream(filename))
     val tokens = new org.antlr.v4.runtime.CommonTokenStream(waccLexer)
 
     val waccParser = new WaccParser(tokens)
@@ -73,6 +56,9 @@ object Main {
 
     val tree = waccParser.prog()
 
+    val numSyntaxErrs = waccParser.getNumberOfSyntaxErrors
+    // println(s"there are $numSyntaxErrs syntax errors")
+
     if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
@@ -80,12 +66,16 @@ object Main {
 
     val visitor = new AstBuildingVisitor()
 
+    // sort out this try catch - it returns 200 far more than it should; maybe there are other errors and cases to catch
+    // add methods to get number of syntax errors/ semantic errors from visitor
+
+    // println("before visiting the tree")
     val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
     if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
-
+    // println("visited the tree")
     Annotate.annotateAST(ast)
     if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
@@ -95,8 +85,9 @@ object Main {
       SemanticErrorLog.printErrors()
       return 200
     }
-
+    // println("match error")
     TypeChecker.beginSemanticCheck(ast)
+    // println(s"there are $numSemanticErrors semantic errors")
     if (SemanticErrorLog.getNumErrors > 0) {
       SemanticErrorLog.printErrors()
       return 200
@@ -106,10 +97,4 @@ object Main {
 
     return 0
   }
-
-
 }
-
-//wacc_examples/invalid/syntaxErr/basic/Begin.wacc
-
-//wacc_examples/valid/basic/skip/skip.wacc
