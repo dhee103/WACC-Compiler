@@ -47,7 +47,13 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 //      case stat: IfThenElseNode => endsInReturnStatement(stat.thenStat) &&
 //        endsInReturnStatement(stat.elseStat)
 //        TODO: Do for IfNode
+      case stat: IfNode =>
+        val stats: List[StatNode] = stat.thenStat :: stat.elifStats :::
+          (if (stat.elseStat.isDefined) stat.elseStat.get :: Nil else Nil)
 //      case stat: IfElifContext => endsInReturnStatement(stat.)
+
+        stats.foreach(println(_))
+        stats.map(s => endsInReturnStatement(s)).forall(identity)
       case stat: NewBeginNode => endsInReturnStatement(stat.body)
       case _ => false
     }

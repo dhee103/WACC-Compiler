@@ -115,7 +115,9 @@ object Annotate {
     annotateExprNode(statement.condition, currentST)
     val thenBranchST = new SymbolTable(Some(currentST))
     annotateStatNode(statement.thenStat, thenBranchST, isInMain)
+
     statement.scopeSizes += thenBranchST.size
+//        statement.symbols = MutableList(thenBranchST.symbols)
     statement.symbols += thenBranchST.symbols
 
     //    annotate all elifs
@@ -132,6 +134,7 @@ object Annotate {
       statement.scopeSizes += elseBranchST.size
       statement.symbols += elseBranchST.symbols
     }
+
   }
 
   def annotateWhileNode(statement: WhileNode, currentST: SymbolTable, isInMain: Boolean): Unit = {

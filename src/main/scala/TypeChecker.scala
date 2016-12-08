@@ -24,7 +24,7 @@ object TypeChecker {
         for (thenStat <- stat.elifStats) {
           checkFunctionReturnStatement(thenStat, correctType, functionName)
         }
-        if (stat.elseStat.nonEmpty) {
+        if (stat.elseStat.isDefined) {
           checkFunctionReturnStatement(stat.elseStat.get, correctType, functionName)
         }
 
