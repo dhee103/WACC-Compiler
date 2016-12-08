@@ -149,7 +149,7 @@ object CodeGen {
         generateIfThenElse(stat)
 //      case stat: IfThenNode =>
 //        generateIfThen(stat)
-      case stat: IfElifNode => generateIfElif(stat)
+      case stat: IfNode => generateIf(stat)
       case stat: WhileNode =>
         generateWhile(stat)
       case stat: NewBeginNode =>
@@ -290,7 +290,7 @@ object CodeGen {
 
   }
 
-  def generateIfElif(ifStat: IfElifNode): List[Instruction] = {
+  def generateIf(ifStat: IfNode): List[Instruction] = {
     val isElsePresent: Boolean = ifStat.elseStat.isDefined
 
     val firstCondition = generateExpression(ifStat.condition)

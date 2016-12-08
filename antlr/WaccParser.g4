@@ -24,7 +24,7 @@ stat: SKIP_                                                 #SkipStat
     | PRINTLN expr                                          #Println
     | IF expr THEN stat ELSE stat FI                        #IfThenElse
 //    | IF expr THEN stat FI                                  #IfThen
-    | IF expr THEN stat (ELIF expr THEN stat)* (ELSE stat)? FI #IfElif
+    | IF expr THEN stat (ELIF expr THEN stat)* (ELSE stat)? FI #If
     | WHILE expr DO stat DONE                               #While
     | BEGIN stat END                                        #NewBegin
     | stat SEMICOLON stat                                   #Sequence

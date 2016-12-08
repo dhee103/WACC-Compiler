@@ -43,8 +43,8 @@ object Annotate {
       case stat: PrintNode => annotatePrintNode(stat, currentScopeSymbolTable)
       case stat: PrintlnNode => annotatePrintlnNode(stat, currentScopeSymbolTable)
       case stat: IfThenElseNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
-      case stat: IfElifNode => annotateIfElifNode(stat, currentScopeSymbolTable, isInMain)
-//      case stat: IfThenNode => annotateIfElifNode(stat, currentScopeSymbolTable, isInMain)
+      case stat: IfNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
+//      case stat: IfThenNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
       case stat: WhileNode => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       case stat: NewBeginNode => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       case stat: SequenceNode => annotateSequenceNode(stat, currentScopeSymbolTable, isInMain)
@@ -111,7 +111,7 @@ object Annotate {
     statement.symbols = MutableList(thenBranchST.symbols, elseBranchST.symbols)
   }
 
-  def annotateIfElifNode(statement: IfElifNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
+  def annotateIfNode(statement: IfNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
     val thenBranchST = new SymbolTable(Some(currentST))
     annotateStatNode(statement.thenStat, thenBranchST, isInMain)

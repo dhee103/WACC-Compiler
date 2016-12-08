@@ -46,7 +46,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
       case stat: SequenceNode => endsInReturnStatement(stat.sndStat)
       case stat: IfThenElseNode => endsInReturnStatement(stat.thenStat) &&
         endsInReturnStatement(stat.elseStat)
-//        TODO: Do for IfElifNode
+//        TODO: Do for IfNode
 //      case stat: IfElifContext => endsInReturnStatement(stat.)
       case stat: NewBeginNode => endsInReturnStatement(stat.body)
       case _ => false
@@ -159,7 +159,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 //    IfThenNode(condition, thenStat)
 //  }
 
-  override def visitIfElif(ctx: IfElifContext): AstNode = {
+  override def visitIf(ctx: IfContext): AstNode = {
     val elifSize = 4
     val elseSize = 2
     val numChilds = ctx.getChildCount
@@ -191,7 +191,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     } else None
 
     //    IfThenElseNode(condition, thenStat, elseStat)
-    IfElifNode(condition, thenStat, elifConds, elifStats, elseStat)
+    IfNode(condition, thenStat, elifConds, elifStats, elseStat)
   }
 
   override def visitWhile(ctx: WaccParser.WhileContext): WhileNode = {

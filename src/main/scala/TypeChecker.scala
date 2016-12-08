@@ -19,7 +19,7 @@ object TypeChecker {
       case stat: IfThenElseNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
         checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
 //      case stat: IfThenNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
-      case stat: IfElifNode =>
+      case stat: IfNode =>
         checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
         for (thenStat <- stat.elifStats) {
           checkFunctionReturnStatement(thenStat, correctType, functionName)
@@ -47,7 +47,7 @@ object TypeChecker {
       case PrintlnNode(expr)               => expr.getType
       case stat: IfThenElseNode            => checkIf(stat)
 //      case stat: IfThenNode                => checkIfExt(stat)
-      case stat: IfElifNode                => checkIfElif(stat)
+      case stat: IfNode                    => checkIf(stat)
       case stat: WhileNode                 => checkWhile(stat)
       case NewBeginNode(stat)              => checkStatement(stat)
       case stat: SkipStatNode              => // nothing needs to be done
@@ -146,7 +146,7 @@ object TypeChecker {
 //    }
 //  }
 
-  def checkIfElif(ifNode: IfElifNode): Unit = {
+  def checkIf(ifNode: IfNode): Unit = {
     if (ifNode.elseStat.isDefined) {
       checkStatement(ifNode.elseStat.get)
     }
