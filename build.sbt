@@ -15,5 +15,7 @@ initialize := {
 
 fork in run := true
 
+scalacOptions := Seq("-unchecked", "-deprecation")
+
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
