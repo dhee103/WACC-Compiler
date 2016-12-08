@@ -1,4 +1,5 @@
-lexer grammar WaccLexer;BEGIN : 'begin' ;
+lexer grammar WaccLexer;
+BEGIN : 'begin' ;
 END : 'end' ;
 IS : 'is' ;
 SKIP_ : 'skip' ;
