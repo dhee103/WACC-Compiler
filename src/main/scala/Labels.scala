@@ -7,8 +7,10 @@ object Labels {
 
   var stream: Stream[Int] = Stream.from(1)
 
+  // Message map = user defined
   val msgMap = LinkedHashMap[String, MutableList[String]]()
 
+  // Data message map = Pre-defined
   val dataMsgMap = LinkedHashMap[String, MutableList[String]]()
 
   // userFuncMap maps user defined function names to the assembly code of
@@ -38,7 +40,14 @@ object Labels {
 
   def addMessageLabel(str: String, name: String): Unit = {
     msgMap += ("msg_" + name ->
-      MutableList[String](s".word ${getSize(str)}", f""".ascii \"$str\""""))
+      MutableList[String](s".word ${getSize(str)}", ".ascii \"" + sanitiseEscapeChars(str) + "\""))
+  }
+
+  private def sanitiseEscapeChars(input: String): String = {
+    var output = input
+    output = output.replaceAllLiterally("\\", "\\\\")
+    output = output.replaceAllLiterally("\"", "\\\"")
+    output
   }
 
   def getMessageLabel: String = {
