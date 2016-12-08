@@ -14,7 +14,7 @@ object Annotate {
       FunctionTable.add(f)
     }
     annotateStatNode(prog.statChild, topSymbolTable, isInMain = true)
-    prog.symbols = List(topSymbolTable.symbols)
+    prog.symbols = MutableList(topSymbolTable.symbols)
     prog.scopeSizes += topSymbolTable.size
   }
 
