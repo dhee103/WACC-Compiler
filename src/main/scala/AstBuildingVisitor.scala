@@ -402,16 +402,16 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
   private def sanitise(input: String): String = {
     var output = input
     val escapeChars = IndexedSeq("0", "b", "t", "n", "f", "r", "\"", "'", "\\")
-//    output = "\\0".r.replaceAllIn(output, "\0")
-    output = "\\b".r.replaceAllIn(output, "\b")
-    output = "\\t".r.replaceAllIn(output, "\t")
-    output = "\\n".r.replaceAllIn(output, "\n")
-    output = "\\f".r.replaceAllIn(output, "\f")
-    output = "\\r".r.replaceAllIn(output, "\r")
-    output = "\\\"".r.replaceAllIn(output, "\"")
-    output = "\\'".r.replaceAllIn(output, "'")
-    output = "\\\\".r.replaceAllIn(output, "\\")
-
+    output = output.replaceAllLiterally("\\0", "\0")
+    output = output.replaceAllLiterally("\\b", "\b")
+    output = output.replaceAllLiterally("\\t", "\t")
+    output = output.replaceAllLiterally("\\n", "\n")
+    output = output.replaceAllLiterally("\\f", "\f")
+    output = output.replaceAllLiterally("\\r", "\r")
+    output = output.replaceAllLiterally("\\\"", "\"")
+    output = output.replaceAllLiterally("\\'", "'")
+    output = output.replaceAllLiterally("\\\\", "\\")
+    
     output
   }
 
