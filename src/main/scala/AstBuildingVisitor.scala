@@ -44,10 +44,16 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     statement match {
       case _: ReturnNode | _: ExitNode => true
       case stat: SequenceNode => endsInReturnStatement(stat.sndStat)
-      case stat: IfThenElseNode => endsInReturnStatement(stat.thenStat) &&
-        endsInReturnStatement(stat.elseStat)
-//        TODO: Do for IfElifNode
+//      case stat: IfThenElseNode => endsInReturnStatement(stat.thenStat) &&
+//        endsInReturnStatement(stat.elseStat)
+//        TODO: Do for IfNode
+      case stat: IfNode =>
+        val stats: List[StatNode] = stat.thenStat :: stat.elifStats :::
+          (if (stat.elseStat.isDefined) stat.elseStat.get :: Nil else Nil)
 //      case stat: IfElifContext => endsInReturnStatement(stat.)
+
+        stats.foreach(println(_))
+        stats.map(s => endsInReturnStatement(s)).forall(identity)
       case stat: NewBeginNode => endsInReturnStatement(stat.body)
       case _ => false
     }
@@ -135,15 +141,15 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     PrintlnNode(text)
   }
 
-  override def visitIfThenElse(ctx: WaccParser.IfThenElseContext): IfThenElseNode = {
-    //    println("hit " + currentMethodName())
-
-    val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
-    val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
-    val elseStat: StatNode = visit(ctx.getChild(5)).asInstanceOf[StatNode]
-
-    IfThenElseNode(condition, thenStat, elseStat)
-  }
+//  override def visitIfThenElse(ctx: WaccParser.IfThenElseContext): IfThenElseNode = {
+//    //    println("hit " + currentMethodName())
+//
+//    val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
+//    val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
+//    val elseStat: StatNode = visit(ctx.getChild(5)).asInstanceOf[StatNode]
+//
+//    IfThenElseNode(condition, thenStat, elseStat)
+//  }
 
   //  override def visitIfExt(ctx: WaccParser.IfContext): IfExtNode = {
   //    //    println("hit " + currentMethodName())
@@ -159,7 +165,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 //    IfThenNode(condition, thenStat)
 //  }
 
-  override def visitIfElif(ctx: IfElifContext): AstNode = {
+  override def visitIf(ctx: IfContext): AstNode = {
     val elifSize = 4
     val elseSize = 2
     val numChilds = ctx.getChildCount
@@ -191,7 +197,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     } else None
 
     //    IfThenElseNode(condition, thenStat, elseStat)
-    IfElifNode(condition, thenStat, elifConds, elifStats, elseStat)
+    IfNode(condition, thenStat, elifConds, elifStats, elseStat)
   }
 
   override def visitWhile(ctx: WaccParser.WhileContext): WhileNode = {

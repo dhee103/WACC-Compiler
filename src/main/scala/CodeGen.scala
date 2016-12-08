@@ -101,7 +101,7 @@ object CodeGen {
       output = output ::: LabelData("\n") :: PredefinedFunctions.readInt()
     }
 
-    output
+    output ::: Labels.userFunctions
 
   }
 
@@ -137,19 +137,19 @@ object CodeGen {
         BranchLink("p_free_pair") :: Nil
 //        TODO: do for an array
         // TODO: should whatever variable points to be zeroed out?
-      case stat: ReturnNode =>
-        throw new UnsupportedOperationException("generateReturnNode not implemented")
+      case ReturnNode(retVal) =>
+        generateExpression(retVal)
       case stat: ExitNode =>
         generateExit(stat)
       case PrintNode(value) =>
         genericPrint(value, lnFlag = false)
       case PrintlnNode(value) =>
         genericPrint(value, lnFlag = true)
-      case stat: IfThenElseNode =>
-        generateIfThenElse(stat)
+//      case stat: IfThenElseNode =>
+//        generateIfThenElse(stat)
 //      case stat: IfThenNode =>
 //        generateIfThen(stat)
-      case stat: IfElifNode => generateIfElif(stat)
+      case stat: IfNode => generateIf(stat)
       case stat: WhileNode =>
         generateWhile(stat)
       case stat: NewBeginNode =>
@@ -179,11 +179,10 @@ object CodeGen {
       case t if t.isEquivalentTo(BoolTypeNode()) => BranchLink("p_print_bool")
       case t if t.isEquivalentTo(CharTypeNode()) => BranchLink("putchar")
       case _ => BranchLink("p_print_reference")
-
-
     }
-    generateExpression(value) ::: (printLink ::
-      (if (lnFlag) BranchLink("p_print_ln") :: Nil else Nil))
+    generateExpression(value) :::
+    printLink ::
+    (if (lnFlag) BranchLink("p_print_ln") :: Nil else Nil)
   }
 
   def generateDeclaration(decl: DeclarationNode): List[Instruction] = {
@@ -200,7 +199,7 @@ object CodeGen {
   def generateAssignmentPair(expr: ExprNode, offset: Int = 0): List[Instruction] = {
     val load =
       if (offset != 0) Load(r0, RegisterStackReference(r0, offset))
-      else Load(r0, RegisterStackReference(r0))  // r0= address of fst elem
+      else Load(r0, RegisterStackReference(r0))  // r0 = address of fst elem
 
     Push(r0) ::
     generateExpression(expr) ::: // r0 = address of pair
@@ -218,8 +217,7 @@ object CodeGen {
       case id: IdentNode =>
         val offset = AssemblyStack3.getOffsetFor(id)
         generateAssignmentRHS(rhs) :::
-          Store(r0, FramePointerReference(offset)) ::
-          Nil
+        Store(r0, FramePointerReference(offset)) :: Nil
 
       case FstNode(expr) =>
         PredefinedFunctions.nullPointerFlag = true
@@ -255,7 +253,6 @@ object CodeGen {
         generateAssignmentRHS(rhs) ::: // r0 = value to be assigned
         Store(r0, RegisterStackReference(r1)) :: Nil // [r1] = r0
 
-//        throw new UnsupportedOperationException(s"ArraysAssignment $arr")
       case _ => throw new UnsupportedOperationException("generateAssignment")
     }
   }
@@ -264,33 +261,33 @@ object CodeGen {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
-  def generateIfThenElse(ifStat: IfThenElseNode): List[Instruction] = {
-    val condition = generateExpression(ifStat.condition)
-    val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
-    val thenBranch = generateStatement(ifStat.thenStat)
-    val closeThenFrame = AssemblyStack3.destroyNewestScope()
-    val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols(1))
-    val elseBranch = generateStatement(ifStat.elseStat)
-    val closeElseFrame = AssemblyStack3.destroyNewestScope()
+//  def generateIfThenElse(ifStat: IfThenElseNode): List[Instruction] = {
+//    val condition = generateExpression(ifStat.condition)
+//    val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
+//    val thenBranch = generateStatement(ifStat.thenStat)
+//    val closeThenFrame = AssemblyStack3.destroyNewestScope()
+//    val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols(1))
+//    val elseBranch = generateStatement(ifStat.elseStat)
+//    val closeElseFrame = AssemblyStack3.destroyNewestScope()
+//
+//    val (elseBranchLabel, endIfLabel) = Labels.getIfThenElseLabels
+//
+//    condition :::
+//    Compare(r0, ImmNum(0)) ::
+//    StandardBranch(elseBranchLabel, EQ) ::
+//    setUpThenFrame :::
+//    thenBranch :::
+//    closeThenFrame :::
+//    StandardBranch(endIfLabel) ::
+//    Label(elseBranchLabel) ::
+//    setUpElseFrame :::
+//    elseBranch :::
+//    closeElseFrame :::
+//    Label(endIfLabel) :: Nil
+//
+//  }
 
-    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
-
-    condition :::
-    Compare(r0, ImmNum(0)) ::
-    StandardBranch(elseBranchLabel, EQ) ::
-    setUpThenFrame :::
-    thenBranch :::
-    closeThenFrame :::
-    StandardBranch(endIfLabel) ::
-    Label(elseBranchLabel) ::
-    setUpElseFrame :::
-    elseBranch :::
-    closeElseFrame :::
-    Label(endIfLabel) :: Nil
-
-  }
-
-  def generateIfElif(ifStat: IfElifNode): List[Instruction] = {
+  def generateIf(ifStat: IfNode): List[Instruction] = {
     val isElsePresent: Boolean = ifStat.elseStat.isDefined
 
     val firstCondition = generateExpression(ifStat.condition)
@@ -308,7 +305,7 @@ object CodeGen {
 //    check if we have an else
 //    generate if for elseif
 
-    val allElifs =
+    val allElifs: List[Instruction] =
       (for (((cond, stat), i)
             <- (ifStat.elifConds zip ifStat.elifStats).zipWithIndex)
 //        val condition = generateExpression(cond)
@@ -322,7 +319,8 @@ object CodeGen {
           StandardBranch(elifElseLabels(i + 1), EQ) :: // go to next elif/else
           AssemblyStack3.createNewScope(ifStat.symbols(i)) :::
           generateStatement(stat) :::
-          AssemblyStack3.destroyNewestScope()
+          AssemblyStack3.destroyNewestScope() :::
+          StandardBranch(endIfLabel) :: Nil
       ).flatten
 
 
@@ -340,6 +338,7 @@ object CodeGen {
     setUpThenFrame :::
     thenBranch :::
     closeThenFrame :::
+    StandardBranch(endIfLabel) ::
     allElifs :::
     elseCode :::
     StandardBranch(endIfLabel) ::
@@ -408,7 +407,7 @@ object CodeGen {
     PredefinedFunctions.nullPointerFlag = true
     generateExpression(exprChild) :::
     BranchLink("p_check_null_pointer") ::
-    Load(r0, RegisterStackReference(r0, 4)) ::
+    Load(r0, RegisterStackReference(r0, WORD_SIZE)) ::
     Load(r0, RegisterStackReference(r0)) :: Nil
   }
 
@@ -421,10 +420,16 @@ object CodeGen {
 
   def generateAssignmentRHS(rhs: AssignmentRightNode): List[Instruction] = {
     rhs match {
-      case rhs: ExprNode => generateExpression(rhs)
-      case NewPairNode(fstElem, sndElem) => generateNewPairNode(fstElem, sndElem)
-      case FstNode(exprChild) => generateFstNode(exprChild)
-      case SndNode(exprChild) => generateSndNode(exprChild)
+      case rhs: ExprNode =>
+        generateExpression(rhs)
+      case NewPairNode(fstElem, sndElem) =>
+        generateNewPairNode(fstElem, sndElem)
+      case FstNode(exprChild) =>
+        generateFstNode(exprChild)
+      case SndNode(exprChild) =>
+        generateSndNode(exprChild)
+      case call: CallNode =>
+        generateFunctionCall(call)
       case ArrayLiteralNode(values) =>
         val numElems = values.length
         var elemCode: List[Instruction] = Nil
@@ -448,24 +453,43 @@ object CodeGen {
 
   def generateNewPairNode(fstElem: ExprNode, sndElem: ExprNode): List[Instruction] = {
     generateExpression(fstElem) :::
-    generateNewPairElem(fstElem) :::
+    generateNewPairElem() :::
     generateExpression(sndElem) :::
-    generateNewPairElem(sndElem) :::
-    (Load(r0, LoadImmNum(PAIR_SIZE)) ::
-      BranchLink("malloc") ::
-      Pop(r1) ::
-      Pop(r2) ::
-      Store(r2, RegisterStackReference(r0)) ::
-      Store(r1, RegisterStackReference(r0, WORD_SIZE)) :: Nil)
+    generateNewPairElem() :::
+    Load(r0, LoadImmNum(PAIR_SIZE)) ::
+    BranchLink("malloc") :: // r0 = address of pair
+    Pop(r1) :: // r1 = address of second elem
+    Pop(r2) :: // r2 = address of first elem
+    Store(r2, RegisterStackReference(r0)) ::
+    Store(r1, RegisterStackReference(r0, WORD_SIZE)) :: Nil
   }
 
-  def generateNewPairElem(elem: ExprNode): List[Instruction] = {
+  def generateNewPairElem(): List[Instruction] = {
+    // PRE:  Value to be stored as pair elem in r0
+    // POST: Address pointing to pair elem is last on stack
     Push(r0) ::
     Load(r0, LoadImmNum(WORD_SIZE)) ::
-    BranchLink("malloc") ::
-    Pop(r1) ::
-    Store(r1, RegisterStackReference(r0)) ::
-    Push(r0) :: Nil
+    BranchLink("malloc") :: // r0 = address of pair elem
+    Pop(r1) :: // r1 = value to be stored
+    Store(r1, RegisterStackReference(r0)) :: // [r0] = r1
+    Push(r0) :: Nil // store address of pair elem on stack
+  }
+
+  def generateFunctionCall(call: CallNode): List[Instruction] = {
+    val pushParams: List[Instruction] =
+      (for (arg <- call.args) yield generateExpression(arg) ::: Push(r0) :: Nil).flatten
+    val setUpStackFrame = AssemblyStack3.createNewScope(call.symbols.head, call.params)
+    val funcBody = generateStatement(call.functionBody)
+    val closeStackFrame = AssemblyStack3.destroyNewestScope()
+    val removeParams = Add(sp, sp, ImmNum(WORD_SIZE * call.params.size)) :: Nil
+
+    val funcName: String = call.id.name
+    val funcDef = setUpStackFrame ::: funcBody ::: closeStackFrame
+    Labels.addFunction(funcName, funcDef)
+
+   pushParams :::
+   StandardBranch(funcName) ::
+   removeParams
   }
 
   def generateExpression(expr: ExprNode): List[Instruction] = {
@@ -498,8 +522,7 @@ object CodeGen {
       case CharLiteralNode(value) => Load(r0, LoadImmNum(value)) :: Nil
       case StringLiteralNode(value) => Labels.addMessageLabel(value); Load(r0, LabelOp(Labels.getMessageLabel)) :: Nil
       case expr: PairLiteralNode => Load(r0, LoadImmNum(0)) :: Nil
-      case _ => throw new
-          UnsupportedOperationException("generate expr catch all")
+      case _ => throw new UnsupportedOperationException("generate expr catch all")
     }
 
   }

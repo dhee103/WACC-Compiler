@@ -16,15 +16,15 @@ object TypeChecker {
         if (!foundType.isEquivalentTo(correctType))
         SemanticErrorLog.add(s"Function $functionName expected return type $correctType. Found $foundType.")
       case stat: SequenceNode => checkFunctionReturnStatement(stat.sndStat, correctType, functionName)
-      case stat: IfThenElseNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
-        checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
-//      case stat: IfThenNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
-      case stat: IfElifNode =>
+//      case stat: IfThenElseNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
+//        checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
+////      case stat: IfThenNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
+      case stat: IfNode =>
         checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
         for (thenStat <- stat.elifStats) {
           checkFunctionReturnStatement(thenStat, correctType, functionName)
         }
-        if (stat.elseStat.nonEmpty) {
+        if (stat.elseStat.isDefined) {
           checkFunctionReturnStatement(stat.elseStat.get, correctType, functionName)
         }
 
@@ -45,9 +45,9 @@ object TypeChecker {
       case stat: ExitNode                  => checkExit(stat)
       case PrintNode(expr)                 => expr.getType
       case PrintlnNode(expr)               => expr.getType
-      case stat: IfThenElseNode            => checkIf(stat)
+//      case stat: IfThenElseNode            => checkIf(stat)
 //      case stat: IfThenNode                => checkIfExt(stat)
-      case stat: IfElifNode                => checkIfElif(stat)
+      case stat: IfNode                    => checkIf(stat)
       case stat: WhileNode                 => checkWhile(stat)
       case NewBeginNode(stat)              => checkStatement(stat)
       case stat: SkipStatNode              => // nothing needs to be done
@@ -124,16 +124,16 @@ object TypeChecker {
     }
   }
 
-  def checkIf(ifNode: IfThenElseNode): Unit = {
-    checkStatement(ifNode.thenStat)
-    checkStatement(ifNode.elseStat)
-
-    val condType = ifNode.condition.getType
-    val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
-    if (!condIsBoolean) {
-      SemanticErrorLog.add("If statement expects boolean condition.")
-    }
-  }
+//  def checkIf(ifNode: IfThenElseNode): Unit = {
+//    checkStatement(ifNode.thenStat)
+//    checkStatement(ifNode.elseStat)
+//
+//    val condType = ifNode.condition.getType
+//    val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
+//    if (!condIsBoolean) {
+//      SemanticErrorLog.add("If statement expects boolean condition.")
+//    }
+//  }
 
 //  def checkIfExt(ifNode: IfThenNode): Unit = {
 //    checkStatement(ifNode.thenStat)
@@ -146,7 +146,7 @@ object TypeChecker {
 //    }
 //  }
 
-  def checkIfElif(ifNode: IfElifNode): Unit = {
+  def checkIf(ifNode: IfNode): Unit = {
     if (ifNode.elseStat.isDefined) {
       checkStatement(ifNode.elseStat.get)
     }
