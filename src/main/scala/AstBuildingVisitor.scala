@@ -160,20 +160,34 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 //  }
 
   override def visitIfElif(ctx: IfElifContext): AstNode = {
+    val numChilds = ctx.getChildCount
+
     def isElsePresent(): Boolean = {
-      ctx.getChild(ctx.getChildCount - 3).getText.equals("else")
+      ctx.getChild(numChilds - 3).getText.equals("else")
     }
 
-    isElsePresent()
+//    numElifsPresent = size - size(if then) - size(fi) - size(else)
+    def numElifsPresent(): Int = numChilds - 4 - 1 - (if (isElsePresent()) 2 else 0)
+
     for (i <- 0 until ctx.getChildCount) println(s"child $i = ${ctx.getChild(i)}")
 
     val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
     val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
 
+//    val elifStats: List[StatNode] =
+
     //    if it has an else stat then do this; need to get correct index
-    val elseStat: StatNode = visit(ctx.getChild(5)).asInstanceOf[StatNode]
+    if (isElsePresent()) {
+      val elseStat: StatNode = visit(ctx.getChild(numChilds - 3)).asInstanceOf[StatNode]
+    }
+    val elseStat: StatNode = visit(ctx.getChild(numChilds - 3)).asInstanceOf[StatNode]
+    
 
     IfThenElseNode(condition, thenStat, elseStat)
+//    IfElifNode(condition, thenStat, elifStats)
+//    IfElifNode(condition, thenStat, elifStats, elseStat)
+//    IfElifNode(condition, thenStat)
+//    IfElifNode(condition, thenStat, elseStat)
   }
 
   override def visitWhile(ctx: WaccParser.WhileContext): WhileNode = {
