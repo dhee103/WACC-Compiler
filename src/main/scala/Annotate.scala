@@ -115,6 +115,7 @@ object Annotate {
 
     if (statement.elseStat.isDefined) {
       val elseBranchST = new SymbolTable(Some(currentST))
+      annotateStatNode(statement.elseStat.get, elseBranchST, isInMain)
       statement.scopeSizes += elseBranchST.size
       statement.symbols += elseBranchST.symbols
     }
