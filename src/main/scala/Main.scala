@@ -15,12 +15,12 @@ object Main {
   //    result
   //  }
 
-  def time(f: => Unit) = {
-    val s = System.currentTimeMillis
-    f
-    System.currentTimeMillis() - s
+//  def time(f: => Unit) = {
+//    val s = System.currentTimeMillis
+//    f
+//    System.currentTimeMillis() - s
 //    println(System.currentTimeMillis() - s)
-  }
+//  }
 
   var outputString: String = ""
 
