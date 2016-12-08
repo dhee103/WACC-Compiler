@@ -1,3 +1,5 @@
+import scala.collection.mutable.MutableList
+
 object Annotate {
 
   def annotateAST(ast: ProgNode): Unit = {
@@ -12,7 +14,7 @@ object Annotate {
       annotateFuncNode(f, new SymbolTable(Some(topSymbolTable)))
     }
     annotateStatNode(prog.statChild, topSymbolTable, isInMain = true)
-    prog.symbols = List(topSymbolTable.symbols)
+    prog.symbols = MutableList(topSymbolTable.symbols)
     prog.scopeSizes += topSymbolTable.size
   }
 
@@ -41,7 +43,8 @@ object Annotate {
       case stat: PrintNode => annotatePrintNode(stat, currentScopeSymbolTable)
       case stat: PrintlnNode => annotatePrintlnNode(stat, currentScopeSymbolTable)
       case stat: IfThenElseNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
-      case stat: IfThenNode => annotateIfExtNode(stat, currentScopeSymbolTable, isInMain)
+      case stat: IfElifNode => annotateIfElifNode(stat, currentScopeSymbolTable, isInMain)
+//      case stat: IfThenNode => annotateIfElifNode(stat, currentScopeSymbolTable, isInMain)
       case stat: WhileNode => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       case stat: NewBeginNode => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       case stat: SequenceNode => annotateSequenceNode(stat, currentScopeSymbolTable, isInMain)
@@ -98,24 +101,37 @@ object Annotate {
   def annotateIfNode(statement: IfThenElseNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
     val thenBranchST = new SymbolTable(Some(currentST))
-    val elseBranchST: SymbolTable = new SymbolTable(Some(currentST))
+    val elseBranchST = new SymbolTable(Some(currentST))
     annotateStatNode(statement.thenStat, thenBranchST, isInMain)
     annotateStatNode(statement.elseStat, elseBranchST, isInMain)
 
     // New scopes introduced in IfNode
     statement.scopeSizes += thenBranchST.size
     statement.scopeSizes += elseBranchST.size
-    statement.symbols = List(thenBranchST.symbols, elseBranchST.symbols)
+    statement.symbols = MutableList(thenBranchST.symbols, elseBranchST.symbols)
   }
 
-  def annotateIfExtNode(statement: IfThenNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
+  def annotateIfElifNode(statement: IfElifNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
     val thenBranchST = new SymbolTable(Some(currentST))
     annotateStatNode(statement.thenStat, thenBranchST, isInMain)
-
-    // New scopes introduced in IfNode
     statement.scopeSizes += thenBranchST.size
-    statement.symbols = List(thenBranchST.symbols)
+    statement.symbols += thenBranchST.symbols
+
+    //    annotate all elifs
+    for ((cond, stat) <- statement.elifConds zip statement.elifStats) {
+      annotateExprNode(cond, currentST)
+      val elifBranchST = new SymbolTable(Some(currentST))
+      annotateStatNode(stat, elifBranchST, isInMain)
+      statement.scopeSizes += elifBranchST.size
+      statement.symbols += elifBranchST.symbols
+    }
+
+    if (statement.elseStat.isDefined) {
+      val elseBranchST = new SymbolTable(Some(currentST))
+      statement.scopeSizes += elseBranchST.size
+      statement.symbols += elseBranchST.symbols
+    }
   }
 
   def annotateWhileNode(statement: WhileNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
@@ -124,7 +140,7 @@ object Annotate {
 
     // New scope introduced in WhileNode
     statement.scopeSizes += currentST.size
-    statement.symbols = List(currentST.symbols)
+    statement.symbols = MutableList(currentST.symbols)
   }
 
   def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable, isInMain: Boolean):
@@ -133,7 +149,7 @@ object Annotate {
 
     // New scope introduced in NewBeginNode
     statement.scopeSizes += currentST.size
-    statement.symbols = List(currentST.symbols)
+    statement.symbols = MutableList(currentST.symbols)
   }
 
   def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable, isInMain: Boolean):
@@ -179,7 +195,7 @@ object Annotate {
     }
 
     call.scopeSizes += FunctionTable.getNoOfLocalVars(identifier)
-    call.symbols = List(FunctionTable.getLocalVars(identifier))
+    call.symbols = MutableList(FunctionTable.getLocalVars(identifier))
   }
 
   def annotateArgListNode(argList: ArgListNode, currentST: SymbolTable): Unit = {
