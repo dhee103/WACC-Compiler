@@ -7,7 +7,6 @@ import collection.mutable.HashMap
 // list of locals vars
 // and the function body
 object FunctionTable {
-// TODO: consider having tuple of TypeNode and paramList
   val dict = new HashMap[String, (TypeNode, List[ParamNode], List[IdentNode], StatNode)]()
 
   def add(func: FuncNode): Unit = {
