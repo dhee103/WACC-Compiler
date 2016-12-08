@@ -22,7 +22,8 @@ STR_LITERAL : ('"') CHARACTER* ('"') ;
 fragment CHARACTER : ('\\') ESCAPED_CHAR
              | ~([\\\'"])
              ;
-fragment ESCAPED_CHAR : '0' | 'b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\' ;LPAREN : '(' ;
+fragment ESCAPED_CHAR : '0' | 'b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\' ;
+LPAREN : '(' ;
 RPAREN : ')' ;
 LBRACKET : '[' ;
 RBRACKET : ']' ;

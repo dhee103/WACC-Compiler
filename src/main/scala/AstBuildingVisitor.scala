@@ -392,9 +392,27 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitChar_liter(ctx: WaccParser.Char_literContext):
   CharLiteralNode = {
     //    println("hit " + currentMethodName())
-    val value = ctx.getText.charAt(1)
+    val value = sanitise(ctx.getText).charAt(1)
 
     CharLiteralNode(value)
+  }
+
+  // Input: String that contains literal escape characters "\\\\hello \\n"
+  // Output: String that contains actual escape characters "\\hello \n"
+  private def sanitise(input: String): String = {
+    var output = input
+    val escapeChars = IndexedSeq("0", "b", "t", "n", "f", "r", "\"", "'", "\\")
+//    output = "\\0".r.replaceAllIn(output, "\0")
+    output = "\\b".r.replaceAllIn(output, "\b")
+    output = "\\t".r.replaceAllIn(output, "\t")
+    output = "\\n".r.replaceAllIn(output, "\n")
+    output = "\\f".r.replaceAllIn(output, "\f")
+    output = "\\r".r.replaceAllIn(output, "\r")
+    output = "\\\"".r.replaceAllIn(output, "\"")
+    output = "\\'".r.replaceAllIn(output, "'")
+    output = "\\\\".r.replaceAllIn(output, "\\")
+
+    output
   }
 
   override def visitStringLiteral(ctx: WaccParser.StringLiteralContext):
@@ -406,7 +424,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
   override def visitStr_liter(ctx: WaccParser.Str_literContext):
   StringLiteralNode = {
     //    println("hit " + currentMethodName())
-    val value = ctx.getText.tail.init
+    val value = sanitise(ctx.getText).tail.init
 
     StringLiteralNode(value)
   }
