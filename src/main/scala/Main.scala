@@ -73,7 +73,7 @@ object Main {
 
     val tree = waccParser.prog()
 
-    if (SyntaxErrorLog.numErrors > 0) {
+    if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
@@ -81,23 +81,23 @@ object Main {
     val visitor = new AstBuildingVisitor()
 
     val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
-    if (SyntaxErrorLog.numErrors > 0) {
+    if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
 
     Annotate.annotateAST(ast)
-    if (SyntaxErrorLog.numErrors > 0) {
+    if (SyntaxErrorLog.getNumErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
-    if (SemanticErrorLog.numErrors > 0) {
+    if (SemanticErrorLog.getNumErrors > 0) {
       SemanticErrorLog.printErrors()
       return 200
     }
 
     TypeChecker.beginSemanticCheck(ast)
-    if (SemanticErrorLog.numErrors > 0) {
+    if (SemanticErrorLog.getNumErrors > 0) {
       SemanticErrorLog.printErrors()
       return 200
     }

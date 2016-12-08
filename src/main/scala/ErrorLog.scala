@@ -8,13 +8,13 @@ trait ErrorLog {
     log = log :+ s
   }
 
-  def numErrors: Int = {
+  def getNumErrors: Int = {
     log.size
   }
 
   def printErrors(): Unit = {
     log.map(Console.RED ++ Console.BOLD ++ s"[$errorType Error] " ++ Console.RESET ++ _).map(println _)
-    println(s"$numErrors found.")
+    println(s"$getNumErrors found.")
   }
 }
 
