@@ -59,7 +59,7 @@ object Main2 {
     val numSyntaxErrs = waccParser.getNumberOfSyntaxErrors
     // println(s"there are $numSyntaxErrs syntax errors")
 
-    if (SyntaxErrorLog.getNumErrors > 0) {
+    if (SyntaxErrorLog.numErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
@@ -71,24 +71,24 @@ object Main2 {
 
     // println("before visiting the tree")
     val ast: ProgNode = visitor.visit(tree).asInstanceOf[ProgNode]
-    if (SyntaxErrorLog.getNumErrors > 0) {
+    if (SyntaxErrorLog.numErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
     // println("visited the tree")
     Annotate.annotateAST(ast)
-    if (SyntaxErrorLog.getNumErrors > 0) {
+    if (SyntaxErrorLog.numErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100
     }
-    if (SemanticErrorLog.getNumErrors > 0) {
+    if (SemanticErrorLog.numErrors > 0) {
       SemanticErrorLog.printErrors()
       return 200
     }
     // println("match error")
     TypeChecker.beginSemanticCheck(ast)
     // println(s"there are $numSemanticErrors semantic errors")
-    if (SemanticErrorLog.getNumErrors > 0) {
+    if (SemanticErrorLog.numErrors > 0) {
       SemanticErrorLog.printErrors()
       return 200
     }
