@@ -308,7 +308,7 @@ object CodeGen {
 //    check if we have an else
 //    generate if for elseif
 
-    val allElifs =
+    val allElifs: List[Instruction] =
       (for (((cond, stat), i)
             <- (ifStat.elifConds zip ifStat.elifStats).zipWithIndex)
 //        val condition = generateExpression(cond)
@@ -322,7 +322,8 @@ object CodeGen {
           StandardBranch(elifElseLabels(i + 1), EQ) :: // go to next elif/else
           AssemblyStack3.createNewScope(ifStat.symbols(i)) :::
           generateStatement(stat) :::
-          AssemblyStack3.destroyNewestScope()
+          AssemblyStack3.destroyNewestScope() :::
+          StandardBranch(endIfLabel) :: Nil
       ).flatten
 
 
@@ -340,6 +341,7 @@ object CodeGen {
     setUpThenFrame :::
     thenBranch :::
     closeThenFrame :::
+    StandardBranch(endIfLabel) ::
     allElifs :::
     elseCode :::
     StandardBranch(endIfLabel) ::
