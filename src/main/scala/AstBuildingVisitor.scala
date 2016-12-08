@@ -160,6 +160,13 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 //  }
 
   override def visitIfElif(ctx: IfElifContext): AstNode = {
+    def isElsePresent(): Boolean = {
+      ctx.getChild(ctx.getChildCount - 3).getText.equals("else")
+    }
+
+    isElsePresent()
+    for (i <- 0 until ctx.getChildCount) println(s"child $i = ${ctx.getChild(i)}")
+
     val condition: ExprNode = visit(ctx.getChild(1)).asInstanceOf[ExprNode]
     val thenStat: StatNode = visit(ctx.getChild(3)).asInstanceOf[StatNode]
 
@@ -167,9 +174,6 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     val elseStat: StatNode = visit(ctx.getChild(5)).asInstanceOf[StatNode]
 
     IfThenElseNode(condition, thenStat, elseStat)
-
-
-
   }
 
   override def visitWhile(ctx: WaccParser.WhileContext): WhileNode = {
