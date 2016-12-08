@@ -7,9 +7,15 @@ object Labels {
 
   var stream: Stream[Int] = Stream.from(1)
 
+  // Message map = user defined
   val msgMap = LinkedHashMap[String, MutableList[String]]()
 
+  // Data message map = Pre-defined
   val dataMsgMap = LinkedHashMap[String, MutableList[String]]()
+
+  // userFuncMap maps user defined function names to the assembly code of
+  // said function
+  private val userFuncMap = HashMap[String, List[Instruction]]()
 
   def getStreamHead: Int = {
     val head = stream.head
@@ -17,12 +23,7 @@ object Labels {
     head
   }
 
-  def getLabel(str: String): (String, String) = {
-    val head = getStreamHead
-    (str ++ head.toString() ++ "start", str ++ head.toString() ++ "end")
-  }
-
-  def getIfThenElseLabels: (String, String) = {
+  def getIfLabels: (String, String) = {
     val head = getStreamHead
     (s"if_stat${head}_else", s"if_stat${head}_end")
   }
@@ -44,7 +45,14 @@ object Labels {
 
   def addMessageLabel(str: String, name: String): Unit = {
     msgMap += ("msg_" + name ->
-      MutableList[String](s".word ${getSize(str)}", f""".ascii \"$str\""""))
+      MutableList[String](s".word ${getSize(str)}", ".ascii \"" + sanitiseEscapeChars(str) + "\""))
+  }
+
+  private def sanitiseEscapeChars(input: String): String = {
+    var output = input
+    output = output.replaceAllLiterally("\\", "\\\\")
+    output = output.replaceAllLiterally("\"", "\\\"")
+    output
   }
 
   def getMessageLabel: String = {
@@ -73,6 +81,14 @@ object Labels {
   def getDataMsgLabel(str: String): MutableList[String] = {
     dataMsgMap.getOrElse(str, throw new RuntimeException(s"$str is not a data" +
       s" message"))
+  }
+
+  def addFunction(funcName: String, funcDef: List[Instruction]): Unit = {
+    userFuncMap += funcName -> funcDef
+  }
+
+  def userFunctions: List[Instruction] = {
+    (for ((str, body) <- userFuncMap) yield Label(str) :: body).toList.flatten
   }
 
   def printMsgMap(): List[Instruction] = {

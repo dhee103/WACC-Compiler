@@ -14,7 +14,7 @@ object TypeChecker {
     statement match {
       case ReturnNode(expr) => val foundType = expr.getType
         if (!foundType.isEquivalentTo(correctType))
-        SemanticErrorLog.add(s"Function $functionName expected return type $correctType. Found $foundType)")
+        SemanticErrorLog.add(s"Function $functionName expected return type $correctType. Found $foundType.")
       case stat: SequenceNode => checkFunctionReturnStatement(stat.sndStat, correctType, functionName)
 //      case stat: IfThenElseNode => checkFunctionReturnStatement(stat.thenStat, correctType, functionName)
 //        checkFunctionReturnStatement(stat.elseStat, correctType, functionName)
@@ -70,7 +70,7 @@ object TypeChecker {
     val rhsType: TypeNode = rhs.getType
 
     if (!rhsType.isEquivalentTo(identType)) {
-      SemanticErrorLog.add("Type mismatch in declaration statement.")
+      SemanticErrorLog.add(s"Type mismatch in declaration statement. Expected: $identType. Actual: $rhsType.")
     }
   }
 

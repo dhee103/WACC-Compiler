@@ -1,0 +1,10 @@
+begin
+  int x = 5;
+  int y = 4;
+  begin
+    int z = 1;
+    begin 
+      print z + y
+    end
+  end
+end

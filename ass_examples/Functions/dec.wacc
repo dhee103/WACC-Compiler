@@ -1,0 +1,9 @@
+begin
+  int dec(int x) is
+    return x - 1
+  end
+  
+  int a = 4 ;
+  int b = call dec(a) ;
+  print b
+end
