@@ -32,7 +32,7 @@ class StackFrame2(private val localVars: List[IdentNode],
   val noOfParams: Int = params.size
 
   for ((name, index)  <- localVars.zipWithIndex)
-    offsetMap += (name -> (index * -4))
+    offsetMap += (name -> ((index + 1) * -4))
 
   for ((name, index)  <- params.zipWithIndex)
     offsetMap += (name -> ((index + 1) * 4))
