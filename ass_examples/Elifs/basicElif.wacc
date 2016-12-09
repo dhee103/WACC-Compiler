@@ -1,0 +1,5 @@
+begin
+  if false then println("should not print")
+  elif false then println("should not print either")
+  elif true then println("should print") fi
+end

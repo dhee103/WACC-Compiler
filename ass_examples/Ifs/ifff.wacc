@@ -1,0 +1,5 @@
+begin
+  string yo = "yo" ;
+  string no = "no" ;
+  if false then print yo else print no fi
+end
