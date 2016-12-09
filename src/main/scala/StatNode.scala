@@ -4,6 +4,9 @@ trait StatNode extends AstNode {
 case class BreakNode() extends StatNode {
 }
 
+case class SwitchNode(val exprChildren: List[ExprNode], val statChildren: List[StatNode]) extends StatNode with ScopeExtender{
+}
+
 case class SkipStatNode() extends StatNode {
 }
 
