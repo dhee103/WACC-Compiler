@@ -481,7 +481,7 @@ object CodeGen {
     val funcName: String = funcId.name
 
     val pushParams: List[Instruction] =
-      (for (arg <- call.args) yield generateExpression(arg) ::: Push(r0) :: Nil).flatten
+      (for (arg <- call.args.reverse) yield generateExpression(arg) ::: Push(r0) :: Nil).flatten
     val setUpStackFrame = AssemblyStack3.createNewScope(call.symbols.head, call.params)
 
     if (!FunctionTable.hasBeenGenerated(funcId)) {
@@ -493,7 +493,7 @@ object CodeGen {
     } else {
       val closeStackFrame = AssemblyStack3.destroyNewestScope()
     }
-    
+
     val removeParams = Add(sp, sp, ImmNum(WORD_SIZE * call.params.size)) :: Nil
 
     pushParams :::
