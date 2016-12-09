@@ -13,7 +13,7 @@ object Annotate {
     for (f <- prog.funcChildren) {
       FunctionTable.add(f)
     }
-    annotateStatNode(prog.statChild, topSymbolTable, isInMain = true)
+    annotateStatNode(prog.statChild, topSymbolTable, isInMain = true, canHaveBreak = false)
     prog.symbols = MutableList(topSymbolTable.symbols)
     prog.scopeSizes += topSymbolTable.size
   }
@@ -26,13 +26,13 @@ object Annotate {
     val noOfParameters = currentScopeSymbolTable.size
     val parameters = currentScopeSymbolTable.symbols
 
-    annotateStatNode(function.statement, currentScopeSymbolTable, isInMain = false)
+    annotateStatNode(function.statement, currentScopeSymbolTable, isInMain = false, canHaveBreak = false)
 
     function.noOfLocalVars = currentScopeSymbolTable.size - noOfParameters
     function.localVars = currentScopeSymbolTable.symbols.filterNot(parameters.toSet)
   }
 
-  def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable, isInMain: Boolean): Unit = {
+  def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable, isInMain: Boolean, canHaveBreak: Boolean): Unit = {
     statement match {
       case stat: DeclarationNode => annotateDeclarationNode(stat, currentScopeSymbolTable)
       case stat: AssignmentNode => annotateAssignmentNode(stat, currentScopeSymbolTable)
@@ -42,13 +42,13 @@ object Annotate {
       case stat: ExitNode => annotateExitNode(stat, currentScopeSymbolTable)
       case stat: PrintNode => annotatePrintNode(stat, currentScopeSymbolTable)
       case stat: PrintlnNode => annotatePrintlnNode(stat, currentScopeSymbolTable)
-      case stat: IfNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain)
-      case stat: WhileNode => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
-      case stat: NewBeginNode => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
-      case stat: SequenceNode => annotateSequenceNode(stat, currentScopeSymbolTable, isInMain)
+      case stat: IfNode => annotateIfNode(stat, currentScopeSymbolTable, isInMain, canHaveBreak)
+      case stat: WhileNode => annotateWhileNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain, canHaveBreak)
+      case stat: NewBeginNode => annotateNewBeginNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain, canHaveBreak)
+      case stat: SequenceNode => annotateSequenceNode(stat, currentScopeSymbolTable, isInMain, canHaveBreak)
       case stat: SkipStatNode => // Nothing needs to be done
-      case stat: BreakNode => // Nothing needs to be done
-      case stat: SwitchNode => annotateSwitchNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
+      case stat: BreakNode => annotateBreakNode(isInMain, canHaveBreak)
+      case stat: SwitchNode => annotateSwitchNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain, canHaveBreak)
       //      case _: Any                => println("error"); numSemanticErrors += 1
     }
   }
@@ -88,6 +88,12 @@ object Annotate {
     annotateExprNode(statement.exitCode, currentST)
   }
 
+  def annotateBreakNode(isInMain: Boolean, canHaveBreak: Boolean): Unit = {
+//    if (isInMain) SemanticErrorLog.add("\"break\" cannot be in main.")
+    if (!canHaveBreak) SemanticErrorLog.add("\"break\" statement used outside of loop or switch case")
+//    TODO: Edit message for consistency
+  }
+
   def annotatePrintNode(statement: PrintNode, currentST: SymbolTable): Unit = {
     annotateExprNode(statement.text, currentST)
   }
@@ -97,10 +103,10 @@ object Annotate {
     annotateExprNode(statement.text, currentST)
   }
 
-  def annotateIfNode(statement: IfNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
+  def annotateIfNode(statement: IfNode, currentST: SymbolTable, isInMain: Boolean, canHaveBreak: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
     val thenBranchST = new SymbolTable(Some(currentST))
-    annotateStatNode(statement.thenStat, thenBranchST, isInMain)
+    annotateStatNode(statement.thenStat, thenBranchST, isInMain, canHaveBreak)
 
     statement.scopeSizes += thenBranchST.size
     statement.symbols += thenBranchST.symbols
@@ -109,55 +115,55 @@ object Annotate {
     for ((cond, stat) <- statement.elifConds zip statement.elifStats) {
       annotateExprNode(cond, currentST)
       val elifBranchST = new SymbolTable(Some(currentST))
-      annotateStatNode(stat, elifBranchST, isInMain)
+      annotateStatNode(stat, elifBranchST, isInMain, canHaveBreak)
       statement.scopeSizes += elifBranchST.size
       statement.symbols += elifBranchST.symbols
     }
 
     if (statement.elseStat.isDefined) {
       val elseBranchST = new SymbolTable(Some(currentST))
-      annotateStatNode(statement.elseStat.get, elseBranchST, isInMain)
+      annotateStatNode(statement.elseStat.get, elseBranchST, isInMain, canHaveBreak)
       statement.scopeSizes += elseBranchST.size
       statement.symbols += elseBranchST.symbols
     }
 
   }
 
-  def annotateSwitchNode(statement: SwitchNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
+  def annotateSwitchNode(statement: SwitchNode, currentST: SymbolTable, isInMain: Boolean, canHaveBreak: Boolean): Unit = {
 //    TODO: check if this works when exprs and stats aren't of the same size (assume it does as it worked before default which would mean exprs > stats)
 
     for ((cond, stat) <- statement.exprChildren zip statement.statChildren) {
       annotateExprNode(cond, currentST)
       val caseST = new SymbolTable(Some(currentST))
-      annotateStatNode(stat, caseST, isInMain)
+      annotateStatNode(stat, caseST, isInMain, canHaveBreak = true)
       statement.scopeSizes += caseST.size
       statement.symbols += caseST.symbols
     }
 
   }
 
-  def annotateWhileNode(statement: WhileNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
+  def annotateWhileNode(statement: WhileNode, currentST: SymbolTable, isInMain: Boolean, canHaveBreak: Boolean): Unit = {
     annotateExprNode(statement.condition, currentST)
-    annotateStatNode(statement.loopBody, currentST, isInMain)
+    annotateStatNode(statement.loopBody, currentST, isInMain, canHaveBreak = true)
 
     // New scope introduced in WhileNode
     statement.scopeSizes += currentST.size
     statement.symbols = MutableList(currentST.symbols)
   }
 
-  def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable, isInMain: Boolean):
+  def annotateNewBeginNode(statement: NewBeginNode, currentST: SymbolTable, isInMain: Boolean, canHaveBreak: Boolean):
   Unit = {
-    annotateStatNode(statement.body, currentST, isInMain)
+    annotateStatNode(statement.body, currentST, isInMain, canHaveBreak)
 
     // New scope introduced in NewBeginNode
     statement.scopeSizes += currentST.size
     statement.symbols = MutableList(currentST.symbols)
   }
 
-  def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable, isInMain: Boolean):
+  def annotateSequenceNode(statement: SequenceNode, currentST: SymbolTable, isInMain: Boolean, canHaveBreak: Boolean):
   Unit = {
-    annotateStatNode(statement.fstStat, currentST, isInMain)
-    annotateStatNode(statement.sndStat, currentST, isInMain)
+    annotateStatNode(statement.fstStat, currentST, isInMain, canHaveBreak)
+    annotateStatNode(statement.sndStat, currentST, isInMain, canHaveBreak)
   }
 
   def annotateAssignmentLeftNode(statement: AssignmentLeftNode, currentST: SymbolTable): Unit = {
