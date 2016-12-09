@@ -654,4 +654,19 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     BreakNode()
   }
 
+  override def visitSwitch(ctx: SwitchContext): AstNode = {
+    val noOfChildren = ctx.getChildCount
+    def numCases() = (noOfChildren - 2 - 1) / 4
+//    for(i <- 0 until noOfChildren) println(s"child $i = ${ctx.getChild(i)}")
+    val caseExprs: List[ExprNode] = (for (i <- 3 to (3 + 4 * (numCases() - 1)) by 4) yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]).toList
+    val exprChildren: List[ExprNode] = visit(ctx.getChild(1)).asInstanceOf[ExprNode] :: Nil ::: caseExprs
+    val statChildren: List[StatNode] = (for (i <- 5 to (5 + 4 * (numCases() - 1)) by 4) yield visit(ctx.getChild(i)).asInstanceOf[StatNode]).toList
+
+
+//    exprChildren.foreach(println(_))
+//    statChildren.foreach(println(_))
+
+    SwitchNode(exprChildren, statChildren)
+  }
+
 }
