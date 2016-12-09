@@ -264,13 +264,16 @@ object CodeGen {
   }
 
   def generateSwitch(switchNode: SwitchNode): List[Instruction] = {
-//    val isElsePresent: Boolean = ifStat.elseStat.isDefined
-
+    def isDefaultPresent() = switchNode.statChildren.size == switchNode.exprChildren.size
     val exprChildren = switchNode.exprChildren
-    val caseStats = switchNode.statChildren
+//    contains all the statements including potentially the default statement
+    val caseStats = if (isDefaultPresent()) switchNode.statChildren.dropRight(1) else switchNode.statChildren
+//    will only be used if default is present
+
+    val defaultStat = switchNode.statChildren.last
     val firstExpr = exprChildren.head
     val caseConds = exprChildren.tail
-//
+
 //    println(s"exprChildren size: ${exprChildren.size}")
 //    println(s"statChildren size: ${caseStats.size}")
 //    println(s"caseConds size: ${caseConds.size}")
@@ -280,11 +283,13 @@ object CodeGen {
 //    val thenBranch = generateStatement(statHead)
 //    val closeThenFrame = AssemblyStack3.destroyNewestScope()
 
-    val endSwitchLabel = Labels.getSwitchLabels._2
+    val (defaultLabel, endSwitchLabel) = Labels.getSwitchLabels
+//    val endSwitchLabel = Labels.getSwitchLabels._2
 //    the first label will be used for the default case
 
     val caseLabels: List[String] =
-      (for(i <- 1 to caseConds.size) yield Labels.getCaseLabel).toList ::: (endSwitchLabel :: Nil)
+      (for(i <- 1 to caseConds.size) yield Labels.getCaseLabel).toList :::
+        (if (isDefaultPresent()) defaultLabel :: endSwitchLabel :: Nil else endSwitchLabel :: Nil)
 
     val allElifs: List[Instruction] =
       (for (((cond, stat), i) <- (caseConds zip caseStats).zipWithIndex)
@@ -301,6 +306,16 @@ object CodeGen {
           StandardBranch(endSwitchLabel) :: Nil
         ).flatten
 
+
+
+    val defaultCode = if (isDefaultPresent) {
+      val setUpDefaultFrame = AssemblyStack3.createNewScope(switchNode.symbols.last)
+      val defaultBranch = generateStatement(defaultStat)
+      val closeDefaultFrame = AssemblyStack3.destroyNewestScope()
+
+      Label(defaultLabel) :: setUpDefaultFrame ::: defaultBranch ::: closeDefaultFrame
+    } else Nil
+
     firstExprCode :::
     Move(r1, r0) ::
     StandardBranch(caseLabels.head, AL) :: // go to first elif/else/end
@@ -309,6 +324,7 @@ object CodeGen {
 //    closeThenFrame :::
 //      StandardBranch(endSwitchLabel) ::
     allElifs :::
+    defaultCode :::
     StandardBranch(endSwitchLabel) ::
     Label(endSwitchLabel) :: Nil
   }
