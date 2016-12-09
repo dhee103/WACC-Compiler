@@ -29,6 +29,8 @@ stat: SKIP_                                                 #SkipStat
     | BEGIN stat END                                        #NewBegin
     | stat SEMICOLON stat                                   #Sequence
     | BREAK                                                 #Break
+    | SWITCH expr (CASE expr THEN stat)+ ENDSWITCH          #Switch
+//    include: DEFAULT stat and make it optional
     ;
 
 assign_lhs: ident                                           #IdentLHS
