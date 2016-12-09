@@ -672,10 +672,12 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     val statChildren: List[StatNode] = (for (i <- 5 to (5 + sizeCase * (numCases() - 1)) by sizeCase) yield visit(ctx.getChild(i)).asInstanceOf[StatNode]).toList
 
     if (isDefaultPresent()) {
-      SwitchNode(exprChildren, statChildren ::: (visit(ctx.getChild(noOfChildren - 2)).asInstanceOf[StatNode] :: Nil))
+      val newStatChildren: List[StatNode] = statChildren ::: (visit(ctx.getChild(noOfChildren - 2)).asInstanceOf[StatNode] :: Nil)
+      SwitchNode(exprChildren, newStatChildren)
+    } else {
+      SwitchNode(exprChildren, statChildren)
     }
 
-    SwitchNode(exprChildren, statChildren)
   }
 
 }
