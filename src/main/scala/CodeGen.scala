@@ -156,6 +156,8 @@ object CodeGen {
         generateNewBegin(stat)
       case SequenceNode(fstStat, sndStat) =>
         generateStatement(fstStat) ::: generateStatement(sndStat)
+      case SwitchNode(exprChildren, statChildren) =>
+        generateSwitch(exprChildren, statChildren)
     }
   }
 
@@ -261,31 +263,9 @@ object CodeGen {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
-//  def generateIfThenElse(ifStat: IfThenElseNode): List[Instruction] = {
-//    val condition = generateExpression(ifStat.condition)
-//    val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
-//    val thenBranch = generateStatement(ifStat.thenStat)
-//    val closeThenFrame = AssemblyStack3.destroyNewestScope()
-//    val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols(1))
-//    val elseBranch = generateStatement(ifStat.elseStat)
-//    val closeElseFrame = AssemblyStack3.destroyNewestScope()
-//
-//    val (elseBranchLabel, endIfLabel) = Labels.getIfThenElseLabels
-//
-//    condition :::
-//    Compare(r0, ImmNum(0)) ::
-//    StandardBranch(elseBranchLabel, EQ) ::
-//    setUpThenFrame :::
-//    thenBranch :::
-//    closeThenFrame :::
-//    StandardBranch(endIfLabel) ::
-//    Label(elseBranchLabel) ::
-//    setUpElseFrame :::
-//    elseBranch :::
-//    closeElseFrame :::
-//    Label(endIfLabel) :: Nil
-//
-//  }
+  def generateSwitch(exprChidlren: List[ExprNode], statChildren: List[StatNode]): List[Instruction] = {
+    Load(r0, LoadImmNum(100000000)) :: Nil
+  }
 
   def generateIf(ifStat: IfNode): List[Instruction] = {
     val isElsePresent: Boolean = ifStat.elseStat.isDefined
@@ -345,25 +325,6 @@ object CodeGen {
     Label(endIfLabel) :: Nil
 
   }
-
-//  def generateIfThen(ifStat: IfThenNode): List[Instruction] = {
-//    val condition = generateExpression(ifStat.condition)
-//    val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
-//    val thenBranch = generateStatement(ifStat.thenStat)
-//    val closeThenFrame = AssemblyStack3.destroyNewestScope()
-//
-//    val endIfLabel = Labels.getElifLabel
-//
-//    condition :::
-//      Compare(r0, ImmNum(0)) ::
-//      StandardBranch(endIfLabel, EQ) ::
-//      setUpThenFrame :::
-//      thenBranch :::
-//      closeThenFrame :::
-//      StandardBranch(endIfLabel) ::
-//      Label(endIfLabel) :: Nil
-//
-//  }
 
   def generateWhile(whileStat: WhileNode): List[Instruction] = {
     val condition = generateExpression(whileStat.condition)
