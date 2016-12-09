@@ -156,8 +156,7 @@ object CodeGen {
         generateNewBegin(stat)
       case SequenceNode(fstStat, sndStat) =>
         generateStatement(fstStat) ::: generateStatement(sndStat)
-      case SwitchNode(exprChildren, statChildren) =>
-        generateSwitch(exprChildren, statChildren)
+      case stat: SwitchNode => generateSwitch(stat)
     }
   }
 
@@ -263,8 +262,49 @@ object CodeGen {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
-  def generateSwitch(exprChidlren: List[ExprNode], statChildren: List[StatNode]): List[Instruction] = {
-    Load(r0, LoadImmNum(100000000)) :: Nil
+  def generateSwitch(switchNode: SwitchNode): List[Instruction] = {
+//    val isElsePresent: Boolean = ifStat.elseStat.isDefined
+
+    val exprChildren = switchNode.exprChildren
+    val statChildren = switchNode.statChildren
+    val exprHead = exprChildren.head
+    val statHead = statChildren.head
+    val caseConds = exprChildren.tail
+    val caseStats = statChildren.tail
+
+    val firstCondition = generateExpression(exprHead)
+    val setUpThenFrame = AssemblyStack3.createNewScope(switchNode.symbols.head)
+    val thenBranch = generateStatement(statHead)
+    val closeThenFrame = AssemblyStack3.destroyNewestScope()
+
+    val endSwitchLabel = Labels.getSwitchLabels._2
+//    the first label will be used for the default case
+
+    val caseLabels =
+      (for(i <- 1 until caseConds.size) yield Labels.getCaseLabel).toList
+
+
+    val allElifs: List[Instruction] =
+      (for (((cond, stat), i) <- (caseConds zip caseStats).zipWithIndex)
+        yield Label(caseLabels(i)) ::
+          generateExpression(cond) :::
+          Compare(r0, ImmNum(0)) ::
+          StandardBranch(caseLabels(i), EQ) :: // go to next elif/else
+          AssemblyStack3.createNewScope(switchNode.symbols(i)) :::
+          generateStatement(stat) :::
+          AssemblyStack3.destroyNewestScope() :::
+          StandardBranch(endSwitchLabel) :: Nil
+        ).flatten
+
+    firstCondition :::
+      StandardBranch(caseLabels.head, AL) :: // go to first elif/else/end
+      setUpThenFrame :::
+      thenBranch :::
+      closeThenFrame :::
+      StandardBranch(endSwitchLabel) ::
+      allElifs :::
+      StandardBranch(endSwitchLabel) ::
+      Label(endSwitchLabel) :: Nil
   }
 
   def generateIf(ifStat: IfNode): List[Instruction] = {
