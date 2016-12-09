@@ -10,7 +10,9 @@ object AssemblyStack3 {
   def createNewScope(localVars: List[IdentNode], params: List[IdentNode] = List())
   : List[Instruction] = {
     stackFrames += new StackFrame2(localVars, params)
+//    println(s"Scope created with ${localVars.size} local vars, ${params.size} params.") // DEBUG
 
+    Push(lr) ::
     Push(fp) ::
     Move(fp, sp) ::
     Sub(sp, sp, ImmNum(WORD_SIZE * localVars.size)) :: Nil
@@ -21,7 +23,7 @@ object AssemblyStack3 {
     stackFrames = stackFrames.dropRight(1)
 
     Add(sp, sp, ImmNum(WORD_SIZE * destroyedStack.noOfLocalVars)) ::
-    Pop(fp) :: Nil
+    Pop(fp) :: Pop(pc) :: Nil
   }
 
   def getOffsetFor(ident: IdentNode): Int = {
@@ -33,11 +35,11 @@ object AssemblyStack3 {
       if (currentFrame.contains(ident)) {
         return offset + currentFrame.getOffsetFor(ident)
       }
-      offset += WORD_SIZE // go past all "old" fps
+      offset += WORD_SIZE * 2 // go past all "old" fps and lrs
       offset += WORD_SIZE * currentFrame.noOfParams // go past any params
     }
 
-    throw new RuntimeException("Fatal error: Variable not in scope.")
+    throw new RuntimeException(s"Fatal error: Variable ${ident.name} with type ${ident.getType} not in scope.")
   }
 
 
