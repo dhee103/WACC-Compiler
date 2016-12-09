@@ -663,7 +663,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 
     val defaultOffset = if (isDefaultPresent()) 2 else 0
 
-    for (i <- 0 until ctx.getChildCount) println(s"child $i = ${ctx.getChild(i)}")
+//    for (i <- 0 until ctx.getChildCount) println(s"child $i = ${ctx.getChild(i)}")
 
     def numCases() = (noOfChildren - 2 - 1) / sizeCase
 //    for(i <- 0 until noOfChildren) println(s"child $i = ${ctx.getChild(i)}")
