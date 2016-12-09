@@ -73,6 +73,8 @@ object Main {
 
     val tree = waccParser.prog()
 
+//    the variable numErrors needs to be changed every time there is an error
+//    doesn't matter what the new name is
     if (SyntaxErrorLog.numErrors > 0) {
       SyntaxErrorLog.printErrors()
       return 100

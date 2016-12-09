@@ -1,0 +1,8 @@
+begin
+  int x = 10 ;
+  switch x
+    case 2 then println(2)
+    case 10 then println(10)
+    case 20 then println(20)
+  endswitch
+end

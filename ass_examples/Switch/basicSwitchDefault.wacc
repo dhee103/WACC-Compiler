@@ -1,0 +1,12 @@
+begin
+  int x = 10 ;
+  switch x
+    case 1 then println("too early 1")
+    case 2 then println("too early 2")
+    case 3 then println("too early 3")
+    case 9 then println("too early 9")
+    case 11 then println("too late 11")
+    case 12 then println("too late 12")
+    default println("success: missed all cases")
+  endswitch
+end
