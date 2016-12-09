@@ -48,6 +48,7 @@ object Annotate {
       case stat: SequenceNode => annotateSequenceNode(stat, currentScopeSymbolTable, isInMain)
       case stat: SkipStatNode => // Nothing needs to be done
       case stat: BreakNode => // Nothing needs to be done
+      case stat: SwitchNode => annotateSwitchNode(stat, new SymbolTable(Some(currentScopeSymbolTable)), isInMain)
       //      case _: Any                => println("error"); numSemanticErrors += 1
     }
   }
@@ -118,6 +119,20 @@ object Annotate {
       annotateStatNode(statement.elseStat.get, elseBranchST, isInMain)
       statement.scopeSizes += elseBranchST.size
       statement.symbols += elseBranchST.symbols
+    }
+
+  }
+
+  def annotateSwitchNode(statement: SwitchNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
+    val exprs: List[ExprNode] = statement.exprChildren
+    val stats: List[StatNode] = statement.statChildren
+
+    for ((cond, stat) <- statement.exprChildren zip statement.statChildren) {
+      annotateExprNode(cond, currentST)
+      val caseST = new SymbolTable(Some(currentST))
+      annotateStatNode(stat, caseST, isInMain)
+      statement.scopeSizes += caseST.size
+      statement.symbols += caseST.symbols
     }
 
   }
