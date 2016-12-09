@@ -43,9 +43,9 @@ object Labels {
     s"case_stat${head}"
   }
 
-  def getWhileLabels: (String, String) = {
+  def getWhileLabels: (String, String, String) = {
     val head = getStreamHead
-    (s"while_loop${head}_start", s"while_loop${head}_end")
+    (s"while_loop${head}_start", s"while_loop${head}_end", s"while_loop${head}_closeStack")
   }
 
   def addMessageLabel(str: String): Unit = {
