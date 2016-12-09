@@ -1,0 +1,10 @@
+begin
+  int x = 5 ;
+  switch x
+   case 1 then println(1)
+#    case 2 then println(2)
+    case 5 then break; println(5)
+    default println("default")
+  endswitch ;
+  println("outside switch")
+end
