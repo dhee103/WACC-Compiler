@@ -663,8 +663,6 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 //    if default is NOT present then size - size(switch) - size(endswitch) % 4 == 0
     def isDefaultPresent() = (noOfChildren - 2 -1) % sizeCase != 0
 
-    val defaultOffset = if (isDefaultPresent()) 2 else 0
-
     val caseExprs: List[ExprNode] =
       (for (i <- 3 to (3 + sizeCase * (numCases() - 1)) by sizeCase)
         yield visit(ctx.getChild(i)).asInstanceOf[ExprNode]).toList
