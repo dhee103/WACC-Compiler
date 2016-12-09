@@ -1,0 +1,8 @@
+begin
+  if false then print("wont print")
+  elif true then print("yo")
+  elif true then print("no")
+  elif false then print("should not print")
+  else print("should definitely not print") fi
+end
+
