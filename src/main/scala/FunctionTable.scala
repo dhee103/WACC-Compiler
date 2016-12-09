@@ -36,7 +36,7 @@ object FunctionTable {
 
   def getParamIdents(ident: IdentNode): List[IdentNode] = {
     val paramList: List[ParamNode] = getParamList(ident)
-    for (param <- paramList) yield param.identifier
+    for (param <- paramList) yield IdentNode(param.identifier.name, Some(param.variableType))
   }
 
   def getNoOfParams(ident: IdentNode): Int = getParamList(ident).size
@@ -48,7 +48,7 @@ object FunctionTable {
   def getBody(ident: IdentNode): StatNode = lookup(ident)._4
 
   private def lookup(ident: IdentNode): (TypeNode, List[ParamNode], List[IdentNode], StatNode) = {
-    dict.getOrElse(ident.name, throw new RuntimeException("Fatal Error")) // TODO: Change this?
+    dict.getOrElse(ident.name, throw new RuntimeException(s"Fatal Error: Function ${ident.name} not found in Function Table.")) // TODO: Change this?
   }
 
   def doesContain(ident: IdentNode): Boolean = {

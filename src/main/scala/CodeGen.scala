@@ -488,7 +488,7 @@ object CodeGen {
     Labels.addFunction(funcName, funcDef)
 
    pushParams :::
-   StandardBranch(funcName) ::
+   BranchLink(funcName) ::
    removeParams
   }
 
