@@ -1,0 +1,14 @@
+begin
+  char c = 'e' ;
+  switch c
+    case 'a' then println("printed too early a")
+    case 'b' then println("printed too early b")
+    case 'c' then println("printed too early c")
+    case 'd' then println("printed too early d")
+    case 'e' then println("hurray!")
+    case 'f' then println("printed too late f")
+    case 'g' then println("printed too late g")
+    case 'h' then println("printed too late h")
+ endswitch
+end
+    
