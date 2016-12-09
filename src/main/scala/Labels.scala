@@ -30,7 +30,7 @@ object Labels {
 
   def getSwitchLabels: (String, String) = {
     val head = getStreamHead
-    (s"switch${head}_case", s"switch${head}_endswitch")
+    (s"switch${head}_case", s"switch${head}_end")
   }
 
   def getElifLabel: String = {
