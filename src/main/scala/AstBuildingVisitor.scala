@@ -634,7 +634,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
 
 //    size (switch) = 2; size (endswitch) = 1; size (case) = 4n ; size (default) = 2 or 0
 //    if default is NOT present then size - size(switch) - size(endswitch) % 4 == 0
-    def isDefaultPresent() = (noOfChildren - 2 -1) % sizeCase != 0
+    def isDefaultPresent = (noOfChildren - 2 -1) % sizeCase != 0
 
     val caseExprs: List[ExprNode] =
       (for (i <- 3 to (3 + sizeCase * (numCases() - 1)) by sizeCase)
@@ -643,7 +643,7 @@ class AstBuildingVisitor extends WaccParserBaseVisitor[AstNode] {
     val statChildren: List[StatNode] =
       (for (i <- 5 to (5 + sizeCase * (numCases() - 1)) by sizeCase)
         yield visit(ctx.getChild(i)).asInstanceOf[StatNode]).toList :::
-          (if(isDefaultPresent()) visit(ctx.getChild(noOfChildren - 2)).asInstanceOf[StatNode] :: Nil else Nil)
+          (if(isDefaultPresent) visit(ctx.getChild(noOfChildren - 2)).asInstanceOf[StatNode] :: Nil else Nil)
 
     SwitchNode(exprChildren, statChildren)
 
