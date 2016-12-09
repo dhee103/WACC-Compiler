@@ -52,6 +52,7 @@ object TypeChecker {
       case NewBeginNode(stat)              => checkStatement(stat)
       case stat: SkipStatNode              => // nothing needs to be done
       case stat: BreakNode                 => // nothing needs to be done
+      case stat: SwitchNode                => checkSwitch(stat)
 //      case s => println(s"wtf is: $s")
 //        TODO: Decide whether we need to check the location of a break i.e. can it only be used inside a scope extender?
     }
@@ -124,27 +125,15 @@ object TypeChecker {
     }
   }
 
-//  def checkIf(ifNode: IfThenElseNode): Unit = {
-//    checkStatement(ifNode.thenStat)
-//    checkStatement(ifNode.elseStat)
-//
-//    val condType = ifNode.condition.getType
-//    val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
-//    if (!condIsBoolean) {
-//      SemanticErrorLog.add("If statement expects boolean condition.")
-//    }
-//  }
-
-//  def checkIfExt(ifNode: IfThenNode): Unit = {
-//    checkStatement(ifNode.thenStat)
-////    checkStatement(ifNode.elseStat)
-//
-//    val condType = ifNode.condition.getType
-//    val condIsBoolean = condType.isEquivalentTo(BoolTypeNode())
-//    if (!condIsBoolean) {
-//      SemanticErrorLog.add("If statement expects boolean condition.")
-//    }
-//  }
+  def checkSwitch(switchNode: SwitchNode): Unit = {
+    for (expr <- switchNode.exprChildren) {
+      val exprIsEnumeratedType = expr.getType.isEquivalentTo(IntTypeNode()) || expr.getType.isEquivalentTo(CharTypeNode())
+      if (!exprIsEnumeratedType) {
+        SemanticErrorLog.add("If statement expects an int or char condition.")
+      }
+    }
+    switchNode.statChildren.foreach(checkStatement)
+  }
 
   def checkIf(ifNode: IfNode): Unit = {
     if (ifNode.elseStat.isDefined) {
