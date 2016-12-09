@@ -255,50 +255,39 @@ object CodeGen {
   def generateSwitch(switchNode: SwitchNode, breakLabel: String): List[Instruction] = {
     val (defaultLabel, endSwitchLabel) = Labels.getSwitchLabels
 
-    def isDefaultPresent() = switchNode.statChildren.size == switchNode.exprChildren.size
+    def isDefaultPresent = switchNode.statChildren.size == switchNode.exprChildren.size
     val exprChildren = switchNode.exprChildren
-    //    will only be used if default is present
-
 //    contains all the statements including potentially the default statement
-    val caseStats = if (isDefaultPresent()) switchNode.statChildren.dropRight(1) else switchNode.statChildren
-    val defaultStat = switchNode.statChildren.last
+    val caseStats = if (isDefaultPresent) switchNode.statChildren.dropRight(1) else switchNode.statChildren
     val firstExpr = exprChildren.head
 
-//    println(s"exprChildren size: ${exprChildren.size}")
-//    println(s"statChildren size: ${caseStats.size}")
-//    println(s"caseConds size: ${caseConds.size}")
-
     val caseConds = exprChildren.tail
-    //    val setUpThenFrame = AssemblyStack3.createNewScope(switchNode.symbols.head)
-//    val thenBranch = generateStatement(statHead)
-//    val closeThenFrame = AssemblyStack3.destroyNewestScope()
 
     val firstExprCode = generateExpression(firstExpr)
-//    val endSwitchLabel = Labels.getSwitchLabels._2
-//    the first label will be used for the default case
 
     val caseLabels: List[String] =
       (for(i <- 1 to caseConds.size) yield Labels.getCaseLabel).toList :::
-        (if (isDefaultPresent()) defaultLabel :: endSwitchLabel :: Nil else endSwitchLabel :: Nil)
+        (if (isDefaultPresent) defaultLabel :: endSwitchLabel :: Nil else endSwitchLabel :: Nil)
 
-    val allElifs: List[Instruction] =
+    val allCases: List[Instruction] =
       (for (((cond, stat), i) <- (caseConds zip caseStats).zipWithIndex)
-        yield Label(caseLabels(i)) ::
+        yield LabelData("\n") ::
+          Label(caseLabels(i)) ::
           generateExpression(cond) :::
           Compare(r0, r1) ::
           Load(r0, LoadImmNum(1), EQ) ::
           Load(r0, LoadImmNum(0), NE) ::
           Compare(r0, ImmNum(0)) ::
-          StandardBranch(caseLabels(i+1), EQ) :: // go to next case
+          StandardBranch(caseLabels(i+1), EQ) :: // go to next case/default/end
           AssemblyStack3.createNewScope(switchNode.symbols(i)) :::
-          generateStatement(stat, endSwitchLabel) :::
-          AssemblyStack3.destroyNewestScope() :::
-          StandardBranch(endSwitchLabel) :: Nil
+          generateStatement(stat, breakLabel) :::
+          AssemblyStack3.destroyNewestScope()
         ).flatten
 
 
 
-    val defaultCode = if (isDefaultPresent()) {
+    val defaultCode = if (isDefaultPresent) {
+      val defaultStat = switchNode.statChildren.last
       val setUpDefaultFrame = AssemblyStack3.createNewScope(switchNode.symbols.last)
       val defaultBranch = generateStatement(defaultStat, endSwitchLabel)
       val closeDefaultFrame = AssemblyStack3.destroyNewestScope()
@@ -308,10 +297,10 @@ object CodeGen {
 
     firstExprCode :::
     Move(r1, r0) ::
-    StandardBranch(caseLabels.head, AL) :: // go to first case
-    allElifs :::
+//    StandardBranch(caseLabels.head, AL) :: // go to first case
+    allCases :::
     defaultCode :::
-    StandardBranch(endSwitchLabel) ::
+    LabelData("\n") ::
     Label(endSwitchLabel) :: Nil
   }
 
