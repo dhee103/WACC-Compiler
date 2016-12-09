@@ -124,8 +124,7 @@ object Annotate {
   }
 
   def annotateSwitchNode(statement: SwitchNode, currentST: SymbolTable, isInMain: Boolean): Unit = {
-    val exprs: List[ExprNode] = statement.exprChildren
-    val stats: List[StatNode] = statement.statChildren
+//    TODO: check if this works when exprs and stats aren't of the same size (assume it does as it worked before default which would mean exprs > stats)
 
     for ((cond, stat) <- statement.exprChildren zip statement.statChildren) {
       annotateExprNode(cond, currentST)
