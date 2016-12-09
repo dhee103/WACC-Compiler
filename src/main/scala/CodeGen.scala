@@ -477,20 +477,28 @@ object CodeGen {
   }
 
   def generateFunctionCall(call: CallNode): List[Instruction] = {
+    val funcId: IdentNode = call.id
+    val funcName: String = funcId.name
+
     val pushParams: List[Instruction] =
       (for (arg <- call.args) yield generateExpression(arg) ::: Push(r0) :: Nil).flatten
     val setUpStackFrame = AssemblyStack3.createNewScope(call.symbols.head, call.params)
-    val funcBody = generateStatement(call.functionBody, breakLabel = "")
-    val closeStackFrame = AssemblyStack3.destroyNewestScope()
+
+    if (!FunctionTable.hasBeenGenerated(funcId)) {
+      FunctionTable.markAsGenerated(funcId)
+      val funcBody = generateStatement(call.functionBody, breakLabel = "")
+      val closeStackFrame = AssemblyStack3.destroyNewestScope()
+      val funcDef = setUpStackFrame ::: funcBody ::: closeStackFrame
+      Labels.addFunction(funcName, funcDef)
+    } else {
+      val closeStackFrame = AssemblyStack3.destroyNewestScope()
+    }
+    
     val removeParams = Add(sp, sp, ImmNum(WORD_SIZE * call.params.size)) :: Nil
 
-    val funcName: String = call.id.name
-    val funcDef = setUpStackFrame ::: funcBody ::: closeStackFrame
-    Labels.addFunction(funcName, funcDef)
-
-   pushParams :::
-   BranchLink(funcName) ::
-   removeParams
+    pushParams :::
+    BranchLink(funcName) ::
+    removeParams
   }
 
   def generateExpression(expr: ExprNode): List[Instruction] = {

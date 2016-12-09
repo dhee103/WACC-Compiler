@@ -2,31 +2,24 @@ import collection.mutable.HashMap
 
 // FunctionTable is an object as there is a single namespace for functions in
 // WACC programs.
-// Maps function names (String) to return types,
-// list of params (pair of type and ident),
-// list of locals vars
-// and the function body
+// Maps function names (String) to function nodes (FuncNodes)
 object FunctionTable {
-  val dict = new HashMap[String, (TypeNode, List[ParamNode], List[IdentNode], StatNode)]()
+  val dict = new HashMap[String, (FuncNode, Boolean)]()
 
   def add(func: FuncNode): Unit = {
     val identName: String = func.identifier.name
-    val returnType: TypeNode = func.returnType
-    val paramList = func.paramList.params.toList
-    val localVars: List[IdentNode] = func.localVars
-    val body = func.statement
 
     if (dict.contains(identName)) {
       SemanticErrorLog.add(s"Attempted to redefine function $identName.")
     } else {
-      dict += (identName -> (returnType, paramList, localVars, body))
+      dict += (identName -> (func, false))
     }
   }
 
-  def getReturnType(ident: IdentNode): TypeNode = lookup(ident)._1
+  def getReturnType(ident: IdentNode): TypeNode = getFuncNode(ident).returnType
 
   private def getParamList(ident: IdentNode): List[ParamNode] = {
-    lookup(ident)._2
+    getFuncNode(ident).paramList.params.toList
   }
 
   def getParamTypes(ident: IdentNode): List[TypeNode] = {
@@ -41,14 +34,28 @@ object FunctionTable {
 
   def getNoOfParams(ident: IdentNode): Int = getParamList(ident).size
 
-  def getLocalVars(ident: IdentNode): List[IdentNode] = lookup(ident)._3
+  def getLocalVars(ident: IdentNode): List[IdentNode] = getFuncNode(ident).localVars
 
   def getNoOfLocalVars(ident: IdentNode): Int = getLocalVars(ident).size
 
-  def getBody(ident: IdentNode): StatNode = lookup(ident)._4
+  def getBody(ident: IdentNode): StatNode = getFuncNode(ident).statement
 
-  private def lookup(ident: IdentNode): (TypeNode, List[ParamNode], List[IdentNode], StatNode) = {
+  private def lookup(ident: IdentNode): (FuncNode, Boolean) = {
     dict.getOrElse(ident.name, throw new RuntimeException(s"Fatal Error: Function ${ident.name} not found in Function Table.")) // TODO: Change this?
+  }
+
+  private def getFuncNode(ident: IdentNode): FuncNode = {
+    lookup(ident)._1
+  }
+
+  def hasBeenGenerated(ident: IdentNode): Boolean = {
+    lookup(ident)._2
+  }
+
+  def markAsGenerated(ident: IdentNode): Unit = {
+    val identName = ident.name
+    val func = getFuncNode(ident)
+    dict += (identName -> (func, true))
   }
 
   def doesContain(ident: IdentNode): Boolean = {

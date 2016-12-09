@@ -10,7 +10,7 @@ object AssemblyStack3 {
   def createNewScope(localVars: List[IdentNode], params: List[IdentNode] = List())
   : List[Instruction] = {
     stackFrames += new StackFrame2(localVars, params)
-//    println(s"Scope created with ${localVars.size} local vars, ${params.size} params.") // DEBUG
+    println(s"Scope created with ${localVars.size} local vars, ${params.size} params.") // DEBUG
 
     Push(lr) ::
     Push(fp) ::

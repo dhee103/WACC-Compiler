@@ -59,7 +59,7 @@ case class ReverseSubNoCarry(dst: Register, src1: Register, src2: Operand, overr
 case class Load(dst: Register, src: Operand, override val cond: Condition = AL, override val label: Option[String] = None) extends Instruction {
   def this(dst: Register, src: Operand, label: Option[String]) = this(dst, src, AL, label)
   def this(dst: Register, src: Operand, cond: Condition) = this(dst, src, cond, None)
-  override val main = "LDR" + cond + " " + dst.toString + ", " + src.toString
+  override val main = s"LDR$cond ${dst.toString}, ${src.toString}"
 
 }
 

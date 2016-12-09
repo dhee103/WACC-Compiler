@@ -29,9 +29,11 @@ object Annotate {
     annotateStatNode(function.statement, currentScopeSymbolTable, isInMain = false, canHaveBreak = false)
 
     function.noOfLocalVars = currentScopeSymbolTable.size - noOfParameters
-//    println(s"Function ${function.identifier.name} has the following in its symbol table:") //DEBUG
-//    currentScopeSymbolTable.symbols.foreach(println) //DEBUG
+    println(s"Function ${function.identifier.name} has the following in its symbol table:") //DEBUG
+    currentScopeSymbolTable.symbols.foreach(println) //DEBUG
     function.localVars = currentScopeSymbolTable.symbols.filterNot(parameters.toSet)
+    println(s"Function ${function.identifier.name} has the following local vars:") //DEBUG
+    function.localVars.foreach(println) //DEBUG
   }
 
   def annotateStatNode(statement: StatNode, currentScopeSymbolTable: SymbolTable, isInMain: Boolean, canHaveBreak: Boolean): Unit = {
