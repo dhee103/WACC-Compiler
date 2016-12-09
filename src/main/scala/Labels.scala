@@ -28,9 +28,19 @@ object Labels {
     (s"if_stat${head}_else", s"if_stat${head}_end")
   }
 
+  def getSwitchLabels: (String, String) = {
+    val head = getStreamHead
+    (s"switch${head}_case", s"switch${head}_endswitch")
+  }
+
   def getElifLabel: String = {
     val head = getStreamHead
     s"elif_stat${head}"
+  }
+
+  def getCaseLabel: String = {
+    val head = getStreamHead
+    s"case_stat${head}"
   }
 
   def getWhileLabels: (String, String) = {
