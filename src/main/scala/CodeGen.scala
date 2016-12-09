@@ -1,7 +1,6 @@
 import Condition._
-import Shift._
 import Constants._
-import scala.collection.mutable.ListBuffer
+import Shift._
 
 object CodeGen {
 
@@ -17,7 +16,7 @@ object CodeGen {
     AssemblyStack3.createNewScope(prog.symbols.head)
     val statement: StatNode = prog.statChild
 
-    val statGeneration = generateStatement(statement)
+    val statGeneration = generateStatement(statement, breakLabel = "")
 
     var output: List[Instruction] =
       Directive("data\n") ::
@@ -124,11 +123,11 @@ object CodeGen {
     }
   }
 
-  def generateStatement(statement: StatNode): List[Instruction] = {
+  def generateStatement(statement: StatNode, breakLabel: String): List[Instruction] = {
 
     statement match {
       case stat: SkipStatNode => Nil
-      case stat: BreakNode => generateBreak()
+      case stat: BreakNode => generateBreak(stat, breakLabel)
       case stat: DeclarationNode => generateDeclaration(stat)
       case stat: AssignmentNode => generateAssignment(stat)
       case ReadNode(variable) => generateReadNode(variable)
@@ -138,31 +137,21 @@ object CodeGen {
         BranchLink("p_free_pair") :: Nil
 //        TODO: do for an array
         // TODO: should whatever variable points to be zeroed out?
-      case ReturnNode(retVal) =>
-        generateExpression(retVal)
-      case stat: ExitNode =>
-        generateExit(stat)
-      case PrintNode(value) =>
-        genericPrint(value, lnFlag = false)
-      case PrintlnNode(value) =>
-        genericPrint(value, lnFlag = true)
-//      case stat: IfThenElseNode =>
-//        generateIfThenElse(stat)
-//      case stat: IfThenNode =>
-//        generateIfThen(stat)
-      case stat: IfNode => generateIf(stat)
-      case stat: WhileNode =>
-        generateWhile(stat)
-      case stat: NewBeginNode =>
-        generateNewBegin(stat)
+      case ReturnNode(retVal) => generateExpression(retVal)
+      case stat: ExitNode => generateExit(stat)
+      case PrintNode(value) => genericPrint(value, lnFlag = false)
+      case PrintlnNode(value) => genericPrint(value, lnFlag = true)
+      case stat: IfNode => generateIf(stat, breakLabel)
+      case stat: WhileNode => generateWhile(stat, breakLabel)
+      case stat: NewBeginNode => generateNewBegin(stat, breakLabel)
       case SequenceNode(fstStat, sndStat) =>
-        generateStatement(fstStat) ::: generateStatement(sndStat)
-      case stat: SwitchNode => generateSwitch(stat)
+        generateStatement(fstStat, breakLabel) ::: generateStatement(sndStat, breakLabel)
+      case stat: SwitchNode => generateSwitch(stat, breakLabel)
     }
   }
 
-  def generateBreak(): List[Instruction] = {
-    Nil
+  def generateBreak(stat: BreakNode, breakLabel: String): List[Instruction] = {
+    StandardBranch(breakLabel) :: Nil
 //    If it's in main it should do nothing i.e. skip
 //    Else it should exit the current scope
 //    TODO: Find what break needs to do this
@@ -263,27 +252,28 @@ object CodeGen {
     generateExpression(exit.exitCode) ::: (BranchLink("exit") :: Nil)
   }
 
-  def generateSwitch(switchNode: SwitchNode): List[Instruction] = {
+  def generateSwitch(switchNode: SwitchNode, breakLabel: String): List[Instruction] = {
+    val (defaultLabel, endSwitchLabel) = Labels.getSwitchLabels
+
     def isDefaultPresent() = switchNode.statChildren.size == switchNode.exprChildren.size
     val exprChildren = switchNode.exprChildren
+    //    will only be used if default is present
+
 //    contains all the statements including potentially the default statement
     val caseStats = if (isDefaultPresent()) switchNode.statChildren.dropRight(1) else switchNode.statChildren
-//    will only be used if default is present
-
     val defaultStat = switchNode.statChildren.last
     val firstExpr = exprChildren.head
-    val caseConds = exprChildren.tail
 
 //    println(s"exprChildren size: ${exprChildren.size}")
 //    println(s"statChildren size: ${caseStats.size}")
 //    println(s"caseConds size: ${caseConds.size}")
 
-    val firstExprCode = generateExpression(firstExpr)
-//    val setUpThenFrame = AssemblyStack3.createNewScope(switchNode.symbols.head)
+    val caseConds = exprChildren.tail
+    //    val setUpThenFrame = AssemblyStack3.createNewScope(switchNode.symbols.head)
 //    val thenBranch = generateStatement(statHead)
 //    val closeThenFrame = AssemblyStack3.destroyNewestScope()
 
-    val (defaultLabel, endSwitchLabel) = Labels.getSwitchLabels
+    val firstExprCode = generateExpression(firstExpr)
 //    val endSwitchLabel = Labels.getSwitchLabels._2
 //    the first label will be used for the default case
 
@@ -301,16 +291,16 @@ object CodeGen {
           Compare(r0, ImmNum(0)) ::
           StandardBranch(caseLabels(i+1), EQ) :: // go to next case
           AssemblyStack3.createNewScope(switchNode.symbols(i)) :::
-          generateStatement(stat) :::
+          generateStatement(stat, endSwitchLabel) :::
           AssemblyStack3.destroyNewestScope() :::
           StandardBranch(endSwitchLabel) :: Nil
         ).flatten
 
 
 
-    val defaultCode = if (isDefaultPresent) {
+    val defaultCode = if (isDefaultPresent()) {
       val setUpDefaultFrame = AssemblyStack3.createNewScope(switchNode.symbols.last)
-      val defaultBranch = generateStatement(defaultStat)
+      val defaultBranch = generateStatement(defaultStat, endSwitchLabel)
       val closeDefaultFrame = AssemblyStack3.destroyNewestScope()
 
       Label(defaultLabel) :: setUpDefaultFrame ::: defaultBranch ::: closeDefaultFrame
@@ -318,26 +308,23 @@ object CodeGen {
 
     firstExprCode :::
     Move(r1, r0) ::
-    StandardBranch(caseLabels.head, AL) :: // go to first elif/else/end
-//    setUpThenFrame :::
-//    thenBranch :::
-//    closeThenFrame :::
-//      StandardBranch(endSwitchLabel) ::
+    StandardBranch(caseLabels.head, AL) :: // go to first case
     allElifs :::
     defaultCode :::
     StandardBranch(endSwitchLabel) ::
     Label(endSwitchLabel) :: Nil
   }
 
-  def generateIf(ifStat: IfNode): List[Instruction] = {
+  def generateIf(ifStat: IfNode, breakLabel: String): List[Instruction] = {
     val isElsePresent: Boolean = ifStat.elseStat.isDefined
+
+    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
 
     val firstCondition = generateExpression(ifStat.condition)
     val setUpThenFrame = AssemblyStack3.createNewScope(ifStat.symbols.head)
-    val thenBranch = generateStatement(ifStat.thenStat)
-    val closeThenFrame = AssemblyStack3.destroyNewestScope()
+    val thenBranch = generateStatement(ifStat.thenStat, breakLabel = endIfLabel)
 
-    val (elseBranchLabel, endIfLabel) = Labels.getIfLabels
+    val closeThenFrame = AssemblyStack3.destroyNewestScope()
 
     val elifElseLabels
     = (for (i <- 1 to ifStat.elifConds.size) yield Labels.getElifLabel).toList :::
@@ -360,7 +347,7 @@ object CodeGen {
           Compare(r0, ImmNum(0)) ::
           StandardBranch(elifElseLabels(i + 1), EQ) :: // go to next elif/else
           AssemblyStack3.createNewScope(ifStat.symbols(i)) :::
-          generateStatement(stat) :::
+          generateStatement(stat, endIfLabel) :::
           AssemblyStack3.destroyNewestScope() :::
           StandardBranch(endIfLabel) :: Nil
       ).flatten
@@ -368,7 +355,7 @@ object CodeGen {
 
     val elseCode = if (isElsePresent) {
       val setUpElseFrame = AssemblyStack3.createNewScope(ifStat.symbols.last)
-      val elseBranch = generateStatement(ifStat.elseStat.get)
+      val elseBranch = generateStatement(ifStat.elseStat.get, endIfLabel)
       val closeElseFrame = AssemblyStack3.destroyNewestScope()
 
       Label(elseBranchLabel) :: setUpElseFrame ::: elseBranch ::: closeElseFrame
@@ -388,13 +375,13 @@ object CodeGen {
 
   }
 
-  def generateWhile(whileStat: WhileNode): List[Instruction] = {
+  def generateWhile(whileStat: WhileNode, breakLabel: String): List[Instruction] = {
+    val (whileStart, whileEnd, whileCloseStack) = Labels.getWhileLabels
+
     val condition = generateExpression(whileStat.condition)
     val setUpFrame = AssemblyStack3.createNewScope(whileStat.symbols.head)
-    val loopBody = generateStatement(whileStat.loopBody)
+    val loopBody = generateStatement(whileStat.loopBody, breakLabel = whileCloseStack)
     val closeFrame = AssemblyStack3.destroyNewestScope()
-
-    val (whileStart, whileEnd) = Labels.getWhileLabels
 
     Label(whileStart) ::
     condition :::
@@ -404,13 +391,15 @@ object CodeGen {
     loopBody :::
     closeFrame :::
     StandardBranch(whileStart) ::
+    Label(whileCloseStack) ::
+    closeFrame :::
     Label(whileEnd) :: Nil
 
   }
 
-  def generateNewBegin(begin: NewBeginNode): List[Instruction] = {
+  def generateNewBegin(begin: NewBeginNode, breakLabel: String): List[Instruction] = {
     val setUpStack = AssemblyStack3.createNewScope(begin.symbols.head)
-    val statOutput = generateStatement(begin.body)
+    val statOutput = generateStatement(begin.body, breakLabel)
     val closeScope = AssemblyStack3.destroyNewestScope()
 
     setUpStack ::: statOutput ::: closeScope
@@ -502,7 +491,7 @@ object CodeGen {
     val pushParams: List[Instruction] =
       (for (arg <- call.args) yield generateExpression(arg) ::: Push(r0) :: Nil).flatten
     val setUpStackFrame = AssemblyStack3.createNewScope(call.symbols.head, call.params)
-    val funcBody = generateStatement(call.functionBody)
+    val funcBody = generateStatement(call.functionBody, breakLabel = "")
     val closeStackFrame = AssemblyStack3.destroyNewestScope()
     val removeParams = Add(sp, sp, ImmNum(WORD_SIZE * call.params.size)) :: Nil
 
